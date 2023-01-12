@@ -106,9 +106,9 @@ keypad, plus the lovely minicom project pointed at the USB serial port
 to let us know when something interesting happened.
 
 While you hold that power button, you can initiate a successful, standard
-arduino flash from speeds of 115200 up to at least 460800 baud and
-probably more. Faster is better since you have to hold the power button
-down the entire time.
+arduino flash from speeds of 115200 up to 460800 baud. Possibly more
+but 460800 was the fastest reliable speed I could get.  Faster is better
+since you have to hold the power button down the entire time.
 
 We don't yet know the optimal settings for the project but the radio
 still appears to run, so that's nice.
