@@ -2144,104 +2144,17 @@ int RT_FREQ_Set(int x, int y, double *result, int vu_mode)
         switch (key_result)
         {
         case MATRIX_RESULT_0:
-            D_printf("Press{0}");
-            if (
-                (vu_mode && freq_buf[1] <= 8 && bit >= 1) || //400-480
-                (vu_mode == 0 &&
-                 (bit > 1 &&
-                  ((freq_buf[1] >= 4 && freq_buf[1] < 8) ||  //140-170
-                   (freq_buf[1] == 3 && freq_buf[2] >= 6) || //136.0
-                   (freq_buf[1] == 7 && freq_buf[2] <= 4)))) //174.0
-            )
-                num_input = 1;
-            break;
-
         case MATRIX_RESULT_1:
         case MATRIX_RESULT_2:
-            D_printf("Press{%d}", key_result);
-            if (
-                (vu_mode && (bit == 1 || freq_buf[1] <= 7)) || //41x - 47x
-                (vu_mode == 0 &&
-                 ((bit == 2 && freq_buf[1] > 3 && freq_buf[1] < 8) || //141 142 	171	 172
-                  (bit > 2 && ((freq_buf[1] > 3 && freq_buf[1] < 7) ||
-                               (freq_buf[1] == 3 && freq_buf[2] > 5) ||  //136.1 136.2
-                               (freq_buf[1] == 7 && freq_buf[2] < 4))))) //173.1 173.2
-            )
-                num_input = 1;
-
-            break;
-
         case MATRIX_RESULT_3:
-            D_printf("Press{3}");
-            if (
-                (vu_mode && (bit == 1 || freq_buf[1] <= 7)) || // 43x/45x  473、475
-                (vu_mode == 0 &&
-                 (bit == 1 ||                                            //	13x 15x
-                  (bit == 2 && (freq_buf[1] > 3 && freq_buf[1] < 8)) ||  //  143 173
-                  (bit > 2 && ((freq_buf[1] >= 3 && freq_buf[2] >= 6) || //	136.x
-                               (freq_buf[1] <= 7 && freq_buf[2] < 4))))) //	173.X
-            )
-                num_input = 1;
-            break;
-
-        case MATRIX_RESULT_5:
-            D_printf("Press{5}");
-            if (
-                (vu_mode && (bit == 1 || freq_buf[1] <= 7)) || // 43x/45x  473、475
-                (vu_mode == 0 &&
-                 (bit == 1 ||                             //	13x 15x
-                  (freq_buf[1] > 3 && freq_buf[1] < 7) || //  145 165
-                  (bit > 2 &&
-                   ((freq_buf[1] >= 3 && freq_buf[2] >= 6) || //	136.x
-                    (freq_buf[1] <= 7 && freq_buf[2] < 4))))) //	173.X
-            )
-                num_input = 1;
-            break;
-
         case MATRIX_RESULT_4:
-            D_printf("Press{4}");
-            if (
-                (vu_mode && (bit <= 1 || freq_buf[1] <= 7)) ||
-                (vu_mode == 0 &&
-                 (bit == 1 ||
-                  (freq_buf[1] >= 4 && freq_buf[1] < 7) ||
-                  (freq_buf[1] == 7 && bit == 2) ||
-                  (freq_buf[1] == 3 && freq_buf[2] >= 6) ||
-                  (freq_buf[1] == 7 && freq_buf[1] < 4))))
-                num_input = 1;
-            break;
-
+        case MATRIX_RESULT_5:
         case MATRIX_RESULT_6:
         case MATRIX_RESULT_7:
-            D_printf("Press{%d}", key_result);
-            if (
-                (vu_mode && (bit == 1 || freq_buf[1] <= 7)) || //47X
-                (vu_mode == 0 &&
-                 (bit == 1 ||                                        //16X  17X
-                  (freq_buf[1] > 2 && freq_buf[1] < 7) ||            //136
-                  (bit > 2 && freq_buf[1] == 7 && freq_buf[2] < 4))) //173.X
-            )
-                num_input = 1;
-            break;
-
         case MATRIX_RESULT_8:
-            D_printf("Press{%d}", key_result);
-            if (
-                (vu_mode && (bit == 1 || freq_buf[1] <= 7)) ||
-                (vu_mode == 0 &&
-                 ((freq_buf[1] >= 3 && freq_buf[1] <= 6) ||
-                  (bit > 2 && freq_buf[1] == 7 && freq_buf[2] < 4))))
-                num_input = 1;
-            break;
-
         case MATRIX_RESULT_9:
-            D_printf("Press{9}");
-            if (
-                (vu_mode && freq_buf[1] <= 7) ||
-                (vu_mode == 0 &&
-                 ((freq_buf[1] >= 3 && freq_buf[1] <= 6) ||
-                  (bit > 2 && freq_buf[1] == 7 && freq_buf[2] < 4))))
-                num_input = 1;
+            D_printf("Press{%d}", key_result);
+            num_input = 1;
             break;
 
         case MATRIX_RESULT_CLR:
