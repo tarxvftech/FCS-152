@@ -102,3 +102,83 @@ GPS could be provided over wifi or serial on the side port. Maybe provided
 from a connected mobile phone. Once we map all the pins we may find enough
 to shoehorn a GPS in. APRS transmission seems possible since the ESP32 is
 generating beeps that get transmitted, but APRS RX has yet to be proven.
+
+
+Documentation derived from the source code:
+
+UART 1 is side connector at 115200 baud -- KDU seems to use this and maybe other things
+
+UART 2 is radio module coniguration at 9600 baud, uses AT commands  
+
+AT Commands to setup the radio -- copied direct from source:
+
+    - "AT+DMOSETGROUP=1,436.025,436.025,000,1,001,1\r\n"
+    - "AT+DMOSETMIC=1,0,0\r\n"
+    - "AT+DMOREADRSSI\r\n"
+    - "AT+DMOSETVOLUME=5\r\n"
+    - 
+    AT Command success responses:
+    - "+DMOCONNECT:0" - succcesful connection
+    - "+DMOSETGROUP:0" - successful "write"
+    - "+DMOSETMIC:0" -- maybe mic sensitivity?  
+    - "+DMOAUTOPOWCONTR:0" -- automatic power control
+    - "+ DMOSETVOLUME:0" -- probably a typo with the space after the plus sign but successful volume set 
+
+
+    microcontroller Pins (Arduino pin numbers):
+    36 - LCD CS 
+    37 - LCD RST 
+    38 - LCD RS 
+    39 - LCD SDA 
+    40 - LCD SCL 
+
+    13 - M62364_LD_Pin
+    12 - M62364_CLK_Pin
+    11 - M62364_DATA_Pin
+
+    5 - VDO 
+    6 - Mic in En 
+    7 - Mic out en 
+    1 - SPK in En 
+    0 - SPK Out En 
+
+
+    gpio numbers 
+    gpio 10 - ADC
+    gpio 18 - DAC 
+    gpio 35 - PWM 
+    gpio 25 - wakeup (also Encoder Click)
+    gpio 6 - volume up
+    gpio 7 - volume down 
+    gpio 4 - PTT 
+    gpio 5 - squelch
+
+    gpio 20 - encoder left spin
+    gpio 19 - encoder right spin
+
+    gpio 33 - power enable 
+
+    gpio 15 - A002 Squelch pin 
+    gpio 16 - A002 PD Pin 
+    gpio 14 - A002 PTT Pin
+
+    gpio 2 - Key Row 1 
+    gpio 3 - Key Row 2
+    gpio 0 - Key Row 3
+    gpio 1 - Key Row 4 
+    gpio 41 - Key Col 1 
+    gpio 42 - Key Col 2
+    gpio 45 - Key Col 4
+    
+
+    UART1 TX = GPIO10, pin 29 , IO10
+    UART1 RX = GPIO9, pin 28 ,  IO9
+
+    UART2 TX = GPIO17, Pin 27 , IO17
+    UART2 RX = GPIO16, Pin 25 , IO16
+
+    UART0 TX = GPIO1, Pin 41 , 
+    UART0 RX = GPIO3, Pin 42 , 
+
+    USB D+ GPIO20, pin 20
+    USB D- GPIO19, Pin 19
