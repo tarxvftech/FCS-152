@@ -105,19 +105,12 @@ generating beeps that get transmitted, but APRS RX has yet to be proven.
 
 Documentation derived from the source code:
 
-
-
-FCS-152 Documentation:
-
-
-
-
-
-
 UART 1 is side connector at 115200 baud -- KDU seems to use this and maybe other things
+
 UART 2 is radio module coniguration at 9600 baud, uses AT commands  
-radio module does not route its audio through the mainboard -- it has direct mic & speaker connectivity on the module.  
-The microcontroller only configures it -- possibly also sends tones as well.
+
+AT Commands to setup the radio -- copied direct from source:
+
     - "AT+DMOSETGROUP=1,436.025,436.025,000,1,001,1\r\n"
     - "AT+DMOSETMIC=1,0,0\r\n"
     - "AT+DMOREADRSSI\r\n"
