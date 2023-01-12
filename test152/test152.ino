@@ -7,7 +7,7 @@ void VFO_Refresh_Task(void * parameter)
     // DAC_Init();
 
      delay_ms(1000);
-    // Serial.printf("创建页面刷新任务\n");
+    // Serial.printf("Create page refresh task\n");
     Serial.printf("创建写入任务成功\n");
     unsigned char a002_send_buff[20]="AT+DMOSETVOLUME=5\r\n";
     while(1)
@@ -33,19 +33,19 @@ void VFO_Refresh_Task(void * parameter)
 extern void menuUpdate(void);
 void setup()
 {  
-    CH423_Init();       //IIC初始化-->CH423初始化-->CH423控制的引脚初始化
+    CH423_Init();       //IIC initialization-->CH423 initialization-->CH423 pin initialization
 
-    SPK_SWITCH(IN, OFF); //限制开机的杂音
+    SPK_SWITCH(IN, OFF); //limit startup noise
 
-    Key_Init();         //初始化按键:初始化编码器按键; 检测是否需要进入BOOT模式
-    Standby_Init();     //确认编码器是否为正常长按;长按则使能3.3V控制引脚  ////POWER_EN_SET;// 
+    Key_Init();         //Initialize button: initialize encoder button; detect whether to enter BOOT mode
+    Standby_Init();     //Confirm whether the encoder is a normal long press; long press to enable the 3.3V control pin ////PO WER_EN_SET;//
 
-    UART1_Init();       //初始化串口
-    ADC_Init();         //检测电压使用
-    Timer_Init();       //启动定时器处理 ADC检测电压程序 DAC输出电压定时器中断
+    UART1_Init();       //init serial port
+    ADC_Init();         //检测电压使用 'detection voltage use', didn't translate well
+    Timer_Init();       //Start timer processing ADC detection voltage program DAC output voltage timer interrupt
 
-    //将控制引脚初始化,并设置状态, 避免出现错误IO状态
-    M62364_Init();      //m62364初始化-->禁止声音输出/关闭FM电源
+    //Initialize the control pin and set the state to avoid wrong IO state
+    M62364_Init();      //m62364 initialization-->prohibit sound output/turn off FM power
 
     LCD_Init();
     PWM_Init();
@@ -66,8 +66,8 @@ void loop()
     MY_GLOBAL_FUN();
     VFO_Refresh();
     Encoder_process(Encoder_Switch_Scan(0));
-    Argument_process(Event_Matrix(Matrix_KEY_Scan(0)));	//矩阵按键事件处理
-    KDU_Processor();//KDU处理
+    Argument_process(Event_Matrix(Matrix_KEY_Scan(0)));	//matrix button event
+    KDU_Processor();
     
 }
 
