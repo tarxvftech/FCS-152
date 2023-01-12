@@ -59,6 +59,10 @@ include them.
 The HMI (front panel and display) appear to be driven directly by
 the ESP32.
 
+There was an old hardware revision with a non-ESP32 processor. Be
+careful that you do not try to flash firmware for this revision to the
+new hardware and vice-versa. The new hardware is sometimes referred to as `-N` or as `152+`. The old hardware is often referred to in various flavors of version 1.0 or `152(A)`.
+
 ## Basic instructions and gotchas
 
 Power on the FCS-152 by pressing in and holding the top button. Same to
@@ -84,10 +88,30 @@ platform seems like an excellent idea.
 
 ESP32S2 support seems to only be after esp32 ver 2.0 in Boards Manager.
 
-## Flashing the firmware
+## Communicating with the radio
 
-TODO. Purely an academic exercise unless we have a way to build it
-with arduino.
+To boot into the 'second system' as the source code calls it, hold the
+button under the PTT during boot. This will bring you to a menu that
+shows options to enter CPS Read/Write mode, a wifi/http based firmware
+upgrade mode, and a version readout.
+
+To enter the ESP32S2 bootloader, hold the number 9 on the keypad and hold
+the power button (push down on the encoder knob).  You can let go of the
+9, but you can't let go of the power button until the flash is complete.
+
+Yes, we know.
+
+This was determined by experiment and realizing GPIO-0 is row 3 on the
+keypad, plus the lovely minicom project pointed at the USB serial port
+to let us know when something interesting happened.
+
+While you hold that power button, you can initiate a successful, standard
+arduino flash from speeds of 115200 up to at least 460800 baud and
+probably more. Faster is better since you have to hold the power button
+down the entire time.
+
+We don't yet know the optimal settings for the project but the radio
+still appears to run, so that's nice.
 
 ## Dreams
 
