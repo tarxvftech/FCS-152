@@ -8,7 +8,11 @@ source_.
 
 That's where this source code came from. It was not provided
 with a license, but it was expressly put out there according to the
-marketing materials as seen on aliexpress for 'amateur radio hacking'.
+marketing materials as seen on aliexpress for 'amateur radio hacking'
+so we're assuming it's something fairly open.
+
+Long term I'd like this to get pulled into OpenRTX, but meanwhile we
+can still make some improvements.
 
 TODO: provide the links to the device, purchasing information (cyanpoem),
 and source code download.
@@ -46,7 +50,7 @@ doesn't auto switch to accessories like headsets.
 ## Docs
 
 [Internal pictures](https://tarxvf.tech/blog/20221105_fcs-152/)
-
+See also further in this file for documentation derived from the source code.
 
 ## Building the firmware
 
@@ -104,11 +108,11 @@ to shoehorn a GPS in. APRS transmission seems possible since the ESP32 is
 generating beeps that get transmitted, but APRS RX has yet to be proven.
 
 
-Documentation derived from the source code:
+## Documentation derived from the source code:
 
 UART 1 is side connector at 115200 baud -- KDU seems to use this and maybe other things
 
-UART 2 is radio module coniguration at 9600 baud, uses AT commands  
+UART 2 is radio module configuration at 9600 baud, uses AT commands  
 
 AT Commands to setup the radio -- copied direct from source:
 
@@ -180,5 +184,5 @@ AT Commands to setup the radio -- copied direct from source:
     UART0 TX = GPIO1, Pin 41 , 
     UART0 RX = GPIO3, Pin 42 , 
 
-    USB D+ GPIO20, pin 20
+    USB D+ GPIO20, pin 20 (Note the same assignment as the encoder gpios)
     USB D- GPIO19, Pin 19
