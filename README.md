@@ -14,15 +14,34 @@ so we're assuming it's something fairly open.
 Long term I'd like this to get pulled into OpenRTX, but meanwhile we
 can still make some improvements.
 
-TODO: provide the links to the device, purchasing information (cyanpoem),
-and source code download.
 
+## Upstream
+
+[Device information page](http://www.fcs-tactical.com/FCS152A) (you
+probably wan't google translate). We have not seen any Rev1's without
+the ESP32 in the wild.
+
+You can purchase one with a good experience from cyanpoem at hotmail,
+or px-airsoft.com. Stay away from the aliexpress sellers, they won't
+always include everything you need.
+
+Original source code is from the [download
+page](http://www.fcs-tactical.com/download) and the link titled '[Open
+Source Interface Code](http://www.fcs-tactical.com/OSIC)'. This is also
+where you can find the OEM CPS to program channels in.
+
+OEM software, drivers, pdfs, etc all at [the official spec
+page](http://www.fcs-tactical.com/FCS152A), just scroll down.
+
+TODO: Offer a mirror of everything translated. FCS did a great job with
+the instructions visually, so offering excellent how-to-use documentation
+is more about internationalizing the text than anything else.
 
 ## Hardware
 
 * Main MCU: ESP33S2-WROOM-I, source code under `test152/`.
-* KDU MCU: STM32 of some kind, source code under `KDUCM32/`. I haven't
-even looked at this yet.
+* KDU MCU: CM32 which I've never heard of, source code under `KDUCM32/`. I
+haven't even looked at this yet.
 
 The actual RF chip is a separate module labeled 'A002-U-V' driven by
 a GD32F101 (STM32F101 clone) in an oddball footprint. It is configured
