@@ -2178,8 +2178,8 @@ int RT_FREQ_Set(int x, int y, double *result, int vu_mode)
                 (vu_mode == 0 &&
                  (bit == 1 ||                                            //	13x 15x
                   (bit == 2 && (freq_buf[1] > 3 && freq_buf[1] < 8)) ||  //  143 173
-                  (bit > 2 && ((freq_buf[1] == 3 && freq_buf[2] >= 6) || //	136.x
-                               (freq_buf[1] == 7 && freq_buf[2] < 4))))) //	173.X
+                  (bit > 2 && ((freq_buf[1] >= 3 && freq_buf[2] >= 6) || //	136.x
+                               (freq_buf[1] <= 7 && freq_buf[2] < 4))))) //	173.X
             )
                 num_input = 1;
             break;
@@ -2192,8 +2192,8 @@ int RT_FREQ_Set(int x, int y, double *result, int vu_mode)
                  (bit == 1 ||                             //	13x 15x
                   (freq_buf[1] > 3 && freq_buf[1] < 7) || //  145 165
                   (bit > 2 &&
-                   ((freq_buf[1] == 3 && freq_buf[2] >= 6) || //	136.x
-                    (freq_buf[1] == 7 && freq_buf[2] < 4))))) //	173.X
+                   ((freq_buf[1] >= 3 && freq_buf[2] >= 6) || //	136.x
+                    (freq_buf[1] <= 7 && freq_buf[2] < 4))))) //	173.X
             )
                 num_input = 1;
             break;

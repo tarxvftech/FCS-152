@@ -92,7 +92,8 @@ to test.
 
 If I understand correctly, the ESP32S2 has native USB. It might be
 possible to provide sane CPS programming (drag and drop files, ...),
-ethernet over USB for packet, etc.
+ethernet over USB for packet, etc. Unfortunately, it seems the encoder
+is connected to the USB pins, so this won't be happening on this hardware.
 
 Similarly it has wifi. Connecting with ATAK should be a cinch once it
 can do data.
