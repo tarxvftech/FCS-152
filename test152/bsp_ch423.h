@@ -5,7 +5,7 @@
 #define     CH423_I2C_ADDR1     0x40         // CH423的地址
 #define     CH423_I2C_MASK      0x3E         // CH423的高字节命令掩码
 
-/*  设置系统参数命令 */ 
+/*  设置系统参数命令 */
 
 #define     CH423_SYS_CMD     0x4800     // 设置系统参数命令，默认方式
 #define     BIT_SLEEP         0X40
@@ -53,11 +53,11 @@
 #define     BIT_IO7_DAT        0x80      // 写入双向输入输出引脚的输出寄存器，当IO_OE=1,IO7为0输出低电平，为1输出高电平
 
 /* 读取双向输入输出命令 */
-#define CH423_RD_IO_CMD		0x4D	// 输入I/O引脚当前状态
+#define CH423_RD_IO_CMD     0x4D    // 输入I/O引脚当前状态
 
 void CH423_Init(void);
-void CH423_Write( unsigned short cmd );         // 写命令
-void CH423_WriteByte( unsigned short cmd );     // 写出数据
+void CH423_Write(unsigned short cmd);           // 写命令
+void CH423_WriteByte(unsigned short cmd);       // 写出数据
 unsigned char CH423_ReadByte();                 // 读取数据
 
 void SetIOChannel(unsigned char IOChannel);
@@ -101,4 +101,4 @@ void ClrOCChannel(unsigned char OCChannel);
 #define CLR_FM_AMP_EN_CHAN     ClrOCChannel(FM_AMP_EN_CHAN)
 
 
-#endif 
+#endif

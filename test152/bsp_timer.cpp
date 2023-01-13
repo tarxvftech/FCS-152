@@ -13,13 +13,13 @@ Ticker t1;
 esp_timer_create_args_t Mtimer0 = {
     .callback = &timer0_cb,             //设置回调函数
     .arg = NULL,                        //不携带参数
-    .name = "Timer_1ms"               	//定时器名字
+    .name = "Timer_1ms"                 //定时器名字
 };
 
 esp_timer_handle_t timer0_handle = 0;
 
 
-//TIMER0	1ms
+//TIMER0    1ms
 void bsp_Timer0_Init(void)
 {
     esp_err_t err = esp_timer_create(&Mtimer0, &timer0_handle);
@@ -30,7 +30,7 @@ void bsp_Timer0_Init(void)
 
 extern void disposeAllTimeData(void);
 extern volatile int spin_cal;
-void timer0_cb(void *arg)
+void timer0_cb(void* arg)
 {
     spin_cal++;
     disposeAllTimeData();
@@ -39,7 +39,7 @@ void timer0_cb(void *arg)
 //TIMER1    100ms
 void bsp_Timer1_Init(void)
 {
-	t1.attach(0.1, timer1_cb);
+    t1.attach(0.1, timer1_cb);
 }
 extern void disposePer100ms(void);
 extern void refreshADCVal(void);
@@ -49,7 +49,7 @@ void timer1_cb(void)
     refreshADCVal();
 }
 ///////////////////////////////////////////////////////////////////
-static void IRAM_ATTR timer2_cb(void *arg);
+static void IRAM_ATTR timer2_cb(void* arg);
 //TIMER2    TIMER_INTR_US=7us
 void    bsp_Timer2_Init(void)
 {
@@ -81,7 +81,7 @@ void    bsp_Timer2_Init(void)
 }
 
 extern void RingArray_Intr(void);
-static void IRAM_ATTR timer2_cb(void *arg)
+static void IRAM_ATTR timer2_cb(void* arg)
 {
     timer_group_clr_intr_status_in_isr(TIMER_GROUP_0, TIMER_0);
     timer_group_enable_alarm_in_isr(TIMER_GROUP_0, TIMER_0);
@@ -92,12 +92,12 @@ static void IRAM_ATTR timer2_cb(void *arg)
 //int64_t tick = esp_timer_get_time();
 // if (tick > 100000000)
 // {
-// 	//停止定时器工作，并获取是否停止成功
-// 	esp_err_t err = esp_timer_stop(timer0_handle);
-// 	printf("要停止的定时器名字：%s , 是否停止成功：%s", Mtimer0.name,
+//  //停止定时器工作，并获取是否停止成功
+//  esp_err_t err = esp_timer_stop(timer0_handle);
+//  printf("要停止的定时器名字：%s , 是否停止成功：%s", Mtimer0.name,
 //                err == ESP_OK ? "ok!\r\n" : "failed!\r\n");
-// 	err = esp_timer_delete(timer0_handle);
-// 	printf("要删除的定时器名字：%s , 是否停止成功：%s", Mtimer0.name,
+//  err = esp_timer_delete(timer0_handle);
+//  printf("要删除的定时器名字：%s , 是否停止成功：%s", Mtimer0.name,
 //                err == ESP_OK ? "ok!\r\n" : "failed!\r\n");
 // }
 //printf("方法回调名字: %s , 距离定时器开启时间间隔 = %lld \r\n", __func__, tick);

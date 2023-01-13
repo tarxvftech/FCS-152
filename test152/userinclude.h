@@ -15,36 +15,34 @@
 #define THISCHIP_CM32M101A       1
 #define THISCHIP_ESP32S2         2
 
-typedef uint8_t	    u8;
+typedef uint8_t     u8;
 typedef uint16_t    u16;
 typedef uint32_t    u32;
 
 #define ON          1
 #define OFF         0
 
-typedef enum 
-{
+typedef enum {
     key_state_0 = 0,
     key_state_1,
     key_state_2,
     key_state_3
-}KeyState;
+} KeyState;
 
-typedef enum 
-{
+typedef enum {
     key_idle   = 0, //
     key_click,      //按下
     key_double,
     key_long
-}KeyReturn;
+} KeyReturn;
 
 #define KDU_DATA_DEBUG 1    //数据交互处理(使用字符串,数据传输稳当,不易被字符转义干扰)
 #if KDU_DATA_DEBUG
-    #define kdu_recv_data(a) (a-'0')	
-    #define kdu_send_data(a) (a+'0')
+#define kdu_recv_data(a) (a-'0')
+#define kdu_send_data(a) (a+'0')
 #else
-    #define kdu_recv_data(a) a
-    #define kdu_send_data(a) a
+#define kdu_recv_data(a) a
+#define kdu_send_data(a) a
 #endif
 
 /////////////////////////////////////////////////////////////////////////////////////////

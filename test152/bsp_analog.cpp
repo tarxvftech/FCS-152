@@ -1,4 +1,4 @@
-#include "bsp_analog.h" 
+#include "bsp_analog.h"
 #include "bsp_conio.h"
 
 #define PWM_CHAN        1
@@ -7,7 +7,7 @@ volatile uint16_t MY_ADC_VAL[ADC_SAMPLE_NUM]; //adc的数值缓存
 
 void bsp_PWM_Init(void)
 {
-    ledcSetup(PWM_CHAN, 24000, 8);	//0~255
+    ledcSetup(PWM_CHAN, 24000, 8);  //0~255
     ledcAttachPin(PWM_PIN, PWM_CHAN);
     ledcWrite(PWM_CHAN, 0);
 }
@@ -38,16 +38,15 @@ void refreshADCVal(void)
 
 uint32_t Use_ADC(void)
 {
-    uint32_t real_val = MY_ADC_VAL[0], 
+    uint32_t real_val = MY_ADC_VAL[0],
              v0       = MY_ADC_VAL[0],
              max_v0   = MY_ADC_VAL[0],
              min_v0   = MY_ADC_VAL[0];
 
-    for(int i=1; i<ADC_SAMPLE_NUM; i++)
-    {
+    for(int i=1; i<ADC_SAMPLE_NUM; i++) {
         max_v0 = (max_v0 > MY_ADC_VAL[i]) ? max_v0 : MY_ADC_VAL[i];
         min_v0 = (min_v0 < MY_ADC_VAL[i]) ? min_v0 : MY_ADC_VAL[i];
-        v0	+= MY_ADC_VAL[i];
+        v0  += MY_ADC_VAL[i];
     }
     //memset((void *)MY_ADC_VAL, 0, ADC_SAMPLE_NUM);
     v0   = (v0   - max_v0  - min_v0) /(ADC_SAMPLE_NUM-2);

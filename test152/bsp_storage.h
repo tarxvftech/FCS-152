@@ -31,8 +31,8 @@ uint8_t load_CurrentChannel(void);
 void save_ChannelParameter(uint8_t chan, CHAN_ARV S);
 void load_ChannelParameter(uint8_t chan, CHAN_ARV_P L);
 //
-void load_ChannelParameterStr(uint8_t chan, char *L);
-void save_ChannelParameterStr(uint8_t chan, char *S);
+void load_ChannelParameterStr(uint8_t chan, char* L);
+void save_ChannelParameterStr(uint8_t chan, char* S);
 
 //数据初始化
 void DATA_Init(void);
@@ -88,7 +88,7 @@ uint8_t load_PreTone(void);
 //PTT结束提示音
 void    save_EndTone(uint8_t endtone);
 uint8_t load_EndTone(void);
-	
+
 //收音机频率//870~1080
 void save_FMFreq(int fm_freq);
 int  load_FMFreq(void);

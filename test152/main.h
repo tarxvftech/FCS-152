@@ -6,10 +6,10 @@
 #include "bsp_dac.h"
 #include "bsp_uart.h"
 #include "bsp_ch423.h"
-#include "bsp_conio.h" 
-#include "bsp_timer.h" 
+#include "bsp_conio.h"
+#include "bsp_timer.h"
 #include "bsp_m62364.h"
-#include "bsp_storage.h"        
+#include "bsp_storage.h"
 #include "bsp_device.h"      //Sleep Init
 #include "bsp_MatrixKeyBoard.h"
 
@@ -23,8 +23,8 @@
 
 
 #if FM_EN
-    #include "rda5807.h"
-    extern volatile u8 WFM;                 //FM开关
+#include "rda5807.h"
+extern volatile u8 WFM;                 //FM开关
 #endif
 
 
@@ -52,23 +52,23 @@ void A20_CALLBACK(void);            //A20数据交互,必须处理了才有a20�
 void Switch_Dual_Chan(void);        //双守模式下双信道切换
 void SetNowChanSql0(u8 on);         //开关常静噪状态
 //主界面功能选择
-void ShortCut_Menu(void); 			//主界面快捷设置  
-void ShortCut_MICGAIN_Select(void);	//主界面快捷设置mic灵敏度
-void ShortCut_FM_Select(void);		//主界面快捷开关收音机
-void ShortCut_CHAN_Select(void);	//主界面信道切换
- int Lock_Screen_KeyBoard(void);	//锁屏锁盘	
+void ShortCut_Menu(void);           //主界面快捷设置
+void ShortCut_MICGAIN_Select(void); //主界面快捷设置mic灵敏度
+void ShortCut_FM_Select(void);      //主界面快捷开关收音机
+void ShortCut_CHAN_Select(void);    //主界面信道切换
+int Lock_Screen_KeyBoard(void);    //锁屏锁盘
 
 
 //收发设置
 void RT_Menu(void);
 void RT_Menu_Clear(void);
-int  RT_FREQ_Set(int x, int y, double *vfo_freq_temp, int vu_switch);
-int  RT_SubVoice_Set(int row, int subvoice);			      			//亚音设置
-int  RT_SubVoice_Matrix_Menu_Select(int subvoice);						//矩阵亚音设置
-int  RT_TX_POWER_Set(int power_temp);				          			//发射功率选择
-int  RT_GBW_Set(int gbw_temp);											//带宽选择            
-void RT_NICKNAME_Set(u8 current_channel, unsigned char nn_temp[7]); 	//别名设置
-void RT_CHAN_Switch(void);	           		 							//信道号切换
+int  RT_FREQ_Set(int x, int y, double* vfo_freq_temp, int vu_switch);
+int  RT_SubVoice_Set(int row, int subvoice);                            //亚音设置
+int  RT_SubVoice_Matrix_Menu_Select(int subvoice);                      //矩阵亚音设置
+int  RT_TX_POWER_Set(int power_temp);                                   //发射功率选择
+int  RT_GBW_Set(int gbw_temp);                                          //带宽选择
+void RT_NICKNAME_Set(u8 current_channel, unsigned char nn_temp[7]);     //别名设置
+void RT_CHAN_Switch(void);                                              //信道号切换
 
 
 //按键2
@@ -81,23 +81,23 @@ void Zero_Menu(void);
 
 //按键7 OPTION菜单
 void OPTION_Menu(void);
-void Key_Test(void);			    	//测试按键
+void Key_Test(void);                    //测试按键
 
 //按键8 PGM菜单
 void PGM_Menu(void);
 
-int  PGM_AUDIO_Select(u8 row);			//音频选通并设置咪灵敏度
-int  PGM_SQL_Set(u8 row);			  	//静噪等级
-int  PGM_STEP_Set(u8 row);				//步进
-int  PGM_ENCRPY_Set(u8 row);   			//加密
-int  PGM_TOT_Set(u8 row);			    //发射限时
-int  PGM_LAMP_TIME_Set(u8 row);			//背光灯时长
-int  PGM_POWEROUT_Set(u8 row);			//六针头电源输出
-int  PGM_TONE_Select(u8 row);			//提示音设置
+int  PGM_AUDIO_Select(u8 row);          //音频选通并设置咪灵敏度
+int  PGM_SQL_Set(u8 row);               //静噪等级
+int  PGM_STEP_Set(u8 row);              //步进
+int  PGM_ENCRPY_Set(u8 row);            //加密
+int  PGM_TOT_Set(u8 row);               //发射限时
+int  PGM_LAMP_TIME_Set(u8 row);         //背光灯时长
+int  PGM_POWEROUT_Set(u8 row);          //六针头电源输出
+int  PGM_TONE_Select(u8 row);           //提示音设置
 
 
-void SHUT(void);			        //关闭所有功能
-//void Update_Check(void);			//IAP
+void SHUT(void);                    //关闭所有功能
+//void Update_Check(void);          //IAP
 
 //uint16_t Get_JTAG_ID(void);
 

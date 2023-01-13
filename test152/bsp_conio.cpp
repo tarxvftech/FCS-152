@@ -1,5 +1,5 @@
 #include "bsp_conio.h"
-#include "bsp_uart.h"  
+#include "bsp_uart.h"
 
 void ControlGPIO_Init(void)
 {
@@ -9,8 +9,8 @@ void ControlGPIO_Init(void)
 
 void bsp_A002_Init(void)
 {
-    pinMode(18, INPUT); // what is this? compare against analog.cpp. 
-    bsp_UART2_Init(9600); //AT commands get sent over this to control frequency and such. 
+    pinMode(18, INPUT); // what is this? compare against analog.cpp.
+    bsp_UART2_Init(9600); //AT commands get sent over this to control frequency and such.
 
     pinMode(A002_SQ_PIN,  INPUT_PULLUP);
     pinMode(A002_PD_PIN,  OUTPUT);
@@ -22,12 +22,14 @@ void bsp_A002_Init(void)
 
 int L_LAST=0, R_LAST=0;
 portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;  //声明一个portMUX_TYPE类型的变量，利用其对主代码和中断之间的同步进行处理
-void Encoder_Click_Init(void){
+void Encoder_Click_Init(void)
+{
     pinMode(ENCODER_CLICK_PIN, INPUT_PULLUP);
 }
 
 void EncoderPinInterrupt();
-void Encoder_Spin_init(void){
+void Encoder_Spin_init(void)
+{
     pinMode(ENCODER_SPIN_R_PIN, INPUT_PULLUP);  //xvf: is this accurate? why would we pull it up?
     pinMode(ENCODER_SPIN_L_PIN, INPUT_PULLUP);  //这个我们设置为下拉 INPUT_PULLDOWN
     //我们通过调用attachInterrupt函数将中断附加到引脚
@@ -38,7 +40,8 @@ void Encoder_Spin_init(void){
 
 }
 extern void disposeEncoderSpined(void);
-void EncoderPinInterrupt(){
+void EncoderPinInterrupt()
+{
     // portENTER_CRITICAL_ISR(&mux);
     disposeEncoderSpined();
     // portEXIT_CRITICAL_ISR(&mux);

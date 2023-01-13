@@ -1,5 +1,5 @@
 /*
-	#include "FCS152_KDU.h"
+    #include "FCS152_KDU.h"
 */
 #ifndef __FCS152_KDU_H__
 #define __FCS152_KDU_H__
@@ -16,53 +16,53 @@
 
 //define the major file to include.
 #if     (THISCHIP == THISCHIP_STM32F103RET6)
-    #include "stm32f1xx.h"
+#include "stm32f1xx.h"
 #elif   (THISCHIP == THISCHIP_ESP32S2)
-    #include <Arduino.h>
-    #include "esp_timer.h"
-    #include "esp_rom_sys.h"
-    #include "driver/timer.h"
+#include <Arduino.h>
+#include "esp_timer.h"
+#include "esp_rom_sys.h"
+#include "driver/timer.h"
 #elif   (THISCHIP == THISCHIP_CM32M101A)
-    #include "cm32m101a.h"
+#include "cm32m101a.h"
 #else
 #endif
 
 //define the debug mode how to realize.
-#if     (THISCHIP != THISCHIP_ESP32S2)	
-    #ifdef DEBUG
-        #define D_printf(fmt,args...) \
+#if     (THISCHIP != THISCHIP_ESP32S2)
+#ifdef DEBUG
+#define D_printf(fmt,args...) \
         do \
         {\
             printf(fmt, ##args);\
         }while(0)
-        //printf("%s:  %s:  %d\n", __FILE__, __FUNCTION__, __LINE__);
-    #else
-        #define D_printf(fmt,args...)
-    #endif
+//printf("%s:  %s:  %d\n", __FILE__, __FUNCTION__, __LINE__);
 #else
-    #ifdef DEBUG
-        #define D_printf(fmt,args...) \
+#define D_printf(fmt,args...)
+#endif
+#else
+#ifdef DEBUG
+#define D_printf(fmt,args...) \
         do \
         {\
             Serial.printf(fmt, ##args);\
         }while(0)
-        //printf("%s:  %s:  %d\n", __FILE__, __FUNCTION__, __LINE__);
-    #else
-        #define D_printf(fmt,args...)
-    #endif
+//printf("%s:  %s:  %d\n", __FILE__, __FUNCTION__, __LINE__);
+#else
+#define D_printf(fmt,args...)
+#endif
 #endif
 //define some system operate function.
 #if     (THISCHIP == THISCHIP_STM32F103RET6)
-    #define FeedDog()           IWDG->KR = 0XAAAA
-    #define ResetSystem()       NVIC_SystemReset()
+#define FeedDog()           IWDG->KR = 0XAAAA
+#define ResetSystem()       NVIC_SystemReset()
 #elif   (THISCHIP == THISCHIP_ESP32S2)
-    #define FeedDog()           delay_ms(5)
-    #define ResetSystem()       ESP.restart()
+#define FeedDog()           delay_ms(5)
+#define ResetSystem()       ESP.restart()
 #elif   (THISCHIP == THISCHIP_CM32M101A)
-    #define FeedDog()           IWDG->KEY = 0xAAAA
-    #define ResetSystem()       NVIC_SystemReset()
-    //#define INTX_DISABLE()    __disable_irq();
-    //#define INTX_ENABLE()     __enable_irq();
+#define FeedDog()           IWDG->KEY = 0xAAAA
+#define ResetSystem()       NVIC_SystemReset()
+//#define INTX_DISABLE()    __disable_irq();
+//#define INTX_ENABLE()     __enable_irq();
 #else
 #endif
 
@@ -74,45 +74,45 @@
         bootloader  : 18K = 18*1024 = 18432 = 0x4800
     0x0800 4800 ~ 0x0800 5000: 2K  USER FLAG
         USERFLAG    : 2K  = 2*1024  = 2048  = 0x0800
-        
+
     0x0800 5000 ~ 0x0801 2800: 54K App空间
         APP RUN     : 54K = 54*1024 = 55296 = 0xD800
     0x0801 2800 ~ 0x0802 0000: 54K 接收新程序
         APP RCV     : 54K = 54*1024 = 55296 = 0xD800
 */
-    #define     APP_PAGE_SIZE       0xD800          //54K   //存放运行APP的空间  存放接收APP的空间	均为54K
-    #define     USER_PAGE_SIZE      0x0800          //2K    //每一页空间大小
-    #define     KDU_FLAG_ADDR       0x08004800      //程序更新信息      储存地址        0X55
-    #define     KDU_SIZE_ADDR       0x08004900      //KDU接收数据大小   储存地址
-    #define     KDU_RUN_ADDR        0x08005000      //KDU运行起始地址
-    #define     KDU_RCV_ADDR        0x08012800      //KDU接收起始地址
+#define     APP_PAGE_SIZE       0xD800          //54K   //存放运行APP的空间  存放接收APP的空间    均为54K
+#define     USER_PAGE_SIZE      0x0800          //2K    //每一页空间大小
+#define     KDU_FLAG_ADDR       0x08004800      //程序更新信息      储存地址        0X55
+#define     KDU_SIZE_ADDR       0x08004900      //KDU接收数据大小   储存地址
+#define     KDU_RUN_ADDR        0x08005000      //KDU运行起始地址
+#define     KDU_RCV_ADDR        0x08012800      //KDU接收起始地址
 #elif   (THISCHIP == THISCHIP_STM32F103RET6)        ////152和KDU都需要设定
-    #define     KDU_RUN_ADDR        0x08010000      //
-    #define     KDU_RCV_ADDR        0x08020000      //
-    #define     KDU_FLAG_ADDR       0x08030000      //程序更新信息      储存地址        0X55
-    
-    //Start address for 152 IAP 
-    #if !defined UPBOOT
-        #define     _152_RUN_ADDR   0x8020000       //128K空间存放APP 
-    #else
-        #define     _152_RUN_ADDR   0x8000000
-    #endif
+#define     KDU_RUN_ADDR        0x08010000      //
+#define     KDU_RCV_ADDR        0x08020000      //
+#define     KDU_FLAG_ADDR       0x08030000      //程序更新信息      储存地址        0X55
+
+//Start address for 152 IAP
+#if !defined UPBOOT
+#define     _152_RUN_ADDR   0x8020000       //128K空间存放APP 
+#else
+#define     _152_RUN_ADDR   0x8000000
+#endif
 #endif
 
 //deside the device information string
 #if     (THISCHIP != STM32F103RET6)
-    #define   __NEW__                           //this program base on CM32M101, which is new
+#define   __NEW__                           //this program base on CM32M101, which is new
 #endif
 #ifndef   __NEW__
-    #define  STR_152         "FCS PRC152"
-    #define  STR_KDU         " FCS  KDU "
-    #define  VERSION_152     "Rev 1.0.000" 
-    #define  VERSION_KDU     "Rev 1.1.000"          //修改兼容ESP
+#define  STR_152         "FCS PRC152"
+#define  STR_KDU         " FCS  KDU "
+#define  VERSION_152     "Rev 1.0.000"
+#define  VERSION_KDU     "Rev 1.1.000"          //修改兼容ESP
 #else
-    #define  STR_152         "FCS PRC152-N"
-    #define  STR_KDU         "FCS KDU-N "
-    #define  VERSION_152     "Rev 2.0.000 XVF" 
-    #define  VERSION_KDU     "Rev 2.0.000"
+#define  STR_152         "FCS PRC152-N"
+#define  STR_KDU         "FCS KDU-N "
+#define  VERSION_152     "Rev 2.0.000 XVF"
+#define  VERSION_KDU     "Rev 2.0.000"
 #endif
 
 #define  VERSION_UPBOOT     "Upgrade Bootloader0.1" //用于更新152底层       的152 版本
@@ -131,8 +131,8 @@
 #define     BACK2MAIN           2
 
 #define     FM_EN               1
-#define     LCD12832            0 
-#define     LCD12864            2 
+#define     LCD12832            0
+#define     LCD12864            2
 
 //The flag of appaddr whether the app should run
 #define     NEW_APP             0x55
@@ -141,67 +141,62 @@
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
 //8.4V开机电压上/下限制
-#define  VOLTAGE_ON_8_UPPER         8700 
+#define  VOLTAGE_ON_8_UPPER         8700
 #define  VOLTAGE_ON_8_FLOOR         6400    //电量太少开机无用
 //12.V开机电压上/下限制
-#define  VOLTAGE_ON_12_UPPER        13250 
-#define  VOLTAGE_ON_12_FLOOR        9250 
+#define  VOLTAGE_ON_12_UPPER        13250
+#define  VOLTAGE_ON_12_FLOOR        9250
 
 //8.4V关机电压上下限制
-#define  VOLTAGE_OFF_8_UPPER        8680 
+#define  VOLTAGE_OFF_8_UPPER        8680
 #define  VOLTAGE_OFF_8_FLOOR        6100    //尽可能放到安全电压
 //12.4V关机电压上/下限制
-#define  VOLTAGE_OFF_12_UPPER       13250 
-#define  VOLTAGE_OFF_12_FLOOR       8900 
+#define  VOLTAGE_OFF_12_UPPER       13250
+#define  VOLTAGE_OFF_12_FLOOR       8900
 //计算电压基值
-#define  VOLTAGE_8_CAL              6400 
-#define  VOLTAGE_12_CAL             9600 
+#define  VOLTAGE_8_CAL              6400
+#define  VOLTAGE_12_CAL             9600
 
 //电压水平定义
-typedef enum 
-{
+typedef enum {
     VOLTAGE_NORMAL=0,
     VOLTAGE_LOW,
     VOLTAGE_HIGH,
     VOLTAGE_ERROR
-}CheckVoltage; 
+} CheckVoltage;
 
-typedef enum
-{
+typedef enum {
     FAILED = 0,
     PASSED = !FAILED
 } Status;
 
-typedef enum 
-{
+typedef enum {
     IN=0,
     TOP,
     SIDE
-}AudioSelect;
+} AudioSelect;
 
-typedef enum
-{
+typedef enum {
     TONE2K,
     TONE1_5K,
-}ToneClass;
+} ToneClass;
 
-typedef struct	//32
-{
+typedef struct { //32
     volatile u8 CHAN;
     volatile u8 RS;
     volatile u8 TS;
     volatile u8 POWER;
     volatile u8 GBW;
     volatile u8 SCAN;
-    
+
     volatile double RX_FREQ;
     volatile double TX_FREQ;
     volatile char NN[8];        //one extra for ending '\0'
-    
+
 }
 CHAN_ARV, *CHAN_ARV_P;
 
-#define ARV_MEM_COUNT 4 
+#define ARV_MEM_COUNT 4
 enum {
     NOW=0,  //current channel parameters
     TMP,    //cache the channel parameters sought
@@ -209,78 +204,75 @@ enum {
     CHANB,  //channel B parameters in dual watch mode
 };
 extern CHAN_ARV chan_arv[ARV_MEM_COUNT];
-enum
-{
+enum {
     MAIN_MODE = 0,
     BIG_MODE,
     DUAL_MODE
 };
-enum recv_mess
-{
+enum recv_mess {
     ASKALL=0,       //接收
     _ASKALL,        //发送
-    
+
     ASKCHAN,
     _ASKCHAN,
-    
+
     ASKA,
     _ASKA,
-    
+
     ASKB,
     _ASKB,
-    
+
     RELOAD,
     _RELOAD,
-    
+
     RELA,
     _RELA,
-    
+
     RELB,
     _RELB,
-    
+
     SETCHAN,
     _SETCHAN,
-    
+
     NORMAL,
     _SETZERO,
-    
+
     SETHOMEMODE,
     _SETHOMEMODE,
 ////////////////////////////////////
     SETSTEP,
     _SETSTEP,
-    
+
     SETSQL,
     _SETSQL,
-    
+
     SETAUD,
     _SETAUD,
-    
+
     SETENC,
     _SETENC,
-    
+
     SETTOT,
     _SETTOT,
-    
+
     SETOP,
     _SETOP,
-    
+
     SETVOLU,
     _SETVOLU,//音量大小
-    
+
     SETTONE,
     _SETTONE,
-    
+
     SETFM,
     _SETFM,
 
     SETDUALPOS,
     _SETDUALPOS,
 };
-// 
+//
 //PGM菜单定义
-typedef enum
-{
+typedef enum {
     normal_set_mic_gain,
     normal_set_sql,
     normal_set_step,
@@ -288,7 +280,7 @@ typedef enum
     normal_set_lamptime,
     normal_set_powerout,
     normal_set_ptttone,
-}normal_set; 
+} normal_set;
 
 //数据长度
 #define Length_CHAN             3   //信道
@@ -309,14 +301,14 @@ typedef enum
 #define Length_VOLUME           1   //音量
 #define Length_STEP             1   //步进
 #define Length_SQL              1   //静噪
-#define Length_AUDIO            1	//音频选通
-#define Length_MIC              1	//mic灵敏度
-#define Length_ENCRYPTION       1	//发射加密
-#define Length_TOT              1	//发射限时
-#define Length_OUTPOWER         1	//六针头电压输出
+#define Length_AUDIO            1   //音频选通
+#define Length_MIC              1   //mic灵敏度
+#define Length_ENCRYPTION       1   //发射加密
+#define Length_TOT              1   //发射限时
+#define Length_OUTPOWER         1   //六针头电压输出
 #define Length_PRETONE          1   //发射前置提示音
 #define Length_ENDTONE          1   //发射结束提示音
-#define Length_FMFREQ           4	//收音机频率	
+#define Length_FMFREQ           4   //收音机频率   
 //KDU
 #define Length_WFM              1   //收音机开关
 #define Length_FMCHAN           1   //收音机频道
@@ -338,41 +330,41 @@ typedef enum
 //100-499 全局变量
 //100-199 设置
 //排列顺序
-#define	CHAN_RANK                           0
+#define CHAN_RANK                           0
 #define RX_RANK                             (CHAN_RANK          +Length_CHAN      ) //3
 #define TX_RANK                             (RX_RANK            +Length_RX        ) //11
-#define	RS_RANK                             (TX_RANK            +Length_TX        ) //19
-#define	TS_RANK                             (RS_RANK            +Length_RS        ) //22
-#define	POWER_RANK                          (TS_RANK            +Length_TS        ) //25
-#define	BW_RANK                             (POWER_RANK         +Length_POWER     ) //26
-#define	NN_RANK                             (BW_RANK            +Length_BW        ) //27
-#define	SCAN_RANK                           (NN_RANK            +Length_NN        ) //35
+#define RS_RANK                             (TX_RANK            +Length_TX        ) //19
+#define TS_RANK                             (RS_RANK            +Length_RS        ) //22
+#define POWER_RANK                          (TS_RANK            +Length_TS        ) //25
+#define BW_RANK                             (POWER_RANK         +Length_POWER     ) //26
+#define NN_RANK                             (BW_RANK            +Length_BW        ) //27
+#define SCAN_RANK                           (NN_RANK            +Length_NN        ) //35
 
-#define	CF_RANK                             (SCAN_RANK          +Length_SCAN      ) //36
+#define CF_RANK                             (SCAN_RANK          +Length_SCAN      ) //36
 #define VU_RANK                             (CF_RANK            +Length_CF        ) //37
 #define CHANA_RANK                          (VU_RANK            +Length_VU        ) //38
 #define CHANB_RANK                          (CHANA_RANK         +Length_CHANA     ) //41
 
-#define	VOLUME_RANK                         (CHANB_RANK         +Length_CHANB     ) //44
-#define	STEP_RANK                           (VOLUME_RANK        +Length_VOLUME    ) //45
-#define	SQL_RANK                            (STEP_RANK          +Length_STEP      ) //46
-#define	AUDIO_RANK                          (SQL_RANK           +Length_SQL       ) //47
-#define	MIC_RANK                            (AUDIO_RANK         +Length_AUDIO     ) //48
+#define VOLUME_RANK                         (CHANB_RANK         +Length_CHANB     ) //44
+#define STEP_RANK                           (VOLUME_RANK        +Length_VOLUME    ) //45
+#define SQL_RANK                            (STEP_RANK          +Length_STEP      ) //46
+#define AUDIO_RANK                          (SQL_RANK           +Length_SQL       ) //47
+#define MIC_RANK                            (AUDIO_RANK         +Length_AUDIO     ) //48
 #define ENCRYPTION_RANK                     (MIC_RANK           +Length_MIC       ) //49
 #define TOT_RANK                            (ENCRYPTION_RANK    +Length_ENCRYPTION) //50
-#define	VDO_RANK                            (TOT_RANK           +Length_TOT       ) //51   
-#define	PRETONE_RANK                        (VDO_RANK           +Length_OUTPOWER  ) //52
-#define	ENDTONE_RANK                        (PRETONE_RANK       +Length_PRETONE   ) //53
-#define	FMFREQ_RANK                         (ENDTONE_RANK       +Length_ENDTONE   ) //54
+#define VDO_RANK                            (TOT_RANK           +Length_TOT       ) //51   
+#define PRETONE_RANK                        (VDO_RANK           +Length_OUTPOWER  ) //52
+#define ENDTONE_RANK                        (PRETONE_RANK       +Length_PRETONE   ) //53
+#define FMFREQ_RANK                         (ENDTONE_RANK       +Length_ENDTONE   ) //54
 
 //KDU用
-#define	WFM_RANK                            (FMFREQ_RANK        +Length_FMFREQ    ) //////58
+#define WFM_RANK                            (FMFREQ_RANK        +Length_FMFREQ    ) //////58
 #define FMCHAN_RANK                         (WFM_RANK           +Length_WFM       ) //59
 
 #define VOLTAGE_RANK                        (FMCHAN_RANK        +Length_FMCHAN    ) //60
 #define RSSI_RANK                           (VOLTAGE_RANK       +Length_VOLTAGE   ) //63
 #define KEY_SQ_RANK                         (RSSI_RANK          +Length_RSSI      ) //66
-#define	KEY_SQU_RANK                        (KEY_SQ_RANK        +Length_KEYSQ     ) //67
+#define KEY_SQU_RANK                        (KEY_SQ_RANK        +Length_KEYSQ     ) //67
 #define KEY_PTT_RANK                        (KEY_SQU_RANK       +Length_KEYSQU    ) //68
 
 #define HOMEMODE_RANK                       (KEY_PTT_RANK       +Length_KEYPTT    ) //69
@@ -380,39 +372,39 @@ typedef enum
 #define NOWSELCHAN_RANK                     (NOWRCVCHAN_RANK    +Length_NOWRCVCHAN) //73
 
 //记忆存储用
-#define	BACKLIGHTNESS_RANK                  (FMFREQ_RANK        +Length_FMFREQ    ) //////58
+#define BACKLIGHTNESS_RANK                  (FMFREQ_RANK        +Length_FMFREQ    ) //////58
 #define FLAG_BACKLIGHT_RANK                 (BACKLIGHTNESS_RANK +Length_BACKLIGHTNESS)  //61
 #define LAMPTIME_RANK                       (FLAG_BACKLIGHT_RANK+Length_FLAGBACKLIGHT)  //62
 #define SCREEN_CONTRAST_RANK                (LAMPTIME_RANK      +Length_LAMPTIME  )     //63
 
 //将数据全部发送和接收,一帧数据包含所有信息, 根据命令不同解读即可获取不同内容
-#define kdu_start_rank                      16 
-#define chan_rank                           kdu_start_rank + CHAN_RANK  
-#define rx_rank                             kdu_start_rank + RX_RANK    
-#define tx_rank                             kdu_start_rank + TX_RANK 
-#define rs_rank                             kdu_start_rank + RS_RANK 
-#define ts_rank                             kdu_start_rank + TS_RANK 
-#define pw_rank                             kdu_start_rank + POWER_RANK 
-#define bw_rank                             kdu_start_rank + BW_RANK 
-#define nn_rank                             kdu_start_rank + NN_RANK 
-#define scan_rank                           kdu_start_rank + SCAN_RANK  
+#define kdu_start_rank                      16
+#define chan_rank                           kdu_start_rank + CHAN_RANK
+#define rx_rank                             kdu_start_rank + RX_RANK
+#define tx_rank                             kdu_start_rank + TX_RANK
+#define rs_rank                             kdu_start_rank + RS_RANK
+#define ts_rank                             kdu_start_rank + TS_RANK
+#define pw_rank                             kdu_start_rank + POWER_RANK
+#define bw_rank                             kdu_start_rank + BW_RANK
+#define nn_rank                             kdu_start_rank + NN_RANK
+#define scan_rank                           kdu_start_rank + SCAN_RANK
 
-#define cf_rank                             kdu_start_rank + CF_RANK 
-#define vu_rank                             kdu_start_rank + VU_RANK 
-#define chana_rank                          kdu_start_rank + CHANA_RANK 
-#define chanb_rank                          kdu_start_rank + CHANB_RANK 
+#define cf_rank                             kdu_start_rank + CF_RANK
+#define vu_rank                             kdu_start_rank + VU_RANK
+#define chana_rank                          kdu_start_rank + CHANA_RANK
+#define chanb_rank                          kdu_start_rank + CHANB_RANK
 
-#define volume_rank                         kdu_start_rank + VOLUME_RANK 
-#define step_rank                           kdu_start_rank + STEP_RANK 
-#define sql_rank                            kdu_start_rank + SQL_RANK 
-#define aud_rank                            kdu_start_rank + AUDIO_RANK 
-#define mic_rank                            kdu_start_rank + MIC_RANK 
-#define enc_rank                            kdu_start_rank + ENCRYPTION_RANK 
-#define tot_rank                            kdu_start_rank + TOT_RANK 
-#define op_rank                             kdu_start_rank + VDO_RANK 
-#define pre_rank                            kdu_start_rank + PRETONE_RANK 
-#define end_rank                            kdu_start_rank + ENDTONE_RANK 
-#define ffreq_rank                          kdu_start_rank + FMFREQ_RANK    //FM_Freq	收音机频率
+#define volume_rank                         kdu_start_rank + VOLUME_RANK
+#define step_rank                           kdu_start_rank + STEP_RANK
+#define sql_rank                            kdu_start_rank + SQL_RANK
+#define aud_rank                            kdu_start_rank + AUDIO_RANK
+#define mic_rank                            kdu_start_rank + MIC_RANK
+#define enc_rank                            kdu_start_rank + ENCRYPTION_RANK
+#define tot_rank                            kdu_start_rank + TOT_RANK
+#define op_rank                             kdu_start_rank + VDO_RANK
+#define pre_rank                            kdu_start_rank + PRETONE_RANK
+#define end_rank                            kdu_start_rank + ENDTONE_RANK
+#define ffreq_rank                          kdu_start_rank + FMFREQ_RANK    //FM_Freq   收音机频率
 
 #define wfm_rank                            kdu_start_rank + WFM_RANK       //收音机开关标志
 #define fmchan_rank                         kdu_start_rank + FMCHAN_RANK    //fm频率是否是频道
@@ -426,11 +418,11 @@ typedef enum
 #define nowrcvchan_rank                     kdu_start_rank + NOWRCVCHAN_RANK
 #define nowselchan_rank                     kdu_start_rank + NOWSELCHAN_RANK
 
-#define BUF_SIZE                            nowselchan_rank + Length_NOWSELCHAN+1 
+#define BUF_SIZE                            nowselchan_rank + Length_NOWSELCHAN+1
 //////////////////////////////////////////////////////////////////////////////////////////
 //Enable the eeprom
 #if (THISCHIP != ESP32S2)
-    #define  EN_EEROOM
+#define  EN_EEROOM
 #endif
 
 #ifdef EN_EEROOM                            //AT保存数据地址
@@ -453,13 +445,13 @@ typedef enum
 #define PRETONE_ADDR                        SETADDR+PRETONE_RANK        //PTT前置提示音
 #define ENDTONE_ADDR                        SETADDR+ENDTONE_RANK        //PTT结束提示音
 #define OVER_VOLUME_ADDR                    SETADDR+VOLUME_RANK         //全局音量 0-7
-//#define FLAG_WFMMOD_ADDR                  SETADDR+WFM_RANK            //收音机   OFF0  ON1 
+//#define FLAG_WFMMOD_ADDR                  SETADDR+WFM_RANK            //收音机   OFF0  ON1
 #define FM_RADIO_FREQ_ADDR                  SETADDR+FMFREQ_RANK         //收音机频 4位
 #define LAMPTIME_ADDR                       SETADDR+LAMPTIME_RANK       //背光时间 0/1 常亮/10秒
 #define BACKLIGHTNESS_ADDR                  SETADDR+BACKLIGHTNESS_RANK  //背光强度 0-100
 #define FLAG_BACKLIGHT_ADDR                 SETADDR+FLAG_BACKLIGHT_RANK //背光开关
 #define ScreenContrast_ADDR                 SETADDR+SCREEN_CONTRAST_RANK//对比度
-#define	DATA_ADDR                           896
+#define DATA_ADDR                           896
 //#define MEM_LENGTH                          64
 #define V_CHANNEL_ADDR                      DATA_ADDR+CHAN_RANK         //V信道info起始地址
 #define V_RX_ADDR                           DATA_ADDR+RX_RANK           //V收频
@@ -485,7 +477,7 @@ typedef enum {
     RESETADDR,
     FLAG_CF_SWITCH_ADDR,
     FLAG_VU_SWITCH_ADDR,
-}FLAG;
+} FLAG;
 #endif
 
 #endif

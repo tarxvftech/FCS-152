@@ -4,7 +4,7 @@
 #ifndef __BSP_TIMER_H__
 #define __BSP_TIMER_H__
 
-#include "FCS152_KDU.h" 
+#include "FCS152_KDU.h"
 
 /*  The timer ISR has an execution time of 5.5 micro-seconds(us).
     Therefore, a timer period less than 5.5 us will cause trigger the interrupt watchdog.
@@ -27,11 +27,11 @@
 
 
 //TIMER0
-void    bsp_Timer0_Init(void); 
-void    timer0_cb(void *arg); 
+void    bsp_Timer0_Init(void);
+void    timer0_cb(void* arg);
 //TIMER1
-void 	bsp_Timer1_Init(void); 
-void 	timer1_cb(void); 
+void    bsp_Timer1_Init(void);
+void    timer1_cb(void);
 
 void    bsp_Timer2_Init(void);
 

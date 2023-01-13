@@ -10,26 +10,24 @@
 #include "main.h"
 #include <HTTPUpdate.h>
 
-const char *host = "FCS152";
+const char* host = "FCS152";
 WebServer server(80);
-const char *serverIndex = "<form method='POST' action='/update' enctype='multipart/form-data'><input type='file' name='update'><input type='submit' value='Update'></form>";
+const char* serverIndex = "<form method='POST' action='/update' enctype='multipart/form-data'><input type='file' name='update'><input type='submit' value='Update'></form>";
 String upUrl = "http://fcs.fun/filedownload/78941";
 
 // true: 自动配置连接成功
 // false: 自动配置连接失败
 bool autoConfig()
 {
-    const char *defaultWifiConfig = "FCS152WiFi";
+    const char* defaultWifiConfig = "FCS152WiFi";
     LCD_ShowString0608(0, 0, "Connecting           ", 1, 128);
     WiFi.disconnect(true, true);
     // WiFi.begin(ssid, password);
     WiFi.begin(defaultWifiConfig, defaultWifiConfig);
 
-    for (size_t i = 0; i < 25; i++)
-    {
+    for(size_t i = 0; i < 25; i++) {
         int wifiStatus = WiFi.status();
-        if (wifiStatus == WL_CONNECTED)
-        {
+        if(wifiStatus == WL_CONNECTED) {
             D_printf("Auto Connecting Successfully!!!!!!!!");
             return true;
         }
@@ -47,30 +45,28 @@ int ConfigSmartWiFi()
 {
     Serial.println("Start SmartWIFI Config:");
     WiFi.beginSmartConfig();
-    while (1)
-    {
+    while(1) {
         Serial.print(".");
         delay(100);
-        if (WiFi.smartConfigDone())
-        {
+        if(WiFi.smartConfigDone()) {
             Serial.println("SmartConfig Successfully!!!!!!!!!!\n");
             Serial.printf("SSID:%s\n", WiFi.SSID().c_str());
             Serial.printf("PSW:%s\n", WiFi.psk().c_str());
             return ENT2LAST;
         }
-        switch (Encoder_Switch_Scan(0))
-        {
-            // case key_double:
-            //     return BACK2MAIN;
-            //     break;
+        switch(Encoder_Switch_Scan(0)) {
+        // case key_double:
+        //     return BACK2MAIN;
+        //     break;
 
         case key_long:
             D_printf("<<<<<<SHUTING>>>>>>\n");
             SHUT();
             break;
         }
-        if (Matrix_KEY_Scan(0) == MATRIX_RESULT_CLR)
+        if(Matrix_KEY_Scan(0) == MATRIX_RESULT_CLR) {
             return BACK2MAIN;
+        }
     }
     return CLR2LAST; //不会到达
 }
@@ -94,57 +90,45 @@ void LCD_ShowAddressIP(void)
 bool ConfigUpdateProcess()
 {
 #if 01
-    if (WiFi.waitForConnectResult() == WL_CONNECTED)
-    {
+    if(WiFi.waitForConnectResult() == WL_CONNECTED) {
         Serial.println("*********Start Server*******\n");
         MDNS.begin(host);
-        server.on("/", HTTP_GET, []()
-                  {
-                      server.sendHeader("Connection", "close");
-                      server.send(200, "text/html", serverIndex); });
+        server.on("/", HTTP_GET, []() {
+            server.sendHeader("Connection", "close");
+            server.send(200, "text/html", serverIndex);
+        });
         server.on(
-            "/update", HTTP_POST, []()
-            {
-                server.sendHeader("Connection", "close");
-                server.send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
-                delay_ms(1000);
-                ResetSystem(); },
-            []()
-            {
-                HTTPUpload &upload = server.upload();
-                if (upload.status == UPLOAD_FILE_START)
-                {
-                    Serial.setDebugOutput(true);
-                    Serial.printf("Update: %s\n", upload.filename.c_str());
-                    if (!Update.begin())
-                    { // start with max available size
-                        Update.printError(Serial);
-                    }
+        "/update", HTTP_POST, []() {
+            server.sendHeader("Connection", "close");
+            server.send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
+            delay_ms(1000);
+            ResetSystem();
+        },
+        []() {
+            HTTPUpload &upload = server.upload();
+            if(upload.status == UPLOAD_FILE_START) {
+                Serial.setDebugOutput(true);
+                Serial.printf("Update: %s\n", upload.filename.c_str());
+                if(!Update.begin()) {
+                    // start with max available size
+                    Update.printError(Serial);
                 }
-                else if (upload.status == UPLOAD_FILE_WRITE)
-                {
-                    if (Update.write(upload.buf, upload.currentSize) != upload.currentSize)
-                    {
-                        Update.printError(Serial);
-                    }
+            } else if(upload.status == UPLOAD_FILE_WRITE) {
+                if(Update.write(upload.buf, upload.currentSize) != upload.currentSize) {
+                    Update.printError(Serial);
                 }
-                else if (upload.status == UPLOAD_FILE_END)
-                {
-                    if (Update.end(true))
-                    { // true to set the size to the current progress
-                        Serial.printf("Update Success: %u\nRebooting...\n", upload.totalSize);
-                    }
-                    else
-                    {
-                        Update.printError(Serial);
-                    }
-                    Serial.setDebugOutput(false);
+            } else if(upload.status == UPLOAD_FILE_END) {
+                if(Update.end(true)) {
+                    // true to set the size to the current progress
+                    Serial.printf("Update Success: %u\nRebooting...\n", upload.totalSize);
+                } else {
+                    Update.printError(Serial);
                 }
-                else
-                {
-                    Serial.printf("Update Failed Unexpectedly (likely broken connection): status=%d\n", upload.status);
-                }
-            });
+                Serial.setDebugOutput(false);
+            } else {
+                Serial.printf("Update Failed Unexpectedly (likely broken connection): status=%d\n", upload.status);
+            }
+        });
         server.begin();
         MDNS.addService("http", "tcp", 80);
 
@@ -156,8 +140,7 @@ bool ConfigUpdateProcess()
     Serial.println("start update");
     WiFiClient UpdateClient;
     t_httpUpdate_return ret = httpUpdate.update(UpdateClient, upUrl);
-    switch (ret)
-    {
+    switch(ret) {
     case HTTP_UPDATE_FAILED: //当升级失败
         Serial.println("[update] Update failed.");
         break;
@@ -180,17 +163,14 @@ bool ConfigUpdateProcess()
 
 void StartServer(void)
 {
-    if (!ConfigUpdateProcess())
-    {
+    if(!ConfigUpdateProcess()) {
         LCD_Clear(GLOBAL32);
         LCD_ShowString0608(0, 2, "WIFI DISCONNECTED    ", 1, 128);
         delay_ms(1500);
         return;
     }
-    while (1)
-    {
-        switch (Encoder_Switch_Scan(0))
-        {
+    while(1) {
+        switch(Encoder_Switch_Scan(0)) {
         case key_double:
             return;
 
@@ -200,24 +180,20 @@ void StartServer(void)
             break;
         }
 
-        if (Matrix_KEY_Scan(0) == MATRIX_RESULT_CLR)
-        {
+        if(Matrix_KEY_Scan(0) == MATRIX_RESULT_CLR) {
             Serial.printf("Clean Config\n");
             LCD_ShowString0608(0, 0, "Need to reconfig     ", 1, 128);
             LCD_ShowString0608(0, 1, "                     ", 1, 128);
-            if (WiFi.smartConfigDone())
-                WiFi.stopSmartConfig(); //     Serial.printf("stopSmart:%d\n", WiFi.stopSmartConfig());
+            if(WiFi.smartConfigDone()) {
+                WiFi.stopSmartConfig();    //     Serial.printf("stopSmart:%d\n", WiFi.stopSmartConfig());
+            }
             // WiFi.disconnect(false, false);              // Serial.printf("WIFI DISCON:%d\n", WiFi.disconnect(false, false));
             WiFi.disconnect(false, true);
-            if (ConfigSmartWiFi() == BACK2MAIN) //取消重新智能配置并返回菜单
-            {
+            if(ConfigSmartWiFi() == BACK2MAIN) { //取消重新智能配置并返回菜单
                 WiFi.stopSmartConfig();
                 return;
-            }
-            else //重新智能配置成功
-            {
-                if (!ConfigUpdateProcess())
-                {
+            } else { //重新智能配置成功
+                if(!ConfigUpdateProcess()) {
                     LCD_Clear(GLOBAL32);
                     LCD_ShowString0608(0, 0, "WIFI DISCONNECTED    ", 1, 128);
                     delay_ms(1500);
@@ -240,13 +216,13 @@ void ConfigureToUpdate(void)
 #ifdef UPBOOT
     LCD_ShowString0608(0, 3, VERSION_UPBOOT, 1, 128);
 #endif
-    if (!autoConfig())
-    {
+    if(!autoConfig()) {
         Serial.println("Need to reconnected!");
         LCD_ShowString0608(0, 0, "Need to reconfig     ", 1, 128);
         WiFi.mode(WIFI_AP_STA);
-        if (ConfigSmartWiFi() == BACK2MAIN)
+        if(ConfigSmartWiFi() == BACK2MAIN) {
             return;
+        }
     }
     StartServer();
     WiFi.disconnect(true, false);

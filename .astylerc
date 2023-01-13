@@ -1,0 +1,11 @@
+--style=1tbs
+--indent=spaces=4
+--indent-classes
+--unpad-paren
+--align-pointer=type
+--align-reference=name
+--break-one-line-headers
+--add-braces
+--convert-tabs
+--remove-comment-prefix
+
