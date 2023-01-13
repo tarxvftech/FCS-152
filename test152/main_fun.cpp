@@ -41,7 +41,7 @@ u8 MIC_LEVEL[3] = {64, 165, 230};				//	MIC_LEVEL[8] = {0, 32, 64,  96, 160, 170
 	
 int FM_FREQ = 885;	
 int LAMP_TIME = 10000;//默认10s
-//
+
 
 
 void VFO_Load_Data(void){
@@ -66,7 +66,7 @@ void VFO_Load_Data(void){
     load_ChannelParameter(chan_arv[CHANA].CHAN, &chan_arv[CHANA]);
     load_ChannelParameter(chan_arv[CHANB].CHAN, &chan_arv[CHANB]);
 
-    //
+    
     STEP = load_Step();       //步进读入
     SQL = load_Sql();         //静噪读入
     AUD = load_AudioSelect(); //音频输出方式加载
@@ -90,7 +90,7 @@ void VFO_Load_Data(void){
     WFM = OFF; //收音机
 
     VDO_SWITCH(VDO); //六针头电源输出
-                     //	printf("STEP:%d, SQL:%d, AUD:%d, MIC:%d, ENC:%d, TOT:%d, BL:%d, VDO:%d, VOLUME:%d, PRE_TONE:%d, END_TONE:%d, WFM:%d\n", STEP, SQL, AUD, MIC, ENC, TOT, BL, VDO, VOLUME, PRE_TONE, END_TONE, WFM);
+    //printf("STEP:%d, SQL:%d, AUD:%d, MIC:%d, ENC:%d, TOT:%d, BL:%d, VDO:%d, VOLUME:%d, PRE_TONE:%d, END_TONE:%d, WFM:%d\n", STEP, SQL, AUD, MIC, ENC, TOT, BL, VDO, VOLUME, PRE_TONE, END_TONE, WFM);
 
     delay_ms(250);
     Set_A20(chan_arv[NOW], SQL);
@@ -114,8 +114,7 @@ void VFO_Clear() {
     LCD_ShowVolume(VOLUME);
     //模式3:双守模式
     //DualMode_Clear
-    if (Home_Mode == DUAL_MODE)
-    {
+    if (Home_Mode == DUAL_MODE) {
         LCD_ShowString0608(0, 1, "A:                    ", 1, 128);
         LCD_ShowString0608(0, 2, "B:                    ", 1, 128);
         LCD_ShowString0608(0, 3, "                      ", 1, 128);
@@ -134,12 +133,13 @@ void VFO_Refresh() {
     // D_printf("%s\n", __FUNCTION__);
     switch (Home_Mode) {
     case MAIN_MODE:
-        if (chan_arv[NOW].CHAN == 100)
+        if (chan_arv[NOW].CHAN == 100){
             LCD_ShowString0608(66, 1, "UHF ", 1, 90);
-        else if (chan_arv[NOW].CHAN == 0)
+        } else if (chan_arv[NOW].CHAN == 0){
             LCD_ShowString0608(66, 1, "VHF ", 1, 90);
-        else
+        } else{
             LCD_ShowString0608(66, 1, "CHAN", 1, 90);
+        }
 
         //信道号显示
         LCD_ShowChan(83, 2, chan_arv[NOW].CHAN, 1);
