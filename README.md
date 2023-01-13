@@ -63,6 +63,18 @@ There was an old hardware revision with a non-ESP32 processor. Be
 careful that you do not try to flash firmware for this revision to the
 new hardware and vice-versa. The new hardware is sometimes referred to as `-N` or as `152+`. The old hardware is often referred to in various flavors of version 1.0 or `152(A)`.
 
+
+#### Buttons, inputs:
+
+The front keyboard matrix is scanned by `Matrix_KEY_Scan()`.
+The top encoder button press (and only the press) is handled by
+`Encoder_Switch_Scan()`. The side buttons, `VOL_ADD`, `VOL_SUB`, `PTT`,
+and `SQUELCH` are manually read.
+
+The encoder is read by an interrupt. It works, but could be improved -
+but to improve it will require the menu system and input handling be
+basically completely replaced. That'll take a while.
+
 ## Basic instructions and gotchas
 
 Power on the FCS-152 by pressing in and holding the top button. Same to
