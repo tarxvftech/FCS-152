@@ -723,7 +723,7 @@ void SetNowChanSql0(u8 on) {
     }
 }
 
-void SQUELCH_Contol(void) { //按下和松开静噪处理
+void SQUELCH_Control(void) { //按下和松开静噪处理
     if (!PTT_READ) {
         return;
     }
@@ -818,13 +818,13 @@ void SendALL(void) { //发送全部数据
     sprintf(send_buf + chanb_rank, "%03d", chan_arv[CHANB].CHAN);
 
     send_buf[volume_rank] = kdu_send_data(VOLUME);
-    send_buf[step_rank] = kdu_send_data(STEP);
-    send_buf[sql_rank] = kdu_send_data(SQL);
-    send_buf[aud_rank] = kdu_send_data(AUD);
-    send_buf[mic_rank] = kdu_send_data(MIC);
-    send_buf[enc_rank] = kdu_send_data(ENC);
-    send_buf[tot_rank] = kdu_send_data(TOT);
-    send_buf[op_rank] = kdu_send_data(VDO);
+    send_buf[step_rank]   = kdu_send_data(STEP);
+    send_buf[sql_rank]    = kdu_send_data(SQL);
+    send_buf[aud_rank]    = kdu_send_data(AUD);
+    send_buf[mic_rank]    = kdu_send_data(MIC);
+    send_buf[enc_rank]    = kdu_send_data(ENC);
+    send_buf[tot_rank]    = kdu_send_data(TOT);
+    send_buf[op_rank]     = kdu_send_data(VDO);
 
     send_buf[pre_rank] = kdu_send_data(PRE_TONE);
     send_buf[end_rank] = kdu_send_data(END_TONE);
@@ -935,7 +935,7 @@ int KDU_Processor(void) {       //KDU插入后处理
 
 
             PTT_Control();
-            SQUELCH_Contol();
+            SQUELCH_Control();
             SQ_Read_Control();
             if (bsp_CheckTimer(TMR_FM_CTRL) && WFM) {
                 RDA5807_Init(ON);
@@ -1211,10 +1211,7 @@ int KDU_Processor(void) {       //KDU插入后处理
                     send_buf[end_rank] = kdu_send_data(END_TONE);
 
                     UART1_Send_Message(send_buf, BUF_SIZE);
-                }
-
-                //
-                else if (strstr((const char *)rx1_buf, prefix_buf[_SETFM])) {
+                } else if (strstr((const char *)rx1_buf, prefix_buf[_SETFM])) {
                     int fmfreq = (rx1_buf[ffreq_rank + 0] - '0') * 1000 + (rx1_buf[ffreq_rank + 1] - '0') * 100 + (rx1_buf[ffreq_rank + 2] - '0') * 10 + (rx1_buf[ffreq_rank + 3] - '0');
                     if (WFM != kdu_recv_data(rx1_buf[wfm_rank])) { //进行FM的开关
                         WFM = kdu_recv_data(rx1_buf[wfm_rank]);
@@ -1231,7 +1228,7 @@ int KDU_Processor(void) {       //KDU插入后处理
                             FM_CHAN = 0;
                         }
                     }
-                    //                                  SendALL();
+                    //SendALL();
                     FM_FREQ = fmfreq;                       //轮询时需要
                     strcpy(send_buf, prefix_buf[SETFM]);
                     sprintf(send_buf + ffreq_rank, "%04d", fmfreq);
@@ -1320,7 +1317,7 @@ void MY_GLOBAL_FUN(void) { //全局功能函数
     FeedDog(); //喂狗
     PTT_Control();
 
-    SQUELCH_Contol();
+    SQUELCH_Control();
     SQ_Read_Control();  //接收信号处理，A002设置应答，双守切换处理，KDU检测处理
 
     VOL_Reflash();
@@ -3261,7 +3258,7 @@ int Lock_Screen_KeyBoard() {
 
         FeedDog(); //喂狗
         PTT_Control();
-        SQUELCH_Contol();
+        SQUELCH_Control();
         SQ_Read_Control();
         A002_CALLBACK(); //A002设置应答
         if (bsp_CheckTimer(TMR_FM_CTRL) && WFM) {

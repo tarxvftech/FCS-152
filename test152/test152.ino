@@ -5,7 +5,7 @@ void VFO_Refresh_Task(void * parameter){
     // A002_Init();
     // DAC_Init();
 
-     delay_ms(1000);
+    delay_ms(1000);
     // Serial.printf("Create page refresh task\n");
     Serial.printf("创建写入任务成功\n");
     unsigned char a002_send_buff[20]="AT+DMOSETVOLUME=5\r\n";
@@ -48,9 +48,9 @@ void setup(){
     PWM_Init();
     LCD_ShowPICALL(pic_HARRIS);
     Init_Storage();
-    enterSecondSystem(); //menuUpdate();    //
+    enterSecondSystem(); //menuUpdate();
 
-    EN_GPIO_Init();  //POWER_EN_8_SET;//
+    EN_GPIO_Init();  //POWER_EN_8_SET;
 
     SineWave_Data();
     VFO_Load_Data();
@@ -64,4 +64,5 @@ void loop(){
     Encoder_process(Encoder_Switch_Scan(0));
     Argument_process(Event_Matrix(Matrix_KEY_Scan(0)));	//matrix button event
     KDU_Processor();
+    input_scan_task();
 }
