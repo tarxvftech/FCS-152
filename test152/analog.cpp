@@ -75,25 +75,21 @@ int  Get_Battery_Vol(void)
     return voltage;
 }
 
-//按下PTT的发射和结束提示音
+//PTT press: start and end transmission beeps
 void Start_Tone(unsigned char STOP_START)
 {
     SPK_SWITCH(AUD, ON);//==>响 发射提示
 
-    if(VOLUME>0)
-    {
+    if(VOLUME>0) {
         M62364_SetSingleChannel(A20_LINE_CHAN, 5); 
         M62364_SetSingleChannel(8, 50);
-    }
-    else
-    {
+    } else {
         M62364_SetSingleChannel(A20_LINE_CHAN, 0);
         M62364_SetSingleChannel(8, 0);
     }
     M62364_SetSingleChannel(TONE_OUT_CHAN, 100);    //输出到A20发射
    
-
-delay_ms(200);//必需的延时,否则缺失第一声
+    delay_ms(200);//必需的延时,否则缺失第一声
 
     pinMode(18, OUTPUT);
     ESP_ERROR_CHECK( dac_output_enable(DAC_CHAN) );
@@ -103,13 +99,11 @@ delay_ms(200);//必需的延时,否则缺失第一声
         RingTone(TONE2K, ON);
         delay_ms(100);//delay_ms(80);
         RingTone(TONE2K, OFF);
-delay_ms(110);
+        delay_ms(110);
         RingTone(TONE2K, ON);
         delay_ms(160);
         RingTone(TONE2K, OFF);
-    }
-    else
-    {
+    } else {
         //结束提示音
         RingTone(TONE1_5K, ON);
         delay_ms(100);
@@ -127,24 +121,23 @@ delay_ms(110);
 }
 
 //长按静噪按键进入常静噪模式的提示音
-void Start_ToneSql0(void)
-{
+void Start_ToneSql0(void){
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
     M62364_SetSingleChannel(A20_LINE_CHAN, 5);                  //修改增益输出"Di"
     M62364_SetSingleChannel(8, 50);                             //toneout输出打开
 //////////////////////////////////////////////////////////////////
-//配置DAC
-    pinMode(18, OUTPUT);                            //设置引脚为输出模式，以便于启动DAC
+// configure DAC
+    pinMode(18, OUTPUT);                            //Set the pin to output mode in order to start the DAC
     ESP_ERROR_CHECK( dac_output_enable(DAC_CHAN) );
     //////////////////////////////////////////////////
     RingTone(TONE1_5K, ON);
     delay_ms(60);
     RingTone(TONE1_5K, OFF);
 //////////////////////////////////////////////////////
-//结束DAC, 重新配置A002
+//end DAC, reconfigure A002
     dac_output_voltage(DAC_CHAN, 0);
     ESP_ERROR_CHECK( dac_output_disable(DAC_CHAN) );
-    pinMode(18, INPUT_PULLUP);                      //拉高电平,恢复串口2RX通讯
+    pinMode(18, INPUT_PULLUP);                      //Pull high level to restore serial port 2 RX communication
 //////////////////////////////////////////////////////////////////
     M62364_SetSingleChannel(8, 0);                              //toneout输出关闭
     M62364_SetSingleChannel(A20_LINE_CHAN, A20_LEVEL[VOLUME]);  //恢复当前增益大小输出声音

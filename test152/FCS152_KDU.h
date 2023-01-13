@@ -111,7 +111,7 @@
 #else
     #define  STR_152         "FCS PRC152-N"
     #define  STR_KDU         "FCS KDU-N "
-    #define  VERSION_152     "Rev 2.0.000" 
+    #define  VERSION_152     "Rev 2.0.000 XVF" 
     #define  VERSION_KDU     "Rev 2.0.000"
 #endif
 
