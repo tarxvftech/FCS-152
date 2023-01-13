@@ -125,6 +125,18 @@ since you have to hold the power button down the entire time.
 We don't yet know the optimal settings for the project but the radio
 still appears to run, so that's nice.
 
+## Problems with dreams
+
+At least right now, it doesn't look like the ESP32 has any way to sample
+the baseband. It also doesn't appear able to drive the speakers/headphones
+or sample the microphone directly. There is definitely some kind of
+way that it can send tones through the transmission, but that's not
+characterized yet.
+
+In short, it's probably stuck as what it is for now. Maybe there can be
+some improvements to allow it to do other things with a hardware revision.
+
+
 ## Dreams
 
 Radios - it's easy to forget this has two radios. You can do short-range
@@ -143,6 +155,9 @@ like and you can finally have a some low-VHF or other non 2m/70cm boards.
 For that matter you can put a 2.4GHz antenna on the antenna port and
 find a way to extend the main coax down to the ESP32 and disable the RF
 board entirely, or put a 2.4ghz amplifier in place.
+* https://github.com/Jeija/esp32free80211
+* https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/esp-wifi-mesh.html
+* https://github.com/espressif/esp-idf/blob/master/docs/en/api-guides/wifi.rst#wi-fi-80211-packet-send
 
 If the baseband is unfiltered and the ESP32 samples it directly, we
 might be able to bring M17 to the radio natively without hardware

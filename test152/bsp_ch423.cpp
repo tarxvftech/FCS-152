@@ -90,24 +90,3 @@ void ClrOCChannel(unsigned char OCChannel) {
         CH423_WriteByte(CH423_OC_L_CMD | SaveCurrentOCL);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
