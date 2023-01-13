@@ -5,50 +5,56 @@ volatile u8 KDU_INSERT = OFF;   		//KDU连接标志 OFF:断开  ON连接
 
 extern int TIMES; 						//记录编码器操作
 ///////////////////////////////用作限制,条件许可内代码允许执行一次
-volatile u8 
-	FLAG_PTT_ONCE = 0, 					//按下/松开	PTT 时的设置
-	FLAG_SQ_ONCE = 0, 					//接收/消失 信号时的设置
-	SQUELCH_ONCE=0,						//进入/退出 长静噪的设置,执行一次
-	
-    SQL_CTL = OFF,                      //启动静噪长按时间计数
-    SCAN_CTL = OFF;                     //启动扫描恢复时间计数
+volatile u8 FLAG_PTT_ONCE = 0; 			//按下/松开	PTT 时的设置
+volatile u8 FLAG_SQ_ONCE  = 0; 			//接收/消失 信号时的设置
+volatile u8 SQUELCH_ONCE  = 0;			//进入/退出 长静噪的设置,执行一次
+volatile u8 SQL_CTL  = OFF;                     //启动静噪长按时间计数
+volatile u8 SCAN_CTL = OFF;                     //启动扫描恢复时间计数
 //用作计数,达到一定次数/时间可执行代码
-u16 scan_cal = 0,						//用作计算 扫描模式下信号消失			的后的时间
-	sql_cal  = 0;						//用作计算 按下静噪按键					的时间
+u16 scan_cal = 0;				//用作计算 扫描模式下信号消失			的后的时间
+u16 sql_cal  = 0;				//用作计算 按下静噪按键					的时间
 	
 //模式标志位
-volatile char
-	Home_Mode = 0,						//主页显示模式	//0:常规, 1:大字 2:双守
-	Flag_Main_Page = 1,					//主页显示模式
-    SQL_MODE = OFF;       				//长静噪模式
+volatile char Home_Mode = 0;			//主页显示模式	//0:常规, 1:大字 2:双守
+volatile char Flag_Main_Page = 1;		//主页显示模式
+volatile char SQL_MODE = OFF;       		//长静噪模式
 
 double 	STEP_LEVEL[] = {0.0050, 0.0100, 0.0125}; 	//步进等级
 
-u8	RSSI = 0, SC=3,//SCERRN CONTRAST  CHAN = 0,
-	STEP = 2, SQL = 4,  AUD = 0, MIC = 4,  ENC = 0, TOT = 0, BL = 40, VDO = 0, //VDO:输出电源
-	VOLUME = 4,	PRE_TONE=0, END_TONE=0, 
-
-	A20_LEVEL[8] = {0, 20, 40,  60,  80,  100, 150, 255},
-	WFM_LEVEL[8] = {0,  5, 15,  30,  50,   75, 100, 200},	//{0, 31, 62, 93, 125, 155, 178, 254},//
-	MIC_LEVEL[3] = {64, 165, 230};							//	MIC_LEVEL[8] = {0, 32, 64,  96, 160, 170, 195, 230};//{0, 32, 64,  96, 160, 170, 195, 230}
+u8 RSSI = 0; 
+u8 SC=3;//SCERRN CONTRAST  CHAN = 0,
+u8 STEP = 2; 
+u8 SQL = 4;  
+u8 AUD = 0; 
+u8 MIC = 4;  
+u8 ENC = 0; 
+u8 TOT = 0; 
+u8 BL = 40; 
+u8 VDO = 0; //VDO:输出电源
+u8 VOLUME = 4;	
+u8 PRE_TONE=0; 
+u8 END_TONE=0; 
+u8 A20_LEVEL[8] = {0, 20, 40,  60,  80,  100, 150, 255};
+u8 WFM_LEVEL[8] = {0,  5, 15,  30,  50,   75, 100, 200};	//{0, 31, 62, 93, 125, 155, 178, 254},//
+u8 MIC_LEVEL[3] = {64, 165, 230};				//	MIC_LEVEL[8] = {0, 32, 64,  96, 160, 170, 195, 230};//{0, 32, 64,  96, 160, 170, 195, 230}
 	
 int FM_FREQ = 885;	
 int LAMP_TIME = 10000;//默认10s
 //
 
 
-void VFO_Load_Data(void)
-{
+void VFO_Load_Data(void){
     //重新载入数据
-    if (get_Flag(FLAG_CF_SWITCH_ADDR)) //频率模式
-    {
-        if (get_Flag(FLAG_VU_SWITCH_ADDR))
+    if (get_Flag(FLAG_CF_SWITCH_ADDR)) {
+        //频率模式
+        if (get_Flag(FLAG_VU_SWITCH_ADDR)){
             chan_arv[NOW].CHAN = 100;
-        else
+        } else {
             chan_arv[NOW].CHAN = 0;
-    }
-    else
+        }
+    } else {
         chan_arv[NOW].CHAN = load_CurrentChannel();
+    }
 
     load_ChannelParameter(chan_arv[NOW].CHAN, &chan_arv[NOW]);
     chan_arv[TMP] = chan_arv[NOW];
@@ -63,10 +69,11 @@ void VFO_Load_Data(void)
     STEP = load_Step();       //步进读入
     SQL = load_Sql();         //静噪读入
     AUD = load_AudioSelect(); //音频输出方式加载
-    if (AUD)
+    if (AUD){
         MIC = load_MicLevel(); //mic_level读入
-    else
+    } else {
         MIC = 1;
+    }
     ENC = load_ScramLevel();    //加密等级读入
     TOT = load_Tot();           //超时等级读入
     BL = load_Backlightness();  //背光等级读入
@@ -94,8 +101,7 @@ void VFO_Load_Data(void)
 }
 
 //主界面初始化
-void VFO_Clear()
-{
+void VFO_Clear() {
     D_printf("***************Main Interface*************\n");
     LCD_Clear(GLOBAL32);
     Flag_Main_Page = 1;
@@ -119,16 +125,13 @@ void VFO_Clear()
 //
 //主页界面刷新
 char BIG_MODE_buf[12] = {0};
-char 
-    sele_pos = 0,      //双守双待模式下,选择的信道
-    now_chan = 0,      //当前设置的信道
-    rcv_chan = 0;      //收到信号的信道
+char sele_pos = 0;      //双守双待模式下,选择的信道
+char now_chan = 0;      //当前设置的信道
+char rcv_chan = 0;      //收到信号的信道
 
-void VFO_Refresh()
-{
+void VFO_Refresh() {
     // D_printf("%s\n", __FUNCTION__);
-    switch (Home_Mode)
-    {
+    switch (Home_Mode) {
     case MAIN_MODE:
         if (chan_arv[NOW].CHAN == 100)
             LCD_ShowString0608(66, 1, "UHF ", 1, 90);
@@ -140,19 +143,20 @@ void VFO_Refresh()
         //信道号显示
         LCD_ShowChan(83, 2, chan_arv[NOW].CHAN, 1);
 
-        if (PTT_READ) //空闲时，显示频率、收音机状态
-        {
+        if (PTT_READ) {
+            //空闲时，显示频率、收音机状态
             LCD_ShowFreq(0, 1, chan_arv[NOW].RX_FREQ, 1);
             LCD_ShowString0608(56, 2, WFM ? "WFM" : "FM ", 1, 128);
-        }
-        else
+        } else {
             LCD_ShowFreq(0, 1, chan_arv[NOW].TX_FREQ, 1);
+        }
 
         //收发不同频标志
-        if (chan_arv[NOW].RX_FREQ != chan_arv[NOW].TX_FREQ)
+        if (chan_arv[NOW].RX_FREQ != chan_arv[NOW].TX_FREQ){
             LCD_ShowPIC0808(92, 1, 0);
-        else
+        } else {
             LCD_ShowString0408(92, 1, "  ", 1);
+        }
 
         LCD_ShowString0408(0, 3, "TYPE   TRF    MOD    CHAN  KEY  ", 1);
         LCD_ShowString0608(0, 2, "LOS", 1, 128);
@@ -182,13 +186,10 @@ void VFO_Refresh()
         break;
     }
     //信号和收发状态显示
-    if (PTT_READ)
-    {
+    if (PTT_READ) {
         LCD_ShowAscii0408(0, 0, 'R');
         LCD_ShowSignal(RSSI); //信号检测
-    }
-    else
-    {
+    } else {
         LCD_ShowAscii0408(0, 0, 'T');
         LCD_ShowSignal(100);
     }
@@ -196,14 +197,11 @@ void VFO_Refresh()
 //
 
 //主页编码器事件处理 //Homepage Coder Events (dammit google translate!)
-void Encoder_process(u8 operate)
-{
+void Encoder_process(u8 operate) {
     // D_printf("%s\n", __FUNCTION__);
-    switch (operate) //encoder event handling
-    {
+    switch (operate) { //encoder event handling
     case key_click:
-        if (Home_Mode == MAIN_MODE)
-        {
+        if (Home_Mode == MAIN_MODE) {
             LCD_ShowAscii0608(60, 1, ' ', 1);
             ShortCut_Menu();
         }
@@ -222,8 +220,7 @@ void Encoder_process(u8 operate)
     }
 }
 //matrix button event
-u8 Event_Matrix(u8 matrix_key)
-{
+u8 Event_Matrix(u8 matrix_key) {
     if (PTT_READ == 0){
         return NO_OPERATE;
     }
@@ -242,31 +239,25 @@ u8 Event_Matrix(u8 matrix_key)
                                                   //不用作"进入不同频段设置"的理由:
                                                   //减少确认后的判断,保证只有在FREQ模式下才修改VU的记忆
 
-        if (get_Flag(FLAG_CF_SWITCH_ADDR)) //FREQ模式下改变显示
-        {
-            if (pre_mode) //若当前为U段则改变显示为"VHF"
-            {
+        if (get_Flag(FLAG_CF_SWITCH_ADDR)) { //FREQ模式下改变显示
+            if (pre_mode) { //若当前为U段则改变显示为"VHF"
                 set_Flag(FLAG_VU_SWITCH_ADDR, 0); //U段变V段
                 LCD_ShowString0608(66, 1, "VHF ", 1, 90);
                 chan_arv[NOW].CHAN = 0;
             }
-        }
-        else //CHANNEL模式则显示箭头
+        } else {//CHANNEL模式则显示箭头
             LCD_ShowPIC0608(60, 1, 1, 1);
+        }
 
-        //
-        switch (RT_FREQ_Set(0, 1, (double *)&chan_arv[NOW].RX_FREQ, 0)) //无论如何都是进行V段设置
-        {
+        switch (RT_FREQ_Set(0, 1, (double *)&chan_arv[NOW].RX_FREQ, 0)) { //无论如何都是进行V段设置
         case ENT2LAST:
             chan_arv[NOW].TX_FREQ = chan_arv[NOW].RX_FREQ;
             return SAVE_SET;
 
         case CLR2LAST:
         case BACK2MAIN:
-            if (pre_mode)
-            {
-                if (get_Flag(FLAG_CF_SWITCH_ADDR))
-                {
+            if (pre_mode) {
+                if (get_Flag(FLAG_CF_SWITCH_ADDR)) {
                     set_Flag(FLAG_VU_SWITCH_ADDR, 1);
                     LCD_ShowString0608(66, 1, "UHF ", 1, 90);
                     chan_arv[NOW].CHAN = 100;
@@ -296,30 +287,25 @@ u8 Event_Matrix(u8 matrix_key)
 
         pre_mode = get_Flag(FLAG_VU_SWITCH_ADDR);
         D_printf("NOW : U_SETTING\n");
-        if (get_Flag(FLAG_CF_SWITCH_ADDR))
-        {
-            if (pre_mode == 0)
-            {
+        if (get_Flag(FLAG_CF_SWITCH_ADDR)) {
+            if (pre_mode == 0) {
                 set_Flag(FLAG_VU_SWITCH_ADDR, 1);
                 LCD_ShowString0608(66, 1, "UHF ", 1, 90);
                 chan_arv[NOW].CHAN = 100;
             }
-        }
-        else
+        } else {
             LCD_ShowPIC0608(60, 1, 1, 1);
+        }
 
-        switch (RT_FREQ_Set(0, 1, (double *)&chan_arv[NOW].RX_FREQ, 1))
-        {
+        switch (RT_FREQ_Set(0, 1, (double *)&chan_arv[NOW].RX_FREQ, 1)) {
         case ENT2LAST:
             chan_arv[NOW].TX_FREQ = chan_arv[NOW].RX_FREQ;
             return SAVE_SET;
 
         case CLR2LAST:
         case BACK2MAIN:
-            if (pre_mode == 0)
-            {
-                if (get_Flag(FLAG_CF_SWITCH_ADDR))
-                {
+            if (pre_mode == 0) {
+                if (get_Flag(FLAG_CF_SWITCH_ADDR)) {
                     set_Flag(FLAG_VU_SWITCH_ADDR, 0);
                     LCD_ShowString0608(66, 1, "VHF ", 1, 90);
                     chan_arv[NOW].CHAN = 0;
@@ -339,8 +325,9 @@ u8 Event_Matrix(u8 matrix_key)
         break;
 
     case MATRIX_RESULT_7:
-        if (Home_Mode)
+        if (Home_Mode) {
             return NO_OPERATE;
+        }
         OPTION_Menu();
         VFO_Clear();
         return NO_OPERATE;
@@ -362,8 +349,9 @@ u8 Event_Matrix(u8 matrix_key)
 
     case MATRIX_RESULT_CLR:
         D_printf("{CLR}\n");
-        if (get_Flag(FLAG_CF_SWITCH_ADDR) == 0 && Home_Mode == 0)
+        if (get_Flag(FLAG_CF_SWITCH_ADDR) == 0 && Home_Mode == 0) {
             LCD_ShowAscii0608(60, 1, ' ', 1);
+        }
         return NO_OPERATE;
 
     case MATRIX_RESULT_ENT:
@@ -3308,8 +3296,7 @@ void OPTION_Menu(void)
             break;
         }
         //////////////////////////////////////////////////////////////////////////////////////
-        if (ENSURE)
-        {
+        if (ENSURE){
             ENSURE = 0;
             switch (num)
             {
@@ -4458,22 +4445,20 @@ int PGM_TONE_Select(u8 row)
         }
     }
 }
-//
-//
-
 
 extern volatile u8 key_timer_cnt1, key_timer_cnt2;
 void disposePer100ms(void) //100ms
 {
 
     //清除中断标志位
-    if (SQL_CTL)
+    if (SQL_CTL){
         sql_cal++;
-    if (SCAN_CTL)
+    }
+    if (SCAN_CTL){
         scan_cal++;
+    }
 
     Cal2Shut();
     key_timer_cnt1++;
     key_timer_cnt2++;
 }
-//
