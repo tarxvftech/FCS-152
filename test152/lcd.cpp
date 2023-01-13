@@ -5,8 +5,7 @@
 #define INVERTED_OFFSET 4
 u8 LCD_INVERTED = OFF;              //液晶颠倒显示
 
-void LCD_Init(void)
-{
+void LCD_Init(void) {
     LCD_GPIO_Init();
 #if _LCD == LCD12864
     LCD_CS_SET;
@@ -92,8 +91,7 @@ void LCD_Init(void)
 #endif
 }
 
-void LCD_Write(unsigned char dat,unsigned char rs) //rs == 1 data rs==0  cmd
-{
+void LCD_Write(unsigned char dat,unsigned char rs) { //rs == 1 data rs==0  cmd
     uint8_t i;
     LCD_SCL_CLR;
     LCD_CS_CLR;
@@ -122,35 +120,30 @@ void LCD_Write(unsigned char dat,unsigned char rs) //rs == 1 data rs==0  cmd
     delay_us(10);
 }
 
-void LCD_WriteCmd(unsigned char cmd)
-{
+void LCD_WriteCmd(unsigned char cmd) {
     LCD_Write(cmd,0);
 }
 
-void LCD_WriteData(unsigned char data)
-{
+void LCD_WriteData(unsigned char data) {
     LCD_Write(data,1);
 }
 
 //粗调对比度  //0x20-0x27内部电阻比例
-void LCD_HeavyRatio(unsigned char cmd)
-{
+void LCD_HeavyRatio(unsigned char cmd) {
     LCD_CS_CLR;
     LCD_RS_CLR;
     LCD_WriteCmd(0x20+(cmd&0x07));  //0x2x
     LCD_CS_SET;
 }
 //微调对比度   //0-0x3f内部电阻微调
-void LCD_LightRatio(unsigned char cmd)
-{
+void LCD_LightRatio(unsigned char cmd) {
     LCD_CS_CLR;
     LCD_RS_CLR;
     LCD_WriteCmd(0x81);
     LCD_WriteCmd(cmd & 0x3f);   //00-3f---》0~48+15=63
     LCD_CS_SET;
 }
-void LCD_Setxy(unsigned char l, unsigned char p)
-{
+void LCD_Setxy(unsigned char l, unsigned char p) {
     LCD_WriteCmd(0xb0+p);               //Set Page Address                                                          x
     LCD_WriteCmd(((l>>4)&0x0f)+0x10);   //Set Column Address(MSByte) = 0            0001 l&f   （高四位）          y
     LCD_WriteCmd(l&0x0f);               //Colum(LSByte) from S1 -> S128 auto add    0000 l&0x0f（低四位）
@@ -158,8 +151,7 @@ void LCD_Setxy(unsigned char l, unsigned char p)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
 //以页为地址定位
 //4列8行 字符(16页)
-void LCD_ShowAscii0408(unsigned char l, unsigned char p, int ch)
-{
+void LCD_ShowAscii0408(unsigned char l, unsigned char p, int ch) {
     if(LCD_INVERTED) {
         l+=INVERTED_OFFSET;
     }
@@ -170,8 +162,7 @@ void LCD_ShowAscii0408(unsigned char l, unsigned char p, int ch)
         LCD_WriteData(ascii_0408[ch][i]);
     }
 }
-void LCD_ShowString0408(unsigned char l, unsigned char p, const char* s, unsigned char flag)
-{
+void LCD_ShowString0408(unsigned char l, unsigned char p, const char* s, unsigned char flag) {
     if(LCD_INVERTED) {
         l+=INVERTED_OFFSET;
     }
@@ -188,8 +179,7 @@ void LCD_ShowString0408(unsigned char l, unsigned char p, const char* s, unsigne
 }
 //
 //6列8行 字符(16页)
-void LCD_ShowAscii0608(unsigned char l, unsigned char p, int ch, unsigned char flag)
-{
+void LCD_ShowAscii0608(unsigned char l, unsigned char p, int ch, unsigned char flag) {
     if(LCD_INVERTED) {
         l+=INVERTED_OFFSET;
     }
@@ -203,8 +193,7 @@ void LCD_ShowAscii0608(unsigned char l, unsigned char p, int ch, unsigned char f
         }
     }
 }
-void LCD_ShowString0608(unsigned char l, unsigned char p, const char* s, unsigned char flag, unsigned char limit)
-{
+void LCD_ShowString0608(unsigned char l, unsigned char p, const char* s, unsigned char flag, unsigned char limit) {
     if(LCD_INVERTED) {
         l+=INVERTED_OFFSET;
     }
@@ -223,8 +212,7 @@ void LCD_ShowString0608(unsigned char l, unsigned char p, const char* s, unsigne
 }
 //
 //10列16行 字符(16页)
-void LCD_ShowAscii1016(unsigned char l, unsigned char p, int ch, unsigned char flag)
-{
+void LCD_ShowAscii1016(unsigned char l, unsigned char p, int ch, unsigned char flag) {
     if(LCD_INVERTED) {
         l+=INVERTED_OFFSET;
     }
@@ -249,8 +237,7 @@ void LCD_ShowAscii1016(unsigned char l, unsigned char p, int ch, unsigned char f
         }
     }
 }
-void LCD_ShowString1016(unsigned char l, unsigned char p, const char* s, unsigned char flag, unsigned char limit)
-{
+void LCD_ShowString1016(unsigned char l, unsigned char p, const char* s, unsigned char flag, unsigned char limit) {
     if(LCD_INVERTED) {
         l+=INVERTED_OFFSET;
     }
@@ -285,8 +272,7 @@ void LCD_ShowString1016(unsigned char l, unsigned char p, const char* s, unsigne
     //
 }
 //
-void LCD_ShowPICALL(const unsigned char* pic)
-{
+void LCD_ShowPICALL(const unsigned char* pic) {
     u8 l = 0;
     u8 p = 0;
 
@@ -307,8 +293,7 @@ void LCD_ShowPICALL(const unsigned char* pic)
 }
 
 //上下箭头，音量小黑块
-void LCD_ShowPIC0408(unsigned char l, unsigned char p, unsigned char ch)
-{
+void LCD_ShowPIC0408(unsigned char l, unsigned char p, unsigned char ch) {
     if(LCD_INVERTED) {
         l+=INVERTED_OFFSET;
     }
@@ -319,8 +304,7 @@ void LCD_ShowPIC0408(unsigned char l, unsigned char p, unsigned char ch)
     }
 }
 //
-void LCD_ShowPIC0608(unsigned char l, unsigned char p, int ch, unsigned char flag)
-{
+void LCD_ShowPIC0608(unsigned char l, unsigned char p, int ch, unsigned char flag) {
     if(LCD_INVERTED) {
         l+=INVERTED_OFFSET;
     }
@@ -334,8 +318,7 @@ void LCD_ShowPIC0608(unsigned char l, unsigned char p, int ch, unsigned char fla
         }
 }
 //
-void LCD_ShowPIC0808(unsigned char l, unsigned char p, int ch)
-{
+void LCD_ShowPIC0808(unsigned char l, unsigned char p, int ch) {
     if(LCD_INVERTED) {
         l+=INVERTED_OFFSET;
     }
@@ -346,8 +329,7 @@ void LCD_ShowPIC0808(unsigned char l, unsigned char p, int ch)
     }
 }
 //
-void LCD_ShowPIC1616(unsigned char l, unsigned char p, int ch, unsigned char flag)
-{
+void LCD_ShowPIC1616(unsigned char l, unsigned char p, int ch, unsigned char flag) {
     if(LCD_INVERTED) {
         l+=INVERTED_OFFSET;
     }
@@ -370,8 +352,7 @@ void LCD_ShowPIC1616(unsigned char l, unsigned char p, int ch, unsigned char fla
         }
 }
 //按键0-9的显示
-void LCD_ShowPIC2516(unsigned char l, unsigned char p, int ch)
-{
+void LCD_ShowPIC2516(unsigned char l, unsigned char p, int ch) {
     if(LCD_INVERTED) {
         l+=INVERTED_OFFSET;
     }
@@ -387,8 +368,7 @@ void LCD_ShowPIC2516(unsigned char l, unsigned char p, int ch)
     }
 }
 //
-void LCD_Clear(_ClearScope clean_area)
-{
+void LCD_Clear(_ClearScope clean_area) {
     u8 i, j, start_page=0, stop_page=0;
     switch(clean_area) {
     case GLOBAL32:
@@ -439,8 +419,7 @@ void LCD_Clear(_ClearScope clean_area)
 //
 
 //升级显示
-void LCD_ShowProcessBar(unsigned char l, unsigned char p, unsigned char num)
-{
+void LCD_ShowProcessBar(unsigned char l, unsigned char p, unsigned char num) {
     if(LCD_INVERTED) {
         l+=INVERTED_OFFSET;
     }
@@ -456,8 +435,7 @@ void LCD_ShowProcessBar(unsigned char l, unsigned char p, unsigned char num)
 
 }
 //实心百分比显示(含上下边框)
-void LCD_ShowPercentBar(unsigned char l, unsigned char p, unsigned char all_level, unsigned char level, unsigned char length)
-{
+void LCD_ShowPercentBar(unsigned char l, unsigned char p, unsigned char all_level, unsigned char level, unsigned char length) {
     if(level>all_level) {
         return;
     }
@@ -484,24 +462,20 @@ void LCD_ShowPercentBar(unsigned char l, unsigned char p, unsigned char all_leve
 //////////////////////////////////////////////////
 }
 //电池显示
-void LCD_ShowBattery(int energy)
-{
+void LCD_ShowBattery(int energy) {
     energy = (energy + 10) / 20;
     LCD_ShowPercentBar(21, 0+_LCD, 5, energy, 24);
 }
 //信号显示
-void LCD_ShowSignal(int signal)
-{
+void LCD_ShowSignal(int signal) {
     LCD_ShowPercentBar(102, 1+_LCD, 5, signal / 20, 24);
 }
 //背光显示
-void LCD_ShowBackLight(int bl)
-{
+void LCD_ShowBackLight(int bl) {
     LCD_ShowPercentBar(34, 2+_LCD, 10, bl / 10, 60);
 }
 //对比度显示
-void LCD_ShowContrast(int contrast)
-{
+void LCD_ShowContrast(int contrast) {
     LCD_ShowPercentBar(34, 2+_LCD, 6, contrast, 60);
 }
 //
@@ -509,8 +483,7 @@ void LCD_ShowContrast(int contrast)
 
 
 //num:总行数, pos:选中项, per_page:每一页的行数
-void LCD_ShowPageBar(int num, int sel_pos, int per_page_num)
-{
+void LCD_ShowPageBar(int num, int sel_pos, int per_page_num) {
     u8 l=121;
     if(LCD_INVERTED) {
         l+=INVERTED_OFFSET;
@@ -549,8 +522,7 @@ void LCD_ShowPageBar(int num, int sel_pos, int per_page_num)
 #endif
 }
 //
-void LCD_ShowMenu31(const char* menu[], int item, int sel_pos)
-{
+void LCD_ShowMenu31(const char* menu[], int item, int sel_pos) {
     u8 p = 1;
 #if _LCD == LCD12864
     p+=2;
@@ -581,8 +553,7 @@ void LCD_ShowMenu31(const char* menu[], int item, int sel_pos)
     //
 }
 //
-void LCD_ShowMenu41(const char* menu[],  int item, int sel_pos)//菜单, 行, 选中第n个
-{
+void LCD_ShowMenu41(const char* menu[],  int item, int sel_pos) { //菜单, 行, 选中第n个
     u8 p = 0;
 #if _LCD == LCD12864
     p+=2;
@@ -623,8 +594,7 @@ void LCD_ShowMenu41(const char* menu[],  int item, int sel_pos)//菜单, 行, �
 //
 //单行双项菜单显示
 //图形1：显示收发设置的各个选项
-void LCD_ShowMatrixMenu22(char menu[][2][12], int item, int sel_pos)
-{
+void LCD_ShowMatrixMenu22(char menu[][2][12], int item, int sel_pos) {
     u8 p = 1;
 
 #if _LCD == LCD12864
@@ -650,8 +620,7 @@ void LCD_ShowMatrixMenu22(char menu[][2][12], int item, int sel_pos)
 }
 //单行三项菜单显示
 //亚音显示
-void LCD_ShowMatrixMenu33(const char* menu[][3], int item, int sel_pos)
-{
+void LCD_ShowMatrixMenu33(const char* menu[][3], int item, int sel_pos) {
     u8 l = 0;
     u8 p = 1;
 #if _LCD == LCD12864
@@ -681,8 +650,7 @@ void LCD_ShowMatrixMenu33(const char* menu[][3], int item, int sel_pos)
 //
 
 //音量显示
-void LCD_ShowVolume(unsigned char vol)
-{
+void LCD_ShowVolume(unsigned char vol) {
     u8 p = 0;
     u8 l = 88;
 #if _LCD == LCD12864
@@ -700,8 +668,7 @@ void LCD_ShowVolume(unsigned char vol)
 }
 
 //选项切换,居中显示"YES", "NO",等等
-void LCD_ShowOption(unsigned char l, unsigned char p, const char* buf[], unsigned char item, unsigned char sel_pos)
-{
+void LCD_ShowOption(unsigned char l, unsigned char p, const char* buf[], unsigned char item, unsigned char sel_pos) {
     u8 max_length=0;
     u8 length = strlen(buf[sel_pos])-1;
     for(u8 i=0; i<item; i++) {
@@ -712,23 +679,20 @@ void LCD_ShowOption(unsigned char l, unsigned char p, const char* buf[], unsigne
     LCD_ShowString0608(l+(max_length-length)*6/2, p, buf[sel_pos],  0, l+max_length);
 }
 //
-void LCD_ShowFreq(unsigned  char l,unsigned char p, double f, unsigned char flag)
-{
+void LCD_ShowFreq(unsigned  char l,unsigned char p, double f, unsigned char flag) {
     char buf[9]= {0};
     sprintf(buf, "%3.4f", f);
     LCD_ShowString0608(l, p, buf, flag, l+48);
 }
 //
 //主页面信道号显示
-void LCD_ShowChan(unsigned char l, unsigned char p, unsigned char chan, unsigned char flag)
-{
+void LCD_ShowChan(unsigned char l, unsigned char p, unsigned char chan, unsigned char flag) {
     char buf[4]= {0};
     sprintf(buf, "%03d", chan);
     LCD_ShowString0608(l, p,  buf, flag, 128);
 }
 //
-void LCD_SetPos(unsigned char l, unsigned char p, int ch)
-{
+void LCD_SetPos(unsigned char l, unsigned char p, int ch) {
     // static uint8_t flag = 0;
     // if (!bsp_CheckTimer(TMR_POS_BLINK))
     //     return;
@@ -738,8 +702,7 @@ void LCD_SetPos(unsigned char l, unsigned char p, int ch)
     // LCD_ShowAscii0608(l, p, ch, flag);
 }
 //
-void LCD_Show_Strloop(uint8_t l, uint8_t p, const char* str, int flag, int limit)
-{
+void LCD_Show_Strloop(uint8_t l, uint8_t p, const char* str, int flag, int limit) {
     // static int i = 0;
     // static char str_old[22];
     // int len = strlen(str);

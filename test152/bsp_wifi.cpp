@@ -17,8 +17,7 @@ String upUrl = "http://fcs.fun/filedownload/78941";
 
 // true: 自动配置连接成功
 // false: 自动配置连接失败
-bool autoConfig()
-{
+bool autoConfig() {
     const char* defaultWifiConfig = "FCS152WiFi";
     LCD_ShowString0608(0, 0, "Connecting           ", 1, 128);
     WiFi.disconnect(true, true);
@@ -41,8 +40,7 @@ bool autoConfig()
 // CLR2LAST: 智能配置失败(不会到达)
 // ENT2LAST: 智能配置成功
 // BACK2MAIN:取消智能配置, 返回菜单
-int ConfigSmartWiFi()
-{
+int ConfigSmartWiFi() {
     Serial.println("Start SmartWIFI Config:");
     WiFi.beginSmartConfig();
     while(1) {
@@ -72,8 +70,7 @@ int ConfigSmartWiFi()
 }
 
 //打印wifi域名和IP
-void LCD_ShowAddressIP(void)
-{
+void LCD_ShowAddressIP(void) {
     LCD_ShowString0608(0, 0, " http://FCS152.local ", 1, 128);
     char IP_SHOW[128] = {0};
     uint32_t ip_tmp = WiFi.localIP();
@@ -87,8 +84,7 @@ void LCD_ShowAddressIP(void)
 
 // true : 配置服务器成功
 // false: wifi断开
-bool ConfigUpdateProcess()
-{
+bool ConfigUpdateProcess() {
 #if 01
     if(WiFi.waitForConnectResult() == WL_CONNECTED) {
         Serial.println("*********Start Server*******\n");
@@ -161,8 +157,7 @@ bool ConfigUpdateProcess()
     return false;
 }
 
-void StartServer(void)
-{
+void StartServer(void) {
     if(!ConfigUpdateProcess()) {
         LCD_Clear(GLOBAL32);
         LCD_ShowString0608(0, 2, "WIFI DISCONNECTED    ", 1, 128);
@@ -206,8 +201,7 @@ void StartServer(void)
     }
 }
 
-void ConfigureToUpdate(void)
-{
+void ConfigureToUpdate(void) {
     LCD_Clear(GLOBAL32);
     LCD_ShowString0608(43, 2, "PROGRAM", 1, 128);
 #ifdef NEWBOOT

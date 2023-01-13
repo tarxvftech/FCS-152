@@ -6,8 +6,7 @@
 
 extern void SHUT(void);
 extern uint8_t SQL;
-void EN_GPIO_Init(void)         //使能引脚初始化
-{
+void EN_GPIO_Init(void) {       //使能引脚初始化
     switch(Select_Power()) {
     case VOLTAGE_NORMAL:
         D_printf("Normal voltage startup\n");
@@ -26,8 +25,7 @@ void EN_GPIO_Init(void)         //使能引脚初始化
     }
     SHUT();
 }
-void A002_Init(void)            //A20控制引脚初始化
-{
+void A002_Init(void) {          //A20控制引脚初始化
     bsp_A002_Init();
     A002_PD_SET;
     delay_ms(2);
@@ -46,8 +44,7 @@ void A002_Init(void)            //A20控制引脚初始化
 }
 
 
-u8 Select_Power(void)
-{
+u8 Select_Power(void) {
     // for(u8 i=0; i<5; i++)
     //     Use_ADC();
     uint32_t adc_val = Use_ADC();
@@ -72,8 +69,7 @@ u8 Select_Power(void)
 
 extern u8 MIC_LEVEL[3], MIC;
 
-void MIC_SWITCH(char mic_temp, char on_off)
-{
+void MIC_SWITCH(char mic_temp, char on_off) {
     D_printf("\nMIC:%d, sta:%d\n", mic_temp, on_off);
     //开运放
     //设置增益
@@ -101,8 +97,7 @@ void MIC_SWITCH(char mic_temp, char on_off)
     }
 }
 //
-void SPK_SWITCH(char spk_temp, char on_off)
-{
+void SPK_SWITCH(char spk_temp, char on_off) {
     D_printf("\nSPK:%d, sta:%d\n", spk_temp, on_off);
     if(on_off) {
         //开功放
@@ -123,8 +118,7 @@ void SPK_SWITCH(char spk_temp, char on_off)
     }
     delay_ms(1);
 }
-void VDO_SWITCH(unsigned char on_off)//6针头电源输出
-{
+void VDO_SWITCH(unsigned char on_off) { //6针头电源输出
     if(on_off) {
         VDO_SET;
         return;

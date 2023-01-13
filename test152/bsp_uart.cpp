@@ -5,21 +5,17 @@ volatile uint16_t rx1_len=0;                                                    
 volatile unsigned char  rx1_buf[USART1_BUF_SIZE]= {0}, usart1_recv_end_flag=0;          //接收缓冲区//接收标志位
 volatile unsigned char  rx2_buf[USART2_BUF_SIZE]= {0}, usart2_recv_end_flag=1, rx2_len=0;
 
-void bsp_UART1_Init(int baud)
-{
+void bsp_UART1_Init(int baud) {
     Serial.begin(baud);
     delay_ms(50);
 }
-void UART1_EnRCV(void)                      //启动串口1接收
-{
+void UART1_EnRCV(void) {                    //启动串口1接收
     memset((char*)rx1_buf, '0', sizeof(char) * (USART1_BUF_SIZE - 1));
 }
-int  UART1_getRcvFlag(void)                 //判断接收标志位
-{
+int  UART1_getRcvFlag(void) {               //判断接收标志位
     return (Serial.available());
 }
-int  UART1_dataPreProcess(void)             //数据预处理
-{
+int  UART1_dataPreProcess(void) {           //数据预处理
     int i = 0;
     memset((char*)rx1_buf, '0', sizeof(char) * (USART1_BUF_SIZE - 1));
     do {
@@ -30,51 +26,43 @@ int  UART1_dataPreProcess(void)             //数据预处理
 }
 
 
-void bsp_UART2_Init(int baud)
-{
+void bsp_UART2_Init(int baud) {
     Serial1.begin(baud);
 }
 
-void UART1_Put_Char(unsigned char ch)
-{
+void UART1_Put_Char(unsigned char ch) {
     Serial.write(ch);
 }
 
-void UART2_Put_Char(unsigned char ch)
-{
+void UART2_Put_Char(unsigned char ch) {
     Serial1.write(ch);
 }
 /////////////////////////////////////////////////////////////////////////////////////////////
-void UART1_Init(void)
-{
+void UART1_Init(void) {
     bsp_UART1_Init(115200);
     D_printf("Serial0 Init\n");
 }
-void UART1_Put_String(unsigned char s[])
-{
+void UART1_Put_String(unsigned char s[]) {
     int i=0;
     while(s[i]!='\0') {
         UART1_Put_Char(s[i]);
         i++;
     }
 }
-void UART1_Send_Message(char s[], int size)
-{
+void UART1_Send_Message(char s[], int size) {
     for(int i=0; i<size; i++) {
         UART1_Put_Char(s[i]);
     }
 }
 
-void UART2_Put_String(unsigned char s[])
-{
+void UART2_Put_String(unsigned char s[]) {
     int i=0;
     while(s[i]!='\0') {
         UART2_Put_Char(s[i]);
         i++;
     }
 }
-void UART2_Send_Message(char s[], int size)
-{
+void UART2_Send_Message(char s[], int size) {
     for(int i=0; i<size; i++) {
         UART2_Put_Char(s[i]);
     }
@@ -82,8 +70,7 @@ void UART2_Send_Message(char s[], int size)
 
 /*******************模块相关函数*****************/
 //设置主要收发参数
-void Set_A20(CHAN_ARV set, unsigned char sq)
-{
+void Set_A20(CHAN_ARV set, unsigned char sq) {
     unsigned char a002_send_buff[47]="AT+DMOSETGROUP=1,436.025,436.025,000,1,001,1\r\n";
     int i=0;
     D_printf("\nSET A20: TX:%f, RX:%f, TS:%d, RS:%d, SQL:%d, GBW:%d, POWER:%d\n",set.TX_FREQ, set.RX_FREQ, set.TS, set.RS, sq, set.GBW, set.POWER);
@@ -111,8 +98,7 @@ void Set_A20(CHAN_ARV set, unsigned char sq)
 }
 
 //设置控制参数
-void Set_A20_MIC(unsigned char miclvl,unsigned char scramlvl,unsigned char tot)
-{
+void Set_A20_MIC(unsigned char miclvl,unsigned char scramlvl,unsigned char tot) {
     unsigned char i=0,a002_send_buff[21]="AT+DMOSETMIC=1,0,0\r\n";
     //  printf("SETA002MIC: MIC:%d, SCRAM:%d, TOT:%d\n\n", miclvl, scramlvl, tot);
     a002_send_buff[13]=miclvl+'0';
@@ -125,8 +111,7 @@ void Set_A20_MIC(unsigned char miclvl,unsigned char scramlvl,unsigned char tot)
 }
 
 //获取信号强度
-int  Get_A20_RSSI(void)
-{
+int  Get_A20_RSSI(void) {
     unsigned char i=0, a002_send_buff[17]="AT+DMOREADRSSI\r\n";
     int rssi=0, len=0;
 
@@ -174,8 +159,7 @@ int  Get_A20_RSSI(void)
     return rssi;
 }
 
-void A002_CALLBACK(void) //A20数据接收处理
-{
+void A002_CALLBACK(void) { //A20数据接收处理
     //if (usart2_recv_end_flag)
     if(Serial1.available()) {
         int i = 0;
@@ -213,13 +197,11 @@ void A002_CALLBACK(void) //A20数据接收处理
 //
 
 
-void disposeRx1(void)
-{
+void disposeRx1(void) {
     usart1_recv_end_flag=1;
 }
 
-void diseposeRx2(void)
-{
+void diseposeRx2(void) {
     usart2_recv_end_flag=1;
 }
 

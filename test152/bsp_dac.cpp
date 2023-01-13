@@ -16,8 +16,7 @@ static int test_val[200]= {
     ,0x3E,0x48,0x52,0x5D,0x68,0x74
 };
 
-void prepare_data(int array[], int pnt_num)
-{
+void prepare_data(int array[], int pnt_num) {
     for(int i = 0; i < pnt_num; i ++) {
         array[i] = (int)((sin(i * CONST_PERIOD_2_PI / pnt_num) + 1) * (double)(AMP_DAC)/2 + 0.5); //2 * PI
         // array[i] =(int) ((1.5*sin(( 2.0*i/pnt_num)*CONST_PERIOD_2_PI)+1.5)*255/3.3);
@@ -26,8 +25,7 @@ void prepare_data(int array[], int pnt_num)
     D_printf("\n");
 }
 //DAC-DMA正弦波数据表
-void SineWave_Data()
-{
+void SineWave_Data() {
     // u16 i;
     // for(i=0; i<DAC_SAMPLE; i++)
     //     //SineWave_Value_2K[i] =(u16) ((1.5*sin(( 2.0*i/(DAC_SAMPLE-1))*2*PI)+1.5)*128/3.3);  //1.5  4095
@@ -39,8 +37,7 @@ void SineWave_Data()
 }
 ////////////////////////////////////////////////////////////////////////////////////////
 extern portMUX_TYPE rtc_spinlock; //TODO: Will be placed in the appropriate position after the rtc module is finished.
-void bsp_DAC_Init(void)
-{
+void bsp_DAC_Init(void) {
     // gpio_num_t gpio_num;
     // dac_pad_get_io_num(DAC_CHAN, &gpio_num);
     // D_printf("DACIO:%d\n", gpio_num);
@@ -50,8 +47,7 @@ void bsp_DAC_Init(void)
     ESP_ERROR_CHECK(dac_output_disable(DAC_CHAN));
 }
 
-void RingTone(ToneClass tone, int state)
-{
+void RingTone(ToneClass tone, int state) {
     if(state) {
         // A002_PD_CLR;
         // Serial1.end();
@@ -70,8 +66,7 @@ void RingTone(ToneClass tone, int state)
 
 }
 
-void RingArray_Intr(void)
-{
+void RingArray_Intr(void) {
     if(ToneState) {
         switch(Tone) {
         case TONE2K:

@@ -22,8 +22,7 @@ extern void VOL_Reflash(void);
 extern void MY_GLOBAL_FUN(void);
 extern void VFO_Clear(void);
 
-short RDA5807_ReadReg(unsigned char addr)
-{
+short RDA5807_ReadReg(unsigned char addr) {
     short buf;
     IIC_Start();
     IIC_Send_Byte(RDA5807_WRITE);
@@ -40,8 +39,7 @@ short RDA5807_ReadReg(unsigned char addr)
     delay_ms(5);
     return buf;
 }
-void RDA5807_WriteReg(unsigned char addr,short val)
-{
+void RDA5807_WriteReg(unsigned char addr,short val) {
     IIC_Start();
     IIC_Send_Byte(RDA5807_WRITE);
     IIC_Wait_Ack();
@@ -56,8 +54,7 @@ void RDA5807_WriteReg(unsigned char addr,short val)
 //
 
 //收音机开关
-void RDA_Power(unsigned char off_on)
-{
+void RDA_Power(unsigned char off_on) {
     if(off_on) {
         FM_AMP_EN_SET;
         FM_S_EN_SET;
@@ -70,8 +67,7 @@ void RDA_Power(unsigned char off_on)
 //
 
 //音量设置 0~15
-void RDA5807_Set_Volume(unsigned char vol)
-{
+void RDA5807_Set_Volume(unsigned char vol) {
     short temp=0;
     temp=RDA5807_ReadReg(RDA5807_R05);
     temp&=0xfff0;
@@ -80,14 +76,12 @@ void RDA5807_Set_Volume(unsigned char vol)
 }
 
 //信号强度获取    0~127
-short RDA5807_RSSI()
-{
+short RDA5807_RSSI() {
     return (RDA5807_ReadReg(RDA5807_R0B)>>9);
 }
 
 //设置频率,单位为100K，即870*100KHz
-void RDA5807_Set_Freq(short freq)
-{
+void RDA5807_Set_Freq(short freq) {
     uint16_t timeout=0;
     RDA5807_WriteReg(RDA5807_R03, ((freq-870)<<6) + 0x0010);
     while((RDA5807_ReadReg(RDA5807_R0B)&0x80)==0 && timeout++);
@@ -95,8 +89,7 @@ void RDA5807_Set_Freq(short freq)
 }
 //
 //收音机开关， 设置收音机数据时使用
-void RDA5807_Init(char off_on)
-{
+void RDA5807_Init(char off_on) {
     if(off_on) {
         RDA_Power(ON);
         delay_ms(2);
@@ -123,19 +116,16 @@ void RDA5807_Init(char off_on)
 //
 
 //收音机暂停，不改标志位, 检测到收发信号时使用
-void RDA5807_MUTE()
-{
+void RDA5807_MUTE() {
     RDA5807_WriteReg(RDA5807_R02, 0x0000);
     delay_ms(50);
 }
-void RDA5807_NMUTE()
-{
+void RDA5807_NMUTE() {
     RDA5807_WriteReg(RDA5807_R02, 0xc001);
     delay_ms(500);//唤醒
 }
 //
-int RDA5807_Switch(void)
-{
+int RDA5807_Switch(void) {
 
     char FM_NOW = WFM;
     TIMES=0;
@@ -239,8 +229,7 @@ int RDA5807_Switch(void)
 }
 
 
-void Radio_Freq_Show(int fm_freq, int mode)
-{
+void Radio_Freq_Show(int fm_freq, int mode) {
     LCD_ShowAscii1016(0,  2, fm_freq/1000%10 + '0', mode);
     LCD_ShowAscii1016(10, 2, fm_freq/100%10  + '0', mode);
     LCD_ShowAscii1016(20, 2, fm_freq/10%10   + '0', mode);
@@ -258,8 +247,7 @@ int fm_locate=0, fm_bit=0, fm_freq_static;
 unsigned char fm_freq_buf[4]= {0,0,0,1}, flag_clear=0, fm_finish=0,
                                          val_in=0, key_press=17, first_press=1;
 
-int FM_Freq_Set_Show(int x,int y,int* result)
-{
+int FM_Freq_Set_Show(int x,int y,int* result) {
     if(A002_SQ_READ==0 || PTT_READ==0) {
         fm_freq_buf[0]=0,fm_freq_buf[1]=0,fm_freq_buf[2]=0,fm_freq_buf[3]=0;
         first_press=1;
@@ -528,8 +516,7 @@ int FM_Freq_Set_Show(int x,int y,int* result)
 }
 
 
-void Enter_Radio()
-{
+void Enter_Radio() {
     Flag_Main_Page = 0;
 
     unsigned char   key_encoder,            //编码器返回值
@@ -946,14 +933,12 @@ void Enter_Radio()
 }
 //
 #include "bsp_m62364.h"
-void RDA5807_Stop(void)
-{
+void RDA5807_Stop(void) {
     //printf("Stop FM\n");
     RDA_Power(OFF);
     M62364_SetSingleChannel(WFM_LINE_CHAN, WFM_LEVEL[0]);
 }
-void RDA5807_Resume(void)
-{
+void RDA5807_Resume(void) {
     //printf("ReOpen FM\n");
     RDA_Power(ON);
     delay_ms(2);

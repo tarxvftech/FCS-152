@@ -14,25 +14,21 @@ extern u8 A20_LEVEL[8], VOLUME, AUD;
 extern volatile u8 KDU_INSERT;
 u8 POWER_SELECT_FLAG= 1;
 
-void PWM_Init(void)
-{
+void PWM_Init(void) {
     bsp_PWM_Init();
     BackLight_SetVal(50);
 }
 
-void ADC_Init(void)
-{
+void ADC_Init(void) {
     bsp_ADC_Init();
 }
 
-void DAC_Init(void)
-{
+void DAC_Init(void) {
     SineWave_Data();    //生成数据
     bsp_DAC_Init();
 }
 
-void LightBacklight(void)
-{
+void LightBacklight(void) {
 // Serial.printf("LAMP_TIME :%d && KDU_INSERT = %d\n", LAMP_TIME, KDU_INSERT);
 // Serial.printf(" \n@@@@@%04d  KDU_INSERT = %d@@@@@%\n", __LINE__, KDU_INSERT);
     if(LAMP_TIME > 0 && KDU_INSERT == OFF) {
@@ -43,8 +39,7 @@ void LightBacklight(void)
 }
 
 
-int  Get_Battery_Vol(void)
-{
+int  Get_Battery_Vol(void) {
     int voltage  = Use_ADC();
     static u8 lowBatteryCal = 0;    //检测电池电压低次数
     if(POWER_SELECT_FLAG) {         //12V
@@ -74,8 +69,7 @@ int  Get_Battery_Vol(void)
 }
 
 //PTT press: start and end transmission beeps
-void Start_Tone(unsigned char STOP_START)
-{
+void Start_Tone(unsigned char STOP_START) {
     SPK_SWITCH(AUD, ON);//==>响 发射提示
 
     if(VOLUME>0) {
@@ -118,8 +112,7 @@ void Start_Tone(unsigned char STOP_START)
 }
 
 //长按静噪按键进入常静噪模式的提示音
-void Start_ToneSql0(void)
-{
+void Start_ToneSql0(void) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
     M62364_SetSingleChannel(A20_LINE_CHAN, 5);                  //修改增益输出"Di"
     M62364_SetSingleChannel(8, 50);                             //toneout输出打开

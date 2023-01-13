@@ -5,27 +5,23 @@
 #define ADC_SAMPLE_NUM  10
 volatile uint16_t MY_ADC_VAL[ADC_SAMPLE_NUM]; //adc的数值缓存
 
-void bsp_PWM_Init(void)
-{
+void bsp_PWM_Init(void) {
     ledcSetup(PWM_CHAN, 24000, 8);  //0~255
     ledcAttachPin(PWM_PIN, PWM_CHAN);
     ledcWrite(PWM_CHAN, 0);
 }
-void bsp_ADC_Init(void)
-{
+void bsp_ADC_Init(void) {
     pinMode(ADC_PIN,INPUT);
     adcAttachPin(ADC_PIN);//将引脚连接到ADC
     analogReadResolution(13);//设置aliogRead返回值的分辨率
 }
 
-void BackLight_SetVal(u8 val)
-{
+void BackLight_SetVal(u8 val) {
     val = val*255/100;
     ledcWrite(PWM_CHAN, val);
 }
 
-void refreshADCVal(void)
-{
+void refreshADCVal(void) {
     static int i=0;
     MY_ADC_VAL[i++] = analogRead(ADC_PIN);
     i%=10;
@@ -36,8 +32,7 @@ void refreshADCVal(void)
     i%=10;
 }
 
-uint32_t Use_ADC(void)
-{
+uint32_t Use_ADC(void) {
     uint32_t real_val = MY_ADC_VAL[0],
              v0       = MY_ADC_VAL[0],
              max_v0   = MY_ADC_VAL[0],

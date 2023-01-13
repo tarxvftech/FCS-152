@@ -10,8 +10,7 @@ const  uint8_t keymaps[MATRIX_ROWS][MATRIX_COLS]= {
     {MATRIX_RESULT_0, MATRIX_RESULT_LEFT, MATRIX_RESULT_RIGHT,  MATRIX_RESULT_N}
 };
 
-void bsp_Matrix_Init(void)
-{
+void bsp_Matrix_Init(void) {
     // gpio_config_t io_conf;
 
     // //disable interrupt
@@ -48,8 +47,7 @@ void bsp_Matrix_Init(void)
 
 }
 
-static void Key_Select_Row(uint8_t row)
-{
+static void Key_Select_Row(uint8_t row) {
     switch(row) {
     case 0:
         KEY_ROW1_SELECT();
@@ -72,13 +70,11 @@ static void Key_Select_Row(uint8_t row)
     }
 }
 //
-uint16_t Key_Read_Col(void)
-{
+uint16_t Key_Read_Col(void) {
     return (uint16_t)(KEY_COL1_READ | KEY_COL2_READ | KEY_COL3_READ | KEY_COL4_READ);
 }
 //
-unsigned char Matrix_KEY_Scan(unsigned char mode)
-{
+unsigned char Matrix_KEY_Scan(unsigned char mode) {
     if(bsp_CheckTimer(TMR_KEY_SCAN)==0) {
         return MATRIX_RESULT_ERROR;
     }

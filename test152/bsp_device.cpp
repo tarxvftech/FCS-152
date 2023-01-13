@@ -3,8 +3,7 @@
 
 volatile u32 OFF_MS=0, OFF_HUR=0;
 
-void SHUT(void)
-{
+void SHUT(void) {
     D_printf("<<<<<<SHUTING>>>>>>\n");
 
     LCD_Clear(GLOBAL32); //关屏
@@ -33,16 +32,14 @@ void SHUT(void)
     Sys_Enter_Standby();
 }
 
-void ClearShut(void)
-{
+void ClearShut(void) {
     OFF_MS  = 0;
     OFF_HUR = 0;
     LightBacklight();
 }
 //
 extern void SHUT();
-void Cal2Shut(void)
-{
+void Cal2Shut(void) {
     if(OFF_MS++>=36000) {
         OFF_MS=0;
         if(OFF_HUR++>=4) {
@@ -54,8 +51,7 @@ void Cal2Shut(void)
 
 
 //系统进入待机模式
-void Sys_Enter_Standby(void)
-{
+void Sys_Enter_Standby(void) {
     // pinMode(WAKE_UP_PIN, INPUT_PULLDOWN);
     // esp_sleep_enable_ext0_wakeup(WAKE_UP_PIN, HIGH); //1 = High, 0 = Low
     // Serial.println("Going to sleep now");
@@ -65,8 +61,7 @@ void Sys_Enter_Standby(void)
 }
 //
 //初始待机及退出
-void Standby_Init()
-{
+void Standby_Init() {
     // Encoder_Init(); //编码器按键初始化
     // delay_ms(5);
 
@@ -100,8 +95,7 @@ const char* MENU_UPDATE[3] = {
 };
 //写频界面
 int i = 0;
-int channelSetting(void)
-{
+int channelSetting(void) {
     u8 lock=OFF;
     LCD_Clear(GLOBAL32);
     LCD_ShowString0608(12, 2, "CHANNEL SETTING",     1, 128);
@@ -178,8 +172,7 @@ int channelSetting(void)
         }
     }
 }
-void TakeDataFromMem(int page)
-{
+void TakeDataFromMem(int page) {
     int send_size  = 1025;
     char data2write[1025] = {0};
     memset(data2write, '0', send_size);
@@ -220,8 +213,7 @@ void TakeDataFromMem(int page)
     }
     UART1_Send_Message(data2write, send_size);
 }
-void WriteDataBackMem(int page)
-{
+void WriteDataBackMem(int page) {
     if(page == 4) {
         save_AudioSelect(rx1_buf[ 6] - '0') ;
         save_MicLevel(rx1_buf[ 7] - '0') ;
@@ -257,8 +249,7 @@ void WriteDataBackMem(int page)
 }
 //
 
-int  checkAbout(void)//设备信息查询
-{
+int  checkAbout(void) { //设备信息查询
     LCD_Clear(GLOBAL32);
     LCD_ShowString0608(31, 0, "INFORMATION",     1, 128);
     LCD_ShowString0608(0,  1, "Device :",        0, 128);
@@ -287,8 +278,7 @@ int  checkAbout(void)//设备信息查询
     }
 }
 
-void menuUpdate(void)
-{
+void menuUpdate(void) {
     TIMES = 0;
     u8 num = 0;
     int ENSURE = 0;
@@ -356,8 +346,7 @@ void menuUpdate(void)
 }
 
 //
-void enterSecondSystem()
-{
+void enterSecondSystem() {
     u8 key=0, i = 0;
     while(1) { //检测是否要进入更新程序，更新成功重启
         if(SQUELCH_READ == 0) {

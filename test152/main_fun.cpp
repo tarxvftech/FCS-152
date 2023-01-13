@@ -44,8 +44,7 @@ int LAMP_TIME = 10000;//默认10s
 
 
 
-void VFO_Load_Data(void)
-{
+void VFO_Load_Data(void) {
     //重新载入数据
     if(get_Flag(FLAG_CF_SWITCH_ADDR)) {
         //频率模式
@@ -103,8 +102,7 @@ void VFO_Load_Data(void)
 }
 
 //主界面初始化
-void VFO_Clear()
-{
+void VFO_Clear() {
     D_printf("***************Main Interface*************\n");
     LCD_Clear(GLOBAL32);
     Flag_Main_Page = 1;
@@ -124,15 +122,14 @@ void VFO_Clear()
         bsp_StartAutoTimer(TMR_DUAL_REFRESH, DUAL_SWITCH_TIME); //启动500ms切换一次频率
     }
 }
-//
+
 //主页界面刷新
 char BIG_MODE_buf[12] = {0};
 char sele_pos = 0;      //双守双待模式下,选择的信道
 char now_chan = 0;      //当前设置的信道
 char rcv_chan = 0;      //收到信号的信道
 
-void VFO_Refresh()
-{
+void VFO_Refresh() {
     // D_printf("%s\n", __FUNCTION__);
     switch(Home_Mode) {
     case MAIN_MODE:
@@ -201,8 +198,7 @@ void VFO_Refresh()
 //
 
 //主页编码器事件处理 //Homepage Coder Events (dammit google translate!)
-void Encoder_process(u8 operate)
-{
+void Encoder_process(u8 operate) {
     // D_printf("%s\n", __FUNCTION__);
     switch(operate) {  //encoder event handling
     case key_click:
@@ -225,8 +221,7 @@ void Encoder_process(u8 operate)
     }
 }
 //matrix button event
-u8 Event_Matrix(u8 matrix_key)
-{
+u8 Event_Matrix(u8 matrix_key) {
     if(PTT_READ == 0) {
         return NO_OPERATE;
     }
@@ -551,8 +546,7 @@ u8 Event_Matrix(u8 matrix_key)
 }
 
 //收发参数发生改变后返回值处理
-void Argument_process(u8 key_pro_ret)
-{
+void Argument_process(u8 key_pro_ret) {
 
     switch(key_pro_ret) { //矩阵按键事件处理
     case RELOAD_ARG: //通道号发生改变，重新载入参数
@@ -572,8 +566,7 @@ void Argument_process(u8 key_pro_ret)
 }
 //
 
-void PTT_Control(void) //按下和松开PTT后处理
-{
+void PTT_Control(void) { //按下和松开PTT后处理
     //PTT按键
     if(PTT_READ) { //松开PTT
         if(FLAG_PTT_ONCE) { //FLAG_PTT_ONCE标志作用为:让一下程序只执行一次
@@ -639,8 +632,7 @@ void PTT_Control(void) //按下和松开PTT后处理
     }
     //
 }
-void SQ_Read_Control(void) //接收和断开信号处理
-{
+void SQ_Read_Control(void) { //接收和断开信号处理
     A002_CALLBACK();
     if(KDU_INSERT == OFF) {
         KDUCheck();
@@ -708,8 +700,7 @@ void SQ_Read_Control(void) //接收和断开信号处理
     Switch_Dual_Chan();
 }
 
-void SetNowChanSql0(u8 on)
-{
+void SetNowChanSql0(u8 on) {
     if(SQL_MODE == ON) { //关闭静噪模式
         SQUELCH_ONCE = 1;
         SQL_MODE = OFF;
@@ -732,8 +723,7 @@ void SetNowChanSql0(u8 on)
     }
 }
 
-void SQUELCH_Contol(void)   //按下和松开静噪处理
-{
+void SQUELCH_Contol(void) { //按下和松开静噪处理
     if(!PTT_READ) {
         return;
     }
@@ -785,8 +775,7 @@ void SQUELCH_Contol(void)   //按下和松开静噪处理
     //
 }
 //
-void Switch_Dual_Chan(void) //双守模式时按时切换信道接收
-{
+void Switch_Dual_Chan(void) { //双守模式时按时切换信道接收
     if(bsp_CheckTimer(TMR_DUAL_REFRESH)) {
         now_chan = (now_chan + 1) % 2;
         if(now_chan) {
@@ -799,8 +788,7 @@ void Switch_Dual_Chan(void) //双守模式时按时切换信道接收
 }
 //
 
-void LoadAgrv2Buf(char* buf, CHAN_ARV B)
-{
+void LoadAgrv2Buf(char* buf, CHAN_ARV B) {
     sprintf(buf + chan_rank, "%03d", B.CHAN);
     sprintf(buf + rx_rank, "%3.4f", B.RX_FREQ);
     sprintf(buf + tx_rank, "%3.4f", B.TX_FREQ);
@@ -817,8 +805,7 @@ void LoadAgrv2Buf(char* buf, CHAN_ARV B)
 }
 
 extern unsigned char FM_CHAN;
-void SendALL(void) //发送全部数据
-{
+void SendALL(void) { //发送全部数据
     char send_buf[256] = {0};
     strcpy(send_buf, prefix_buf[ASKALL]);
 
@@ -873,8 +860,7 @@ char send_buf[256] = {0};
 static int EnterKDUCal = 0;     //3次进入, 不断增加
 static int EXitKDUCal  = 0;     //3次退出, 清空EnterKDUCal值
 
-int KDUCheck(void)              //KDU插入检测
-{
+int KDUCheck(void) {            //KDU插入检测
     if(!PTT_READ) {
         return NO_OPERATE;
     }
@@ -928,8 +914,7 @@ int KDUCheck(void)              //KDU插入检测
     return NO_OPERATE;
 }
 
-int KDU_Processor(void)         //KDU插入后处理
-{
+int KDU_Processor(void) {       //KDU插入后处理
     if(EnterKDUCal>=2) {                  //规定时间内询问数据超过2次, 152设置为KDU插入模式;
         static u8 cf = 0;   //辅助询问信道参数
         BackLight_SetVal(BL);
@@ -1283,8 +1268,7 @@ int KDU_Processor(void)         //KDU插入后处理
     return NO_OPERATE;
 }
 
-void VOL_Reflash(void)
-{
+void VOL_Reflash(void) {
     //音量设置
     int volume_change = 0;
 
@@ -1331,8 +1315,7 @@ void VOL_Reflash(void)
         LCD_ShowBattery(Get_Battery_Vol());
     }
 }
-void MY_GLOBAL_FUN(void) //全局功能函数
-{
+void MY_GLOBAL_FUN(void) { //全局功能函数
     // D_printf("%s\n", __FUNCTION__);
     FeedDog(); //喂狗
     PTT_Control();
@@ -1350,8 +1333,7 @@ void MY_GLOBAL_FUN(void) //全局功能函数
 //
 
 //quick settings on the main interface
-void ShortCut_Menu(void)
-{
+void ShortCut_Menu(void) {
     u8 option_num = 0,
        Inc_select_change = 1,
        ENSURE = 0;
@@ -1475,8 +1457,7 @@ void ShortCut_Menu(void)
     }
 }
 //
-void ShortCut_MICGAIN_Select(void) //主界面快捷设置mic灵敏度
-{
+void ShortCut_MICGAIN_Select(void) { //主界面快捷设置mic灵敏度
     TIMES = 0;
     char trf = MIC, trf_old = MIC;
     D_printf("TRF\n");
@@ -1540,8 +1521,7 @@ void ShortCut_MICGAIN_Select(void) //主界面快捷设置mic灵敏度
     //
 }
 
-void ShortCut_FM_Select(void) //主界面快捷开关收音机
-{
+void ShortCut_FM_Select(void) { //主界面快捷开关收音机
     TIMES = 0;
     char FM_now = WFM, FM_old = WFM;
     LCD_ShowString0608(56, 2, FM_Show[FM_now], 0, 128);
@@ -1607,15 +1587,13 @@ void ShortCut_FM_Select(void) //主界面快捷开关收音机
 }
 
 //主界面信道切换
-void Channel_Info_Show(unsigned char channel) //通道选中信息显示
-{
+void Channel_Info_Show(unsigned char channel) { //通道选中信息显示
     LCD_ShowChan(83, 2, channel, 0); //显示channel号
     load_ChannelParameter(channel, &chan_arv[TMP]);
     LCD_ShowFreq(0, 1, chan_arv[TMP].RX_FREQ, 1); //显示接收频率
     return;
 }
-void ShortCut_CHAN_Select(void)
-{
+void ShortCut_CHAN_Select(void) {
     TIMES = 0;
     char chan = chan_arv[NOW].CHAN;
     if(get_Flag(FLAG_CF_SWITCH_ADDR)) {
@@ -1687,8 +1665,7 @@ void ShortCut_CHAN_Select(void)
 }
 
 //主菜单图形1： 收发设置
-void RT_Menu()
-{
+void RT_Menu() {
     TIMES = 0;
     Flag_Main_Page = 0;
 
@@ -1912,8 +1889,7 @@ void RT_Menu()
     }
 }
 
-void RT_Menu_Clear() //矩阵数据置位
-{
+void RT_Menu_Clear() { //矩阵数据置位
     sprintf(matrix_menu1[0][0], "R:%3.4f", chan_arv[NOW].RX_FREQ);
     sprintf(matrix_menu1[0][1], "%s", menu_subvoice[chan_arv[NOW].RS]);
     sprintf(matrix_menu1[1][0], "T:%3.4f", chan_arv[NOW].TX_FREQ);
@@ -1942,8 +1918,7 @@ void RT_Menu_Clear() //矩阵数据置位
 //频率校验
 //0:频率无需校正
 //其他:校正的频率
-int checkFreq(int freq_tmp)
-{
+int checkFreq(int freq_tmp) {
     int step_temp[3] = {50, 100, 125};
     int mul = 0;
     D_printf("freq_tmp:%d\n", freq_tmp);
@@ -1967,8 +1942,7 @@ int checkFreq(int freq_tmp)
 //  确认返回:ENT2LAST
 //  取消返回:CLR2LAST
 //  KDU控制:BACK2MAIN
-int RT_FREQ_Set(int x, int y, double* result, int vu_mode)
-{
+int RT_FREQ_Set(int x, int y, double* result, int vu_mode) {
     unsigned char
     locate = x + 6,
     bit = 1,
@@ -2125,8 +2099,7 @@ int RT_FREQ_Set(int x, int y, double* result, int vu_mode)
 //  确认返回:确认修改的亚音
 //  取消返回:原来的亚音
 //  KDU控制:原来的亚音
-int RT_SubVoice_Set(int row, int subvoice) //第row行显示第subvoice个亚音
-{
+int RT_SubVoice_Set(int row, int subvoice) { //第row行显示第subvoice个亚音
     TIMES = 0;
     LCD_ShowPIC0608(116, row, 0, 1);
     LCD_ShowString0408(0, 3, " CTCSS SET,   OR   ,CLR OR ENT  ", 1);
@@ -2222,8 +2195,7 @@ int RT_SubVoice_Set(int row, int subvoice) //第row行显示第subvoice个亚音
     }
 }
 
-int RT_SubVoice_Matrix_Menu_Select(int subvoice) //亚音设置：矩阵亚音选择
-{
+int RT_SubVoice_Matrix_Menu_Select(int subvoice) { //亚音设置：矩阵亚音选择
     TIMES = 0;
     int subvoice_temp = subvoice;
     u8 change_3 = 0;
@@ -2346,8 +2318,7 @@ int RT_SubVoice_Matrix_Menu_Select(int subvoice) //亚音设置：矩阵亚音�
 //  确认返回:确认修改的发射功率
 //  取消返回:原来的发射功率
 //  KDU控制:原来的发射功率
-int RT_TX_POWER_Set(int power_temp)
-{
+int RT_TX_POWER_Set(int power_temp) {
     TIMES = 0;
     unsigned char power = power_temp;
     LCD_ShowPIC0608(60, 1, 0, 1);
@@ -2395,8 +2366,7 @@ int RT_TX_POWER_Set(int power_temp)
 //  确认返回:确认修改的带宽
 //  取消返回:原来的带宽
 //  KDU控制:原来的带宽
-int RT_GBW_Set(int gbw_temp)
-{
+int RT_GBW_Set(int gbw_temp) {
     TIMES = 0;
     u8 gbw_t = gbw_temp;
     LCD_ShowPIC0608(116, 1, 0, 1);
@@ -2440,8 +2410,7 @@ int RT_GBW_Set(int gbw_temp)
 }
 
 //              收发设置：频道别名
-void RT_NICKNAME_Set(unsigned char current_channel, unsigned char nn_temp[7])
-{
+void RT_NICKNAME_Set(unsigned char current_channel, unsigned char nn_temp[7]) {
     TIMES = 0;
     unsigned char
     nn[7] = {32},
@@ -2571,8 +2540,7 @@ void RT_NICKNAME_Set(unsigned char current_channel, unsigned char nn_temp[7])
     }
 }
 //              收发设置：信道号选择
-void RT_CHAN_Switch(void)
-{
+void RT_CHAN_Switch(void) {
     TIMES = 0;
     u8
     chan_temp = chan_arv[NOW].CHAN,
@@ -2713,8 +2681,7 @@ void RT_CHAN_Switch(void)
 //CLR2LAST: 返回前一级
 //ENT2LAST: 设置成功退出
 //BACK2MAIN:按键2/kdu控制退出
-u8 Screen_Contrast_Set(void)
-{
+u8 Screen_Contrast_Set(void) {
     LCD_ShowString0608(19, 1, "SCREEN CONTRAST", 1, 128);
     LCD_ShowContrast(SC);
     while(1) {
@@ -2771,8 +2738,7 @@ u8 Screen_Contrast_Set(void)
 
 //CLR2LAST:返回前一级
 //BACK2MAIN:按键2/kdu控制退出/进入对比度设置后设置完成
-u8 Light_Intensity_set(void)
-{
+u8 Light_Intensity_set(void) {
     u8 ENTER = 0;
     LCD_ShowString0608(19, 1, "LIGHT INTENSITY", 1, 128);
     LCD_ShowString0608(0, 2, "                      ", 1, 128);
@@ -2842,8 +2808,7 @@ u8 Light_Intensity_set(void)
     //  return 0;
 }
 
-void Light_Mode_Clear(u8 sel_pos)
-{
+void Light_Mode_Clear(u8 sel_pos) {
 
     LCD_Clear(EDITZONE32);
     LCD_ShowString0608(34, 1, "LIGHT MODE", 1, 128);
@@ -2854,8 +2819,7 @@ void Light_Mode_Clear(u8 sel_pos)
     LCD_ShowPIC0408(15, 3, 1);
 }
 
-void Light_Mode_Set(void) //
-{
+void Light_Mode_Set(void) { //
     TIMES = 0;
     u8 BL_temp = BL;
     static u8 pos = 0;
@@ -2927,8 +2891,7 @@ void Light_Mode_Set(void) //
 //
 
 //按键5 初始化
-void Zero_Menu(void)
-{
+void Zero_Menu(void) {
     Flag_Main_Page = 0;
     TIMES = 0;
     u8 pos = 0;
@@ -3002,8 +2965,7 @@ void Zero_Menu(void)
 }
 
 //返回值无特殊意义
-int Zeroize_All(void)
-{
+int Zeroize_All(void) {
     TIMES = 0;
     u8 pos = 0;
 
@@ -3071,8 +3033,7 @@ int Zeroize_All(void)
 //
 
 //按键7 OPTION菜单
-void OPTION_Menu(void)
-{
+void OPTION_Menu(void) {
     Flag_Main_Page = 0;
     TIMES = 0;
     u8 num = 0;
@@ -3158,8 +3119,7 @@ void OPTION_Menu(void)
 }
 //
 //测试按键
-void Key_Test()
-{
+void Key_Test() {
     TIMES = 0;
     int delay_f1_f2 = 0, result = 0;
 
@@ -3289,8 +3249,7 @@ void Key_Test()
     }
 }
 //功能0：锁屏锁盘
-int Lock_Screen_KeyBoard()
-{
+int Lock_Screen_KeyBoard() {
     int f1 = 0, f2 = 0, i = 0;
     int volume_change = 0;
     if(Flag_Main_Page == 0) {
@@ -3383,8 +3342,7 @@ int Lock_Screen_KeyBoard()
 //
 
 //按键8 PGM菜单
-void PGM_Menu()
-{
+void PGM_Menu() {
     Flag_Main_Page = 0;
     TIMES = 0;
     u8 num = 0;
@@ -3505,8 +3463,7 @@ void PGM_Menu()
 //  ENT2LAST:确认修改并退出音频设置返回PDM菜单
 //  BACK2MAIN:按键8/KDU控制直接退出
 //                              相关设置1：音频选通并设置咪灵敏度
-int AUDIO_SET(u8 _audio)
-{
+int AUDIO_SET(u8 _audio) {
     TIMES = 0;
 
     u8 temp = MIC;
@@ -3609,8 +3566,7 @@ int AUDIO_SET(u8 _audio)
 //  CLR2LAST:不修改返回PGM菜单
 //  ENT2LAST:确认修改然后返回PGM菜单
 //  BACK2MAIN:按键8/KDU控制直接退出
-int PGM_AUDIO_Select(u8 row)
-{
+int PGM_AUDIO_Select(u8 row) {
     TIMES = 0;
     u8 index = AUD, ENTER = 0;
     LCD_ShowMenu31(menu_audio, 3, index);
@@ -3694,8 +3650,7 @@ int PGM_AUDIO_Select(u8 row)
     }
 }
 //                              相关设置2：静噪等级
-int PGM_SQL_Set(u8 row)
-{
+int PGM_SQL_Set(u8 row) {
     TIMES = 0;
     u8 sql_temp = SQL;
     LCD_ShowString0608(30, row, ":LEVEL", 0, 66);
@@ -3765,8 +3720,7 @@ int PGM_SQL_Set(u8 row)
 }
 
 //                              相关设置3：步进
-int PGM_STEP_Set(u8 row)
-{
+int PGM_STEP_Set(u8 row) {
     TIMES = 0;
     u8 step_temp = STEP;
     LCD_ShowAscii0608(36, row, ':', 0);
@@ -3833,8 +3787,7 @@ int PGM_STEP_Set(u8 row)
     }
 }
 //                              相关设置4：加密
-int PGM_ENCRPY_Set(u8 row)
-{
+int PGM_ENCRPY_Set(u8 row) {
     TIMES = 0;
     u8 SCRAM_LEVEL_temp = ENC;
     LCD_ShowAscii0608(48, row, ':', 0);
@@ -3901,8 +3854,7 @@ int PGM_ENCRPY_Set(u8 row)
     }
 }
 //                              相关设置5：发射限时
-int PGM_TOT_Set(u8 row)
-{
+int PGM_TOT_Set(u8 row) {
     TIMES = 0;
     u8 tot_temp = load_Tot();
     LCD_ShowString0608(30, row, ": MINUTE", 0, 128);
@@ -3980,8 +3932,7 @@ int PGM_TOT_Set(u8 row)
     }
 }
 //                              相关设置6：背光灯亮起时长
-int PGM_LAMP_TIME_Set(u8 row)
-{
+int PGM_LAMP_TIME_Set(u8 row) {
 
     u8 LT = LAMP_TIME / 10000;
 
@@ -4045,8 +3996,7 @@ int PGM_LAMP_TIME_Set(u8 row)
 }
 
 //                              相关设置7：六针头电源输出
-int PGM_POWEROUT_Set(u8 row)
-{
+int PGM_POWEROUT_Set(u8 row) {
     TIMES = 0;
     char power = VDO;
     LCD_ShowAscii0608(60, row, ':', 0);
@@ -4103,8 +4053,7 @@ int PGM_POWEROUT_Set(u8 row)
 }
 
 //                              相关设置8:PTT按键提示音设置
-int TONE_SET(u8 _tone)   //_tone:要进行设置的Tone;
-{
+int TONE_SET(u8 _tone) { //_tone:要进行设置的Tone;
     char t_sta[2] = {PRE_TONE, END_TONE}; //前置信令和后置信令的状态
 
     TIMES = 0;
@@ -4165,8 +4114,7 @@ int TONE_SET(u8 _tone)   //_tone:要进行设置的Tone;
         }
     }
 }
-int PGM_TONE_Select(u8 row)
-{
+int PGM_TONE_Select(u8 row) {
     TIMES = 0;
     u8 index = 0;
     LCD_ShowMenu31(menu_tone, 2, index);
@@ -4224,8 +4172,7 @@ int PGM_TONE_Select(u8 row)
 }
 
 extern volatile u8 key_timer_cnt1, key_timer_cnt2;
-void disposePer100ms(void) //100ms
-{
+void disposePer100ms(void) { //100ms
 
     //清除中断标志位
     if(SQL_CTL) {

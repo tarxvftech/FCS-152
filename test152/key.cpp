@@ -5,8 +5,7 @@
 #include "bsp_conio.h"
 #include "bsp_MatrixKeyBoard.h"
 
-void Key_Init(void)
-{
+void Key_Init(void) {
     // Encoder_Click_Init();   //编码器按下初始化
     // Encoder_Spin_init();    //编码器旋转初始化
     Encoder_Init();
@@ -18,8 +17,7 @@ void Key_Init(void)
 
 
 extern void ClearShut(void);
-unsigned char VolumeKeyScan(unsigned char mode) //音量加减按键扫描
-{
+unsigned char VolumeKeyScan(unsigned char mode) { //音量加减按键扫描
     static unsigned char key_up=1;
     if(mode) {
         key_up=1;

@@ -1,4 +1,10 @@
---style=1tbs
+--style=attach
+--attach-namespaces
+--attach-classes
+--attach-inlines
+--attach-extern-c
+--attach-closing-while
+--remove-comment-prefix
 --indent=spaces=4
 --indent-classes
 --unpad-paren
@@ -7,5 +13,5 @@
 --break-one-line-headers
 --add-braces
 --convert-tabs
---remove-comment-prefix
-
+--keep-one-line-blocks
+--keep-one-line-statements

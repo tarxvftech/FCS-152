@@ -1,8 +1,7 @@
 #include "bsp_m62364.h"
 #include "bsp_delay.h"
 
-void bsp_M62364_Init(void)
-{
+void bsp_M62364_Init(void) {
     pinMode(M62364_LD_PIN,   OUTPUT);
     pinMode(M62364_CLK_PIN,  OUTPUT);
     pinMode(M62364_DATA_PIN, OUTPUT);
@@ -11,8 +10,7 @@ void bsp_M62364_Init(void)
     M62364_CLK_SET;
     M62364_DATA_SET;
 }
-void M62364Reset(void)
-{
+void M62364Reset(void) {
     M62364_SetSingleChannel(TONE_OUT_CHAN, 0);
     M62364_SetSingleChannel(FM_S_EN_CHAN,  0);
     M62364_SetSingleChannel(MIC_OUT_CHAN,  0);
@@ -22,13 +20,11 @@ void M62364Reset(void)
     M62364_SetSingleChannel(8, 0);
 
 }
-void M62364_Init(void)
-{
+void M62364_Init(void) {
     bsp_M62364_Init();
 }
 
-void M62364_sendData(short iSdata)
-{
+void M62364_sendData(short iSdata) {
     unsigned char   iIndex;
 
     M62364_LD_CLR;
@@ -50,8 +46,7 @@ void M62364_sendData(short iSdata)
     M62364_DATA_SET;
 }
 
-void M62364_SetSingleChannel(unsigned char chan, unsigned char data)
-{
+void M62364_SetSingleChannel(unsigned char chan, unsigned char data) {
     D_printf("\n@@@@@chan:%d, value:%03d@@@@@\n", chan, data);
     unsigned short data_send=0;
     if(0<chan && chan<9) {

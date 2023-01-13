@@ -1,7 +1,6 @@
 #include "bsp_lcd.h"
 
-void LCD_GPIO_Init(void)
-{
+void LCD_GPIO_Init(void) {
     pinMode(LCD_SCL_PIN, OUTPUT);
     pinMode(LCD_SDA_PIN, OUTPUT);
     pinMode(LCD_RS_PIN, OUTPUT);

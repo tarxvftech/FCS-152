@@ -13,8 +13,7 @@ extern void ClearShut(void);
 extern int L_LAST, R_LAST;
 
 
-void Encoder_Init()
-{
+void Encoder_Init() {
     Encoder_Click_Init();
     Encoder_Spin_init();
 
@@ -22,12 +21,10 @@ void Encoder_Init()
     R_LAST = ENCODER_SPIN_R_READ;
 }
 
-int EncoderClickValidate(void)
-{
+int EncoderClickValidate(void) {
     return (ENCODER_CLICK_READ==0);
 }
-static unsigned char key_driver(void)
-{
+static unsigned char key_driver(void) {
     static unsigned char key_state_buffer1 = key_state_0;
 
     unsigned char key_return = key_idle;
@@ -87,8 +84,7 @@ static unsigned char key_driver(void)
                                         Return to the correct four states of no key, single click, double click and long press on the upper layer
     This function is called by the upper loop with an interval of 10ms
 ***************************************************************************/
-u8 Encoder_Switch_Scan(u8 mode)
-{
+u8 Encoder_Switch_Scan(u8 mode) {
     static unsigned char key_state_buffer2 = key_state_0;
 
     unsigned char key_return = key_idle;
@@ -126,8 +122,7 @@ u8 Encoder_Switch_Scan(u8 mode)
     return key_return;
 }
 
-void disposeEncoderSpined(void)
-{
+void disposeEncoderSpined(void) {
     encoder_rotated = true;
     //TODO:implement https://www.pinteric.com/rotary.html
     //to handle this well requires replacing all uses of TIMES. oh well.

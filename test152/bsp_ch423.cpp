@@ -6,8 +6,7 @@ static unsigned char SaveCurrentIO  = 0x00;
 static unsigned char SaveCurrentOCL = 0x00;
 static unsigned char SaveCurrentOCH = 0x00;
 
-void CH423_Init()
-{
+void CH423_Init() {
     bsp_IIC_Init(); //IIC 引脚初始化
     //置低电平
     CH423_WriteByte(CH423_OC_L_CMD);
@@ -20,8 +19,7 @@ void CH423_Init()
     CH423_WriteByte(CH423_OC_H_CMD   | BIT_OC8_L_DAT);
 }
 
-void CH423_Write(unsigned short cmd)      // 写命令
-{
+void CH423_Write(unsigned short cmd) {    // 写命令
     IIC_Start();    // 启动总线
     IIC_Send_Byte(((unsigned char)(cmd>>7) & CH423_I2C_MASK) | CH423_I2C_ADDR1);
     IIC_Wait_Ack();
@@ -30,8 +28,7 @@ void CH423_Write(unsigned short cmd)      // 写命令
     IIC_Stop();    // 结束总线
 }
 
-void CH423_WriteByte(unsigned short cmd)      // 写出数据
-{
+void CH423_WriteByte(unsigned short cmd) {    // 写出数据
     IIC_Start();    // 启动总线
     IIC_Send_Byte((unsigned char)(cmd>>8));
     IIC_Wait_Ack();
@@ -40,8 +37,7 @@ void CH423_WriteByte(unsigned short cmd)      // 写出数据
     IIC_Stop();    // 结束总线
 }
 
-unsigned char CH423_ReadByte()    // 读取数据
-{
+unsigned char CH423_ReadByte() {  // 读取数据
     unsigned char din=0;
     IIC_Start();    // 启动总线
     IIC_Send_Byte(CH423_RD_IO_CMD);      // 此值为0x4D
@@ -52,8 +48,7 @@ unsigned char CH423_ReadByte()    // 读取数据
 }
 
 /////////////////////////////////////////////////////////////////////////////
-void SetIOChannel(unsigned char IOChannel)
-{
+void SetIOChannel(unsigned char IOChannel) {
     if(IOChannel > 7) {
         return;
     }
@@ -61,8 +56,7 @@ void SetIOChannel(unsigned char IOChannel)
     CH423_WriteByte(CH423_SET_IO_CMD | SaveCurrentIO);
 }
 
-void ClrIOChannel(unsigned char IOChannel)
-{
+void ClrIOChannel(unsigned char IOChannel) {
     if(IOChannel > 7) {
         return;
     }
@@ -70,8 +64,7 @@ void ClrIOChannel(unsigned char IOChannel)
     CH423_WriteByte(CH423_SET_IO_CMD | SaveCurrentIO);
 }
 
-void SetOCChannel(unsigned char OCChannel)
-{
+void SetOCChannel(unsigned char OCChannel) {
     if(OCChannel > 15) {
         return;
     }
@@ -85,8 +78,7 @@ void SetOCChannel(unsigned char OCChannel)
 
 }
 
-void ClrOCChannel(unsigned char OCChannel)
-{
+void ClrOCChannel(unsigned char OCChannel) {
     if(OCChannel > 15) {
         return;
     }

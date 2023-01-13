@@ -4,8 +4,7 @@
 #define I2C_DELAY 1
 
 //IIC初始化
-void bsp_IIC_Init(void)
-{
+void bsp_IIC_Init(void) {
     pinMode(SDA_PIN, OUTPUT);
     pinMode(SCL_PIN, OUTPUT);
     IIC_SDA1;
@@ -13,8 +12,7 @@ void bsp_IIC_Init(void)
 }
 
 //产生IIC起始信号
-void IIC_Start(void)
-{
+void IIC_Start(void) {
     SDA_OUT();     //sda线输出
     IIC_SDA1;
     IIC_SCL1;
@@ -24,8 +22,7 @@ void IIC_Start(void)
     IIC_SCL0;//钳住I2C总线，准备发送或接收数据
 }
 //产生IIC停止信号
-void IIC_Stop(void)
-{
+void IIC_Stop(void) {
     SDA_OUT();//sda线输出
     IIC_SCL0;
     IIC_SDA0;//STOP:when CLK is high DATA change form low to high
@@ -37,8 +34,7 @@ void IIC_Stop(void)
 //等待应答信号到来
 //返回值：1，接收应答失败
 //        0，接收应答成功
-uint8_t IIC_Wait_Ack(void)
-{
+uint8_t IIC_Wait_Ack(void) {
     uint8_t ucErrTime=0;
     SDA_IN();      //SDA设置为输入
     IIC_SDA1;
@@ -56,8 +52,7 @@ uint8_t IIC_Wait_Ack(void)
     return 0;
 }
 //产生ACK应答
-void IIC_Ack(void)
-{
+void IIC_Ack(void) {
     IIC_SCL0;
     SDA_OUT();
     IIC_SDA0;
@@ -67,8 +62,7 @@ void IIC_Ack(void)
     IIC_SCL0;
 }
 //不产生ACK应答
-void IIC_NAck(void)
-{
+void IIC_NAck(void) {
     IIC_SCL0;
     SDA_OUT();
     IIC_SDA1;
@@ -81,8 +75,7 @@ void IIC_NAck(void)
 //返回从机有无应答
 //1，有应答
 //0，无应答
-void IIC_Send_Byte(uint8_t txd)
-{
+void IIC_Send_Byte(uint8_t txd) {
     uint8_t t;
     SDA_OUT();
     IIC_SCL0;//拉低时钟开始数据传输
@@ -102,8 +95,7 @@ void IIC_Send_Byte(uint8_t txd)
     }
 }
 //读1个字节，ack=1时，发送ACK，ack=0，发送nACK
-uint8_t IIC_Read_Byte(uint8_t ack)
-{
+uint8_t IIC_Read_Byte(uint8_t ack) {
     uint8_t i,receive=0;
     SDA_IN();//SDA设置为输入
     for(i=0; i<8; i++) {

@@ -20,8 +20,7 @@ esp_timer_handle_t timer0_handle = 0;
 
 
 //TIMER0    1ms
-void bsp_Timer0_Init(void)
-{
+void bsp_Timer0_Init(void) {
     esp_err_t err = esp_timer_create(&Mtimer0, &timer0_handle);
     err = esp_timer_start_periodic(timer0_handle, 1000);
 
@@ -30,29 +29,25 @@ void bsp_Timer0_Init(void)
 
 extern void disposeAllTimeData(void);
 extern volatile int spin_cal;
-void timer0_cb(void* arg)
-{
+void timer0_cb(void* arg) {
     spin_cal++;
     disposeAllTimeData();
 }
 ///////////////////////////////////////////////////////////////////
 //TIMER1    100ms
-void bsp_Timer1_Init(void)
-{
+void bsp_Timer1_Init(void) {
     t1.attach(0.1, timer1_cb);
 }
 extern void disposePer100ms(void);
 extern void refreshADCVal(void);
-void timer1_cb(void)
-{
+void timer1_cb(void) {
     disposePer100ms();
     refreshADCVal();
 }
 ///////////////////////////////////////////////////////////////////
 static void IRAM_ATTR timer2_cb(void* arg);
 //TIMER2    TIMER_INTR_US=7us
-void    bsp_Timer2_Init(void)
-{
+void    bsp_Timer2_Init(void) {
     timer_idx_t timer_idx = TIMER_0;
     timer_autoreload_t auto_reload = TIMER_AUTORELOAD_EN;
 
@@ -81,8 +76,7 @@ void    bsp_Timer2_Init(void)
 }
 
 extern void RingArray_Intr(void);
-static void IRAM_ATTR timer2_cb(void* arg)
-{
+static void IRAM_ATTR timer2_cb(void* arg) {
     timer_group_clr_intr_status_in_isr(TIMER_GROUP_0, TIMER_0);
     timer_group_enable_alarm_in_isr(TIMER_GROUP_0, TIMER_0);
     RingArray_Intr();

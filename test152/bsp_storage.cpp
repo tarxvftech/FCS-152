@@ -21,8 +21,7 @@ CHAN_ARV chan_arv[ARV_MEM_COUNT] = {1, 0, 0, 1, 0, 0, 435.025, 435.025, "       
 nvs_handle PRC152handle;                    //储存空间打开后的操作句柄
 esp_err_t  err;                             //操作结果返回值
 const char* PRC152MARK2 = "PRC152MARK2";    //储存空间名称
-void Init_Storage(void)
-{
+void Init_Storage(void) {
     err = nvs_flash_init();
     if(err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
         ESP_ERROR_CHECK(nvs_flash_erase());
@@ -43,16 +42,14 @@ void Init_Storage(void)
 }
 
 //修改标志位
-void    set_Flag(int flag_number, uint8_t Flag)
-{
+void    set_Flag(int flag_number, uint8_t Flag) {
     err = nvs_set_u8(PRC152handle, TAG_FLAG[flag_number], Flag);
     if(err) {
         log_v("set_Flag fail: %s", nvs_error(err));
     }
     ESP_ERROR_CHECK(nvs_commit(PRC152handle));
 }
-uint8_t get_Flag(int flag_number)
-{
+uint8_t get_Flag(int flag_number) {
     uint8_t Flag = 0;
     err = nvs_get_u8(PRC152handle, TAG_FLAG[flag_number], &Flag);
     if(err) {
@@ -62,24 +59,20 @@ uint8_t get_Flag(int flag_number)
 }
 
 //扫描添加
-void    set_Scan(uint8_t channel, uint8_t scan)
-{
+void    set_Scan(uint8_t channel, uint8_t scan) {
 }
-uint8_t get_Scan(uint8_t channel)
-{
+uint8_t get_Scan(uint8_t channel) {
     return 0;
 }
 
-void    save_ChanA(uint8_t chan)
-{
+void    save_ChanA(uint8_t chan) {
     err = nvs_set_u8(PRC152handle, "CHANA", chan);
     if(err) {
         log_v("save_ChanA fail: %s", nvs_error(err));
     }
     ESP_ERROR_CHECK(nvs_commit(PRC152handle));
 }
-uint8_t load_ChanA(void)
-{
+uint8_t load_ChanA(void) {
     uint8_t chan = 1;
     err = nvs_get_u8(PRC152handle, "CHANA", &chan);
     if(err) {
@@ -88,16 +81,14 @@ uint8_t load_ChanA(void)
     return chan;
 }
 //
-void    save_ChanB(uint8_t chan)
-{
+void    save_ChanB(uint8_t chan) {
     err = nvs_set_u8(PRC152handle, "CHANB", chan);
     if(err) {
         log_v("save_ChanB fail: %s", nvs_error(err));
     }
     ESP_ERROR_CHECK(nvs_commit(PRC152handle));
 }
-uint8_t load_ChanB(void)
-{
+uint8_t load_ChanB(void) {
     uint8_t chan = 2;
     err = nvs_get_u8(PRC152handle, "CHANB", &chan);
     if(err) {
@@ -107,16 +98,14 @@ uint8_t load_ChanB(void)
 }
 
 //信道号
-void    save_CurrentChannel(uint8_t channel)
-{
+void    save_CurrentChannel(uint8_t channel) {
     err = nvs_set_u8(PRC152handle, "CURRENTCHAN", channel);
     if(err) {
         log_v("save_CurrentChannel fail: %s", nvs_error(err));
     }
     ESP_ERROR_CHECK(nvs_commit(PRC152handle));
 }
-uint8_t load_CurrentChannel(void)
-{
+uint8_t load_CurrentChannel(void) {
     uint8_t chan = 0;
     err = nvs_get_u8(PRC152handle, "CURRENTCHAN", &chan);
     if(err) {
@@ -127,8 +116,7 @@ uint8_t load_CurrentChannel(void)
 //
 
 //步进
-void    save_Step(uint8_t step)
-{
+void    save_Step(uint8_t step) {
     step = step<3 ? step : 0;
     err = nvs_set_u8(PRC152handle, "STEP", step);
 
@@ -137,8 +125,7 @@ void    save_Step(uint8_t step)
     }
     ESP_ERROR_CHECK(nvs_commit(PRC152handle));
 }
-uint8_t load_Step(void)
-{
+uint8_t load_Step(void) {
     uint8_t step = 0;
     err = nvs_get_u8(PRC152handle, "STEP", &step);
     if(err) {
@@ -149,8 +136,7 @@ uint8_t load_Step(void)
 //
 
 //静噪
-void    save_Sql(uint8_t sql)
-{
+void    save_Sql(uint8_t sql) {
     sql = sql<9 ? sql : 1;
     err = nvs_set_u8(PRC152handle, "SQL", sql);
 
@@ -159,8 +145,7 @@ void    save_Sql(uint8_t sql)
     }
     ESP_ERROR_CHECK(nvs_commit(PRC152handle));
 }
-uint8_t load_Sql(void)
-{
+uint8_t load_Sql(void) {
     uint8_t sql = 1;
     err = nvs_get_u8(PRC152handle, "SQL", &sql);
     if(err) {
@@ -171,8 +156,7 @@ uint8_t load_Sql(void)
 //
 
 //咪灵敏度
-void    save_MicLevel(uint8_t mic)
-{
+void    save_MicLevel(uint8_t mic) {
     mic = mic<=7 ? mic : 0;
     err = nvs_set_u8(PRC152handle, "MIC_LEVEL", mic);
 
@@ -181,8 +165,7 @@ void    save_MicLevel(uint8_t mic)
     }
     ESP_ERROR_CHECK(nvs_commit(PRC152handle));
 }
-uint8_t load_MicLevel(void)
-{
+uint8_t load_MicLevel(void) {
     uint8_t mic = 0;
     err = nvs_get_u8(PRC152handle, "MIC_LEVEL", &mic);
     if(err) {
@@ -193,8 +176,7 @@ uint8_t load_MicLevel(void)
 //
 
 //音频输出
-void    save_AudioSelect(uint8_t audio)
-{
+void    save_AudioSelect(uint8_t audio) {
     audio = audio<=2 ? audio : 0;
     err = nvs_set_u8(PRC152handle, "AUDIO", audio);
 
@@ -203,8 +185,7 @@ void    save_AudioSelect(uint8_t audio)
     }
     ESP_ERROR_CHECK(nvs_commit(PRC152handle));
 }
-uint8_t load_AudioSelect(void)
-{
+uint8_t load_AudioSelect(void) {
     uint8_t audio = 0;
     err = nvs_get_u8(PRC152handle, "AUDIO", &audio);
     if(err) {
@@ -215,8 +196,7 @@ uint8_t load_AudioSelect(void)
 //
 
 //加密
-void    save_ScramLevel(uint8_t scram)
-{
+void    save_ScramLevel(uint8_t scram) {
     scram = scram<9 ? scram : 0;
     err = nvs_set_u8(PRC152handle, "SCRAM", scram);
 
@@ -225,8 +205,7 @@ void    save_ScramLevel(uint8_t scram)
     }
     ESP_ERROR_CHECK(nvs_commit(PRC152handle));
 }
-uint8_t load_ScramLevel(void)
-{
+uint8_t load_ScramLevel(void) {
     uint8_t scram = 0;
     err = nvs_get_u8(PRC152handle, "SCRAM", &scram);
     if(err) {
@@ -237,8 +216,7 @@ uint8_t load_ScramLevel(void)
 //
 
 //发射延时
-void    save_Tot(uint8_t tot)
-{
+void    save_Tot(uint8_t tot) {
     tot = tot<10 ? tot : 0;
     err = nvs_set_u8(PRC152handle, "TOT", tot);
 
@@ -247,8 +225,7 @@ void    save_Tot(uint8_t tot)
     }
     ESP_ERROR_CHECK(nvs_commit(PRC152handle));
 }
-uint8_t load_Tot(void)
-{
+uint8_t load_Tot(void) {
     uint8_t tot = 0;
     err = nvs_get_u8(PRC152handle, "TOT", &tot);
     if(err) {
@@ -259,8 +236,7 @@ uint8_t load_Tot(void)
 //
 
 //背光强度
-void    save_Backlightness(uint8_t backlightness)
-{
+void    save_Backlightness(uint8_t backlightness) {
     backlightness = backlightness<=100 ? backlightness : 50;
     err = nvs_set_u8(PRC152handle, "BACKLIGHTNESS", backlightness);
 
@@ -269,8 +245,7 @@ void    save_Backlightness(uint8_t backlightness)
     }
     ESP_ERROR_CHECK(nvs_commit(PRC152handle));
 }
-uint8_t load_Backlightness(void)
-{
+uint8_t load_Backlightness(void) {
     uint8_t backlightness = 0;
     err = nvs_get_u8(PRC152handle, "BACKLIGHTNESS", &backlightness);
     if(err) {
@@ -281,16 +256,14 @@ uint8_t load_Backlightness(void)
 //
 
 //背光时间  1:10s  0:常亮
-void    save_LampTime(uint8_t lamptime)
-{
+void    save_LampTime(uint8_t lamptime) {
     err = nvs_set_u8(PRC152handle, "LAMPTIME", lamptime);
     if(err) {
         log_v("save_LampTime fail: %s", nvs_error(err));
     }
     ESP_ERROR_CHECK(nvs_commit(PRC152handle));
 }
-uint8_t load_LampTime(void)
-{
+uint8_t load_LampTime(void) {
     uint8_t lamptime = 0;
     err = nvs_get_u8(PRC152handle, "LAMPTIME", &lamptime);
     if(err) {
@@ -301,8 +274,7 @@ uint8_t load_LampTime(void)
 //
 
 //对比度
-void    save_ScreenContrast(uint8_t screencontrast)
-{
+void    save_ScreenContrast(uint8_t screencontrast) {
     screencontrast = screencontrast<7 ? screencontrast : 3;
     err = nvs_set_u8(PRC152handle, "SCREENCONTRAST", screencontrast);
 
@@ -311,8 +283,7 @@ void    save_ScreenContrast(uint8_t screencontrast)
     }
     ESP_ERROR_CHECK(nvs_commit(PRC152handle));
 }
-uint8_t load_ScreenContrast(void)
-{
+uint8_t load_ScreenContrast(void) {
     uint8_t screencontrast = 3;
     err = nvs_get_u8(PRC152handle, "SCREENCONTRAST", &screencontrast);
     if(err) {
@@ -323,16 +294,14 @@ uint8_t load_ScreenContrast(void)
 //
 
 //六针头输出
-void    save_VDO(uint8_t vdo)
-{
+void    save_VDO(uint8_t vdo) {
     err = nvs_set_u8(PRC152handle, "VDO", vdo);
     if(err) {
         log_v("save_VDO fail: %s", nvs_error(err));
     }
     ESP_ERROR_CHECK(nvs_commit(PRC152handle));
 }
-uint8_t load_VDO(void)
-{
+uint8_t load_VDO(void) {
     uint8_t vdo = 0;
     err = nvs_get_u8(PRC152handle, "VDO", &vdo);
     if(err) {
@@ -343,8 +312,7 @@ uint8_t load_VDO(void)
 //
 
 //全局音量
-void    save_OverVolume(uint8_t volume)
-{
+void    save_OverVolume(uint8_t volume) {
     volume = volume<=7 ? volume : 2;
     err = nvs_set_u8(PRC152handle, "VOLUME", volume);
 
@@ -353,8 +321,7 @@ void    save_OverVolume(uint8_t volume)
     }
     ESP_ERROR_CHECK(nvs_commit(PRC152handle));
 }
-uint8_t load_OverVolume(void)
-{
+uint8_t load_OverVolume(void) {
     uint8_t volume = 2;
     err = nvs_get_u8(PRC152handle, "VOLUME", &volume);
     if(err) {
@@ -365,8 +332,7 @@ uint8_t load_OverVolume(void)
 //
 
 //PTT前置提示音
-void    save_PreTone(uint8_t pretone)
-{
+void    save_PreTone(uint8_t pretone) {
     pretone = pretone<2 ? pretone : 1;
     err = nvs_set_u8(PRC152handle, "PRETONE", pretone);
 
@@ -375,8 +341,7 @@ void    save_PreTone(uint8_t pretone)
     }
     ESP_ERROR_CHECK(nvs_commit(PRC152handle));
 }
-uint8_t load_PreTone(void)
-{
+uint8_t load_PreTone(void) {
     uint8_t pretone = 1;
     err = nvs_get_u8(PRC152handle, "PRETONE", &pretone);
     if(err) {
@@ -387,8 +352,7 @@ uint8_t load_PreTone(void)
 //
 
 //PTT结束提示音
-void    save_EndTone(uint8_t endtone)
-{
+void    save_EndTone(uint8_t endtone) {
 //    Serial.printf("change endtone:%d", endtone);
     endtone = endtone<2 ? endtone : 0;
     err = nvs_set_u8(PRC152handle, "ENDTONE", endtone);
@@ -398,8 +362,7 @@ void    save_EndTone(uint8_t endtone)
     }
     ESP_ERROR_CHECK(nvs_commit(PRC152handle));
 }
-uint8_t load_EndTone(void)
-{
+uint8_t load_EndTone(void) {
     uint8_t endtone = 0;
     err = nvs_get_u8(PRC152handle, "ENDTONE", &endtone);
     if(err) {
@@ -410,8 +373,7 @@ uint8_t load_EndTone(void)
 //
 
 //收音机频率//870~1080
-void save_FMFreq(int32_t fm_freq)
-{
+void save_FMFreq(int32_t fm_freq) {
     fm_freq = (fm_freq < 870 || fm_freq > 1080) ? 885 : fm_freq;
     err = nvs_set_i32(PRC152handle, "FM_FREQ", fm_freq);
 
@@ -420,8 +382,7 @@ void save_FMFreq(int32_t fm_freq)
     }
     ESP_ERROR_CHECK(nvs_commit(PRC152handle));
 }
-int  load_FMFreq(void)
-{
+int  load_FMFreq(void) {
     int32_t fm_freq = 0;
     err = nvs_get_i32(PRC152handle, "FM_FREQ", &fm_freq);
     if(err) {
@@ -433,8 +394,7 @@ int  load_FMFreq(void)
 
 
 //信道数据保存
-void save_ChannelParameter(uint8_t chan, CHAN_ARV S)
-{
+void save_ChannelParameter(uint8_t chan, CHAN_ARV S) {
 
     D_printf("Save:  CHAN:%3d, TS:%3d, RS:%3d, POWER:%d, GBW:%d, TX:%f,  RX:%f,  NN:%s**\n",
              chan,   S.TS,  S.RS,  S.POWER, S.GBW,  S.TX_FREQ, S.RX_FREQ, S.NN);
@@ -490,8 +450,7 @@ void save_ChannelParameter(uint8_t chan, CHAN_ARV S)
     ESP_ERROR_CHECK(nvs_commit(PRC152handle));
     D_printf("save:%s\n", tag_chan);
 }
-void load_ChannelParameter(uint8_t chan, CHAN_ARV_P L)
-{
+void load_ChannelParameter(uint8_t chan, CHAN_ARV_P L) {
     char chan_load[MEM_LENGTH] = {0};
     char tag_chan[8] = "CHAN001";
     memset(L, 0, sizeof(CHAN_ARV));
@@ -554,8 +513,7 @@ void load_ChannelParameter(uint8_t chan, CHAN_ARV_P L)
     return;
 }
 //
-void save_ChannelParameterStr(uint8_t chan, char* S)
-{
+void save_ChannelParameterStr(uint8_t chan, char* S) {
     char tag_chan[8] = "CHAN001";
     sprintf(tag_chan, "CHAN%03d", chan);
     err = nvs_set_str(PRC152handle, tag_chan, S);
@@ -565,8 +523,7 @@ void save_ChannelParameterStr(uint8_t chan, char* S)
     ESP_ERROR_CHECK(nvs_commit(PRC152handle));
 
 }
-void load_ChannelParameterStr(uint8_t chan, char* L)
-{
+void load_ChannelParameterStr(uint8_t chan, char* L) {
     char tag_chan[8] = "CHAN001";
     sprintf(tag_chan, "CHAN%03d", chan);
     err = nvs_get_str(PRC152handle, tag_chan, L, &MEM_LENGTH);
@@ -576,8 +533,7 @@ void load_ChannelParameterStr(uint8_t chan, char* L)
     }
 }
 //数据初始化
-void DATA_Init(void)
-{
+void DATA_Init(void) {
     int i = 0;
     int val = 0xAA;
     val = get_Flag(RESETADDR);
