@@ -18,7 +18,7 @@ can still make some improvements.
 ## Upstream
 
 [Device information page](http://www.fcs-tactical.com/FCS152A) (you
-probably wan't google translate). We have not seen any Rev1's without
+probably want google translate). We have not seen any Rev1's without
 the ESP32 in the wild.
 
 You can purchase one with a good experience from cyanpoem at hotmail,
