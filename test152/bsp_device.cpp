@@ -311,9 +311,8 @@ int  checkAbout(void)//设备信息查询
     }
 }
 
-void menuUpdate(void)
-{
-     TIMES = 0;
+void menuUpdate(void){
+    TIMES = 0;
     u8 num = 0;
     int ENSURE = 0;
     LCD_Clear(GLOBAL32);
@@ -336,14 +335,12 @@ void menuUpdate(void)
             TIMES--;
             break;
         }
-        if (TIMES > 0)
-        {
+        if (TIMES > 0){
             num = (num + 1) % MENU_UPDATE_NUM;
             TIMES = 0;
             LCD_ShowMenu41(MENU_UPDATE, MENU_UPDATE_NUM, num);
         }
-        else if (TIMES < 0)
-        {
+        else if (TIMES < 0){
             num = (num + MENU_UPDATE_NUM - 1) % MENU_UPDATE_NUM;
             TIMES = 0;
             LCD_ShowMenu41(MENU_UPDATE, MENU_UPDATE_NUM, num);

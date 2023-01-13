@@ -3,6 +3,11 @@
 */
 #ifndef __FCS152_KDU_H__
 #define __FCS152_KDU_H__
+
+#define DEBUG 1
+
+
+
 #include "userinclude.h"
 #include "bsp_delay.h"
 #include "lcd.h"
@@ -191,18 +196,17 @@ typedef struct	//32
     
     volatile double RX_FREQ;
     volatile double TX_FREQ;
-    volatile char NN[8];        //多一位用作结束符'\0'
+    volatile char NN[8];        //one extra for ending '\0'
     
 }
 CHAN_ARV, *CHAN_ARV_P;
 
 #define ARV_MEM_COUNT 4 
-enum
-{
-    NOW=0,  //当前信道参数
-    TMP,    //缓存寻求的信道参数
-    CHANA,  //双守模式下信道A参数
-    CHANB,  //双守模式下信道B参数
+enum {
+    NOW=0,  //current channel parameters
+    TMP,    //cache the channel parameters sought
+    CHANA,  //channel A parameters in dual watch mode
+    CHANB,  //channel B parameters in dual watch mode
 };
 extern CHAN_ARV chan_arv[ARV_MEM_COUNT];
 enum
@@ -477,8 +481,7 @@ typedef enum
 #define U_NN_ADDR                           U_CHANNEL_ADDR+NN_RANK      //别名
 #define U_SCAN_ADDR                         U_CHANNEL_ADDR+SCAN_RANK    //扫描标志
 #else
-typedef enum
-{
+typedef enum {
     RESETADDR,
     FLAG_CF_SWITCH_ADDR,
     FLAG_VU_SWITCH_ADDR,

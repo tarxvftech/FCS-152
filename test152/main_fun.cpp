@@ -195,11 +195,11 @@ void VFO_Refresh()
 }
 //
 
-//主页编码器事件处理
+//主页编码器事件处理 //Homepage Coder Events (dammit google translate!)
 void Encoder_process(u8 operate)
 {
     // D_printf("%s\n", __FUNCTION__);
-    switch (operate) //编码器事件处理
+    switch (operate) //encoder event handling
     {
     case key_click:
         if (Home_Mode == MAIN_MODE)
@@ -221,19 +221,20 @@ void Encoder_process(u8 operate)
         break;
     }
 }
-//矩阵按键事件处理
+//matrix button event
 u8 Event_Matrix(u8 matrix_key)
 {
-    if (PTT_READ == 0)
+    if (PTT_READ == 0){
         return NO_OPERATE;
+    }
 
     u8 pre_mode = 0;
-    switch (matrix_key)
-    {
+    switch (matrix_key) {
     case MATRIX_RESULT_1:
         D_printf("{1}\n");
-        if (Home_Mode)
+        if (Home_Mode){
             return NO_OPERATE;
+        }
 
         D_printf("NOW : V_SETTING\n");
 
@@ -289,8 +290,9 @@ u8 Event_Matrix(u8 matrix_key)
 
     case MATRIX_RESULT_4:
         D_printf("{4}\n");
-        if (Home_Mode)
+        if (Home_Mode){
             return NO_OPERATE;
+        }
 
         pre_mode = get_Flag(FLAG_VU_SWITCH_ADDR);
         D_printf("NOW : U_SETTING\n");
@@ -439,8 +441,7 @@ u8 Event_Matrix(u8 matrix_key)
     default:
         break;
     }
-    if (TIMES > 0)
-    {
+    if (TIMES > 0){
         TIMES = 0;
         // D_printf("{+}: %d\n", en_times++);
         if (Home_Mode == DUAL_MODE)
@@ -1345,7 +1346,7 @@ int KDU_Processor(void)         //KDU插入后处理
                 }
 
                 /////////////////////////////////////////////////////////////////////////////////////////////////
-				UART1_EnRCV();
+                UART1_EnRCV();
                 memset(send_buf, '0', 256);
                 ClearShut();
                 EnterKDUCal++;
@@ -1374,22 +1375,19 @@ int KDU_Processor(void)         //KDU插入后处理
     return NO_OPERATE;
 }
 
-void VOL_Reflash(void) //音量设置
-{
+void VOL_Reflash(void) {
+    //音量设置
     int volume_change = 0;
 
-    switch (VolumeKeyScan(0))
-    {
+    switch (VolumeKeyScan(0)) {
     case 1:
-        if (VOLUME < 7)
-        {
+        if (VOLUME < 7) {
             volume_change = 1;
             VOLUME++;
         }
         break;
     case 2:
-        if (VOLUME > 0)
-        {
+        if (VOLUME > 0) {
             volume_change = 1;
             VOLUME--;
         }
@@ -1398,33 +1396,29 @@ void VOL_Reflash(void) //音量设置
         volume_change = 0;
         break;
     };
-    if (volume_change)
-    {
+    if (volume_change) {
         volume_change = 0;
         save_OverVolume(VOLUME);
         LCD_ShowVolume(VOLUME);
-        if (WFM) //开着收音机的时候不中断输出，直接修改音量
-        {
+        if (WFM) {
+            //开着收音机的时候不中断输出，直接修改音量
             RDA5807_ResumeImmediately();
-            if (!A002_SQ_READ)
-            {
+            if (!A002_SQ_READ) {
                 M62364_SetSingleChannel(WFM_LINE_CHAN, WFM_LEVEL[0]);
                 M62364_SetSingleChannel(A20_LINE_CHAN, A20_LEVEL[VOLUME]);
-            }
-            else
+            } else {
                 M62364_SetSingleChannel(WFM_LINE_CHAN, WFM_LEVEL[VOLUME]);
-        }
-        else
-        {
-            if (A002_SQ_READ)
+            }
+        } else {
+            if (A002_SQ_READ){
                 SPK_SWITCH(AUD, 0);
+            }
             M62364_SetSingleChannel(WFM_LINE_CHAN, WFM_LEVEL[0]); //0
             M62364_SetSingleChannel(A20_LINE_CHAN, A20_LEVEL[VOLUME]);
         }
     }
 
-    if (bsp_CheckTimer(TMR_VOLT_REFRESH) && PTT_READ && KDU_INSERT==0)
-    {
+    if (bsp_CheckTimer(TMR_VOLT_REFRESH) && PTT_READ && KDU_INSERT==0){
         LCD_ShowBattery(Get_Battery_Vol());
     }
 }
@@ -1439,21 +1433,21 @@ void MY_GLOBAL_FUN(void) //全局功能函数
 
     VOL_Reflash();
 
-    if (bsp_CheckTimer(TMR_FM_CTRL) && WFM)
+    if (bsp_CheckTimer(TMR_FM_CTRL) && WFM){
         RDA5807_Init(ON);
+    }
 }
 
 //
 
-//主界面快捷设置
-void ShortCut_Menu(void)
-{
+//quick settings on the main interface
+void ShortCut_Menu(void){
     u8 option_num = 0,
        Inc_select_change = 1,
        ENSURE = 0;
 
     TIMES = 0;
-    //	LCD_ShowPIC0608(16, 3, 0, 1); //显示<指向第一个选项
+    //	LCD_ShowPIC0608(16, 3, 0, 1); //show < point sto the first option
     while (1)
     {
         MY_GLOBAL_FUN();
@@ -3511,38 +3505,31 @@ int Lock_Screen_KeyBoard()
         if (bsp_CheckTimer(TMR_FM_CTRL) && WFM)
             RDA5807_Init(ON);
 
-        if (PTT_READ)
-        {
+        if (PTT_READ){
             LCD_ShowAscii0408(0, 0, 'R');
             LCD_ShowSignal(RSSI); //信号检测
-        }
-        else
-        {
+        } else {
             LCD_ShowAscii0408(0, 0, 'T');
             LCD_ShowSignal(100);
         }
-		if(EncoderClickValidate())
-        {
-            if (i++ > 150)
+        if(EncoderClickValidate()){
+            if (i++ > 150){
                 SHUT();
+            }
         }
 
-        if (KDU_INSERT)
-        {
+        if (KDU_INSERT){
             TIMES = 0;
             return BACK2MAIN;
         }
 
         delay_ms(15);
-        if (VOL_ADD_READ == 0)
+        if (VOL_ADD_READ == 0){
             f1++;
-        else
-        {
-            if (f1 > 0)
-            {
+        } else {
+            if (f1 > 0) {
                 f1 = 0;
-                if (VOLUME < 7)
-                {
+                if (VOLUME < 7) {
                     volume_change = 1;
                     VOLUME++;
                 }
@@ -3550,22 +3537,18 @@ int Lock_Screen_KeyBoard()
         }
         //
 
-        if (VOL_SUB_READ == 0)
+        if (VOL_SUB_READ == 0){
             f2++;
-        else
-        {
-            if (f2 > 0)
-            {
+        } else {
+            if (f2 > 0) {
                 f2 = 0;
-                if (VOLUME > 0)
-                {
+                if (VOLUME > 0) {
                     volume_change = 1;
                     VOLUME--;
                 }
             }
         }
-        if (volume_change)
-        {
+        if (volume_change) {
             volume_change = 0;
             save_OverVolume(VOLUME);
             LCD_ShowVolume(VOLUME);

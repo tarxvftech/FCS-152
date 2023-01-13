@@ -27,7 +27,7 @@ void Encoder_Click_Init(void)
     pinMode(ENCODER_CLICK_PIN, INPUT_PULLUP);
 }
 
-void EncoderLPinInterrupt();
+void EncoderPinInterrupt();
 void Encoder_Spin_init(void)
 {
     pinMode(ENCODER_SPIN_R_PIN, INPUT_PULLUP);   
@@ -35,11 +35,12 @@ void Encoder_Spin_init(void)
     //我们通过调用attachInterrupt函数将中断附加到引脚
     //handleInterrupt 是中断触发后的触发函数
 
-    attachInterrupt(digitalPinToInterrupt(ENCODER_SPIN_L_PIN), EncoderLPinInterrupt, CHANGE);
+    attachInterrupt(digitalPinToInterrupt(ENCODER_SPIN_L_PIN), EncoderPinInterrupt, CHANGE);
+    //attachInterrupt(digitalPinToInterrupt(ENCODER_SPIN_R_PIN), EncoderPinInterrupt, CHANGE); //add when time to fix the encoder (fix all input handling first lol)
 
 }
 extern void disposeEncoderSpined(void);
-void EncoderLPinInterrupt()
+void EncoderPinInterrupt()
 {
     // portENTER_CRITICAL_ISR(&mux);
     
