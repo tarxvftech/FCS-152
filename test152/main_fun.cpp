@@ -4316,15 +4316,13 @@ int PGM_POWEROUT_Set(u8 row)
 }
 
 //								相关设置8:PTT按键提示音设置
-int TONE_SET(u8 _tone) //_tone:要进行设置的Tone;
-{
+int TONE_SET(u8 _tone) { //_tone:要进行设置的Tone;
     char t_sta[2] = {PRE_TONE, END_TONE}; //前置信令和后置信令的状态
 
     TIMES = 0;
     LCD_ShowAscii0608(84, _tone + 1, ':', 0);
     LCD_ShowString0608(90, _tone + 1, opt_state[t_sta[_tone]], 0, 114); //显示开关状态
-    while (1)
-    {
+    while (1) {
         FeedDog(); //喂狗
         SQ_Read_Control();
         if (KDU_INSERT)
@@ -4387,20 +4385,18 @@ int TONE_SET(u8 _tone) //_tone:要进行设置的Tone;
         }
     }
 }
-int PGM_TONE_Select(u8 row)
-{
+int PGM_TONE_Select(u8 row) {
     TIMES = 0;
     u8 index = 0;
     LCD_ShowMenu31(menu_tone, 2, index);
-    while (1)
-    {
+    while (1) {
         FeedDog(); //喂狗
         SQ_Read_Control();
-        if (KDU_INSERT)
+        if (KDU_INSERT){
             return BACK2MAIN;
+        }
 
-        switch (Matrix_KEY_Scan(0))
-        {
+        switch (Matrix_KEY_Scan(0)) {
         case MATRIX_RESULT_8:
             return BACK2MAIN;
 
@@ -4420,17 +4416,16 @@ int PGM_TONE_Select(u8 row)
         case MATRIX_RESULT_CLR:
             return CLR2LAST;
         }
-        if (TIMES != 0) //
-        {
+        if (TIMES != 0) {
             TIMES = 0;
             index = !index;
             LCD_ShowMenu31(menu_tone, 2, index);
         }
-        switch (Encoder_Switch_Scan(0))
-        {
+        switch (Encoder_Switch_Scan(0)) {
         case key_click:
-            if (TONE_SET(index) == BACK2MAIN)
+            if (TONE_SET(index) == BACK2MAIN){
                 return BACK2MAIN;
+            }
             PRE_TONE = load_PreTone();
             END_TONE = load_EndTone();
             LCD_ShowMenu31(menu_tone, 2, index);
