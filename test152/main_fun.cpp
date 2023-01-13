@@ -22,7 +22,8 @@ volatile char SQL_MODE = OFF;       		//长静噪模式
 double 	STEP_LEVEL[] = {0.0050, 0.0100, 0.0125}; 	//步进等级
 
 u8 RSSI = 0; 
-u8 SC=3;//SCERRN CONTRAST  CHAN = 0,
+u8 SC=3;//screen contrast  
+//CHAN = 0,
 u8 STEP = 2; 
 u8 SQL = 4;  
 u8 AUD = 0; 
