@@ -130,7 +130,10 @@ u8 Encoder_Switch_Scan(u8 mode)
 void disposeEncoderSpined(void)
 {
     encoder_rotated = true;
+    //TODO:implement https://www.pinteric.com/rotary.html
+    //to handle this well requires replacing all uses of TIMES. oh well.
     //delete the rest of this function after all input handling is fixed 
+    
     if (L_LAST != ENCODER_SPIN_L_READ && spin_cal - spin_old > 100)
     {
         ClearShut();
