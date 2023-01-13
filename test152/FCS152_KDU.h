@@ -103,6 +103,8 @@
 #if     (THISCHIP != STM32F103RET6)
 #define   __NEW__                           //this program base on CM32M101, which is new
 #endif
+
+
 #ifndef   __NEW__
 #define  STR_152         "FCS PRC152"
 #define  STR_KDU         " FCS  KDU "
@@ -111,7 +113,7 @@
 #else
 #define  STR_152         "FCS PRC152-N"
 #define  STR_KDU         "FCS KDU-N "
-#define  VERSION_152     "Rev 2.0.000 XVF"
+#define  VERSION_152     "XVF 2.1.000"
 #define  VERSION_KDU     "Rev 2.0.000"
 #endif
 
