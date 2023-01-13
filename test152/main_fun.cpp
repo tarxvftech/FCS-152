@@ -19,7 +19,7 @@ volatile char Home_Mode = 0;            //主页显示模式    //0:常规, 1:�
 volatile char Flag_Main_Page = 1;       //主页显示模式
 volatile char SQL_MODE = OFF;               //长静噪模式
 
-double  STEP_LEVEL[] = {0.0050, 0.0100, 0.0125};    //步进等级
+double STEP_LEVEL[] = {0.0050, 0.0100, 0.0125};    //步进等级
 
 u8 RSSI = 0;
 u8 SC=3;//screen contrast
