@@ -62,7 +62,7 @@ int Lock_Screen_KeyBoard(void);    //锁屏锁盘
 //收发设置
 void RT_Menu(void);
 void RT_Menu_Clear(void);
-int  RT_FREQ_Set(int x, int y, double* vfo_freq_temp, int vu_switch);
+int  RT_FREQ_Set(int x, int y, double * vfo_freq_temp, int vu_switch);
 int  RT_SubVoice_Set(int row, int subvoice);                            //亚音设置
 int  RT_SubVoice_Matrix_Menu_Select(int subvoice);                      //矩阵亚音设置
 int  RT_TX_POWER_Set(int power_temp);                                   //发射功率选择

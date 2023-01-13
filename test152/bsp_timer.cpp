@@ -29,7 +29,7 @@ void bsp_Timer0_Init(void) {
 
 extern void disposeAllTimeData(void);
 extern volatile int spin_cal;
-void timer0_cb(void* arg) {
+void timer0_cb(void * arg) {
     spin_cal++;
     disposeAllTimeData();
 }
@@ -45,9 +45,9 @@ void timer1_cb(void) {
     refreshADCVal();
 }
 ///////////////////////////////////////////////////////////////////
-static void IRAM_ATTR timer2_cb(void* arg);
+static void IRAM_ATTR timer2_cb(void * arg);
 //TIMER2    TIMER_INTR_US=7us
-void    bsp_Timer2_Init(void) {
+void bsp_Timer2_Init(void) {
     timer_idx_t timer_idx = TIMER_0;
     timer_autoreload_t auto_reload = TIMER_AUTORELOAD_EN;
 
@@ -76,7 +76,7 @@ void    bsp_Timer2_Init(void) {
 }
 
 extern void RingArray_Intr(void);
-static void IRAM_ATTR timer2_cb(void* arg) {
+static void IRAM_ATTR timer2_cb(void * arg) {
     timer_group_clr_intr_status_in_isr(TIMER_GROUP_0, TIMER_0);
     timer_group_enable_alarm_in_isr(TIMER_GROUP_0, TIMER_0);
     RingArray_Intr();

@@ -11,7 +11,7 @@ void SHUT(void) {
 
 #if FM_EN
     //关收音机
-    if(WFM) {
+    if (WFM) {
         RDA5807_Init(OFF);
     }
 #endif
@@ -40,9 +40,9 @@ void ClearShut(void) {
 //
 extern void SHUT();
 void Cal2Shut(void) {
-    if(OFF_MS++>=36000) {
+    if (OFF_MS++>=36000) {
         OFF_MS=0;
-        if(OFF_HUR++>=4) {
+        if (OFF_HUR++>=4) {
             SHUT();
         }
     }
@@ -68,12 +68,12 @@ void Standby_Init() {
     //电源控制引脚首先使能
     ControlGPIO_Init(); //总电源控制引脚初始化
     int t = 0; //记录按下的时间
-    while(1) {
+    while (1) {
         FeedDog();//喂狗
-        if(ENCODER_CLICK_READ==0) {
+        if (ENCODER_CLICK_READ==0) {
             t++; //已经按下了
             delay_ms(20);
-            if(t >= 75) { //按下超过3秒钟
+            if (t >= 75) { //按下超过3秒钟
                 POWER_EN_SET;
                 return;   //按下3s以上了
             }
@@ -88,7 +88,7 @@ void Standby_Init() {
 
 
 #define MENU_UPDATE_NUM 3
-const char* MENU_UPDATE[3] = {
+const char * MENU_UPDATE[3] = {
     "1.CHANNEL SETTING    ",
     "2.UPDATE             ",
     "3.DEVICE ABOUT       ",
@@ -100,10 +100,10 @@ int channelSetting(void) {
     LCD_Clear(GLOBAL32);
     LCD_ShowString0608(12, 2, "CHANNEL SETTING",     1, 128);
     LCD_ShowString0608(19, 3, VERSION_BOOT,          1, 128);
-    memset((char*)rx1_buf, '0', sizeof(char) * (USART1_BUF_SIZE - 1));
-    while(1) {
-        if(lock==OFF) {
-            switch(Encoder_Switch_Scan(0)) {
+    memset((char *)rx1_buf, '0', sizeof(char) * (USART1_BUF_SIZE - 1));
+    while (1) {
+        if (lock==OFF) {
+            switch (Encoder_Switch_Scan(0)) {
             case key_click:
                 break;
             case key_double:
@@ -115,42 +115,42 @@ int channelSetting(void) {
             default:
                 break;
             }
-            if(Matrix_KEY_Scan(0)==MATRIX_RESULT_CLR) {
+            if (Matrix_KEY_Scan(0)==MATRIX_RESULT_CLR) {
                 return CLR2LAST;
             }
         }
-        if(Serial.available()) {
+        if (Serial.available()) {
             lock = ON;
             do {
                 *(rx1_buf+i) = Serial.read();
                 i++;
-            } while(Serial.available());
+            } while (Serial.available());
 
-            if(i<1024) {
+            if (i<1024) {
                 //升级
-                if(strstr((char*)rx1_buf, "Line152")) {
+                if (strstr((char *)rx1_buf, "Line152")) {
                     Serial.printf("%cReady", 5);                //准备完毕，可以接收数据
                 }
                 //写频
                 //覆盖某一地址数据
-                else if(strstr((char*)rx1_buf, "Cover")) {
+                else if (strstr((char *)rx1_buf, "Cover")) {
                     // W_addr = (rx1_buf[ 5] - '0')*0x10000 + (rx1_buf[ 6] - '0')*0x1000 + (rx1_buf[ 7] - '0')*0x100 + (rx1_buf[ 8] - '0')*0x10 + (rx1_buf[9] - '0');
                     // W_data = rx1_buf[10];
                     // AT24CXX_WriteOneByte(W_addr, W_data);
                     // Serial.printf("%cRecover", 7);
                 }
                 //查看某一地址数据
-                else if(strstr((char*)rx1_buf, "Seek")) {
+                else if (strstr((char *)rx1_buf, "Seek")) {
                     // W_addr = (rx1_buf[ 5] - '0')*0x10000 + (rx1_buf[ 6] - '0')*0x1000 + (rx1_buf[ 7] - '0')*0x100 + (rx1_buf[ 8] - '0')*0x10 + (rx1_buf[9] - '0');
                     // W_data = AT24CXX_ReadOneByte(W_addr);
                     // EN_Recv();
                     // printf("%cReSeek%c", 7, W_data);
                 }
                 //读取所有参数
-                else if(strstr((char*)rx1_buf, "Get")) {
+                else if (strstr((char *)rx1_buf, "Get")) {
                     TakeDataFromMem(rx1_buf[3] - '0');
-                } else if(strstr((char*)rx1_buf, "Write")) {
-                    if(i<1000) {
+                } else if (strstr((char *)rx1_buf, "Write")) {
+                    if (i<1000) {
                         continue;
                     }
                     int page = rx1_buf[5] - '0';
@@ -158,7 +158,7 @@ int channelSetting(void) {
                     Serial.printf("%cElse%d", 5, (page+1));
                 }
                 //升级成功/写频完成均使用这个
-                else if(strstr((char*)rx1_buf, "Endfile")) {
+                else if (strstr((char *)rx1_buf, "Endfile")) {
                     Serial.printf("%cOK", 2);
                     delay_ms(500);
                     SHUT();
@@ -167,7 +167,7 @@ int channelSetting(void) {
                 }
             }
             i = 0;
-            memset((char*)rx1_buf, '0', sizeof(char) * (USART1_BUF_SIZE - 1));
+            memset((char *)rx1_buf, '0', sizeof(char) * (USART1_BUF_SIZE - 1));
             lock = OFF;
         }
     }
@@ -180,7 +180,7 @@ void TakeDataFromMem(int page) {
 
     int pre_size = 5;
 
-    if(page == 4) {
+    if (page == 4) {
         data2write[ 0 + pre_size] = load_AudioSelect()  + '0';
         data2write[ 1 + pre_size] = load_MicLevel()     + '0';
 
@@ -204,8 +204,8 @@ void TakeDataFromMem(int page) {
         //UHF
         load_ChannelParameterStr(100, data2write + pre_size + 14 + 40);
     } else {
-        for(int i = 1; i<26; i++) {
-            if(page*25+i == 100) {
+        for (int i = 1; i<26; i++) {
+            if (page*25+i == 100) {
                 break;
             }
             load_ChannelParameterStr(page*25+i, data2write + pre_size + (i-1)*40);
@@ -214,7 +214,7 @@ void TakeDataFromMem(int page) {
     UART1_Send_Message(data2write, send_size);
 }
 void WriteDataBackMem(int page) {
-    if(page == 4) {
+    if (page == 4) {
         save_AudioSelect(rx1_buf[ 6] - '0') ;
         save_MicLevel(rx1_buf[ 7] - '0') ;
 
@@ -234,22 +234,22 @@ void WriteDataBackMem(int page) {
         save_CurrentChannel(chan);
 
         //VHF
-        save_ChannelParameterStr(0, (char*)rx1_buf+20);
+        save_ChannelParameterStr(0, (char *)rx1_buf+20);
         //UHF
-        save_ChannelParameterStr(100, (char*)rx1_buf+20+40);
+        save_ChannelParameterStr(100, (char *)rx1_buf+20+40);
 
     } else {
-        for(int i = 1; i<26; i++) {
-            if(page*25+i == 100) {
+        for (int i = 1; i<26; i++) {
+            if (page*25+i == 100) {
                 break;
             }
-            save_ChannelParameterStr(page*25+i, (char*)rx1_buf+6+(i-1)*40);
+            save_ChannelParameterStr(page*25+i, (char *)rx1_buf+6+(i-1)*40);
         }
     }
 }
 //
 
-int  checkAbout(void) { //设备信息查询
+int checkAbout(void) { //设备信息查询
     LCD_Clear(GLOBAL32);
     LCD_ShowString0608(31, 0, "INFORMATION",     1, 128);
     LCD_ShowString0608(0,  1, "Device :",        0, 128);
@@ -257,15 +257,15 @@ int  checkAbout(void) { //设备信息查询
     LCD_ShowString0608(49, 1, STR_152,           1, 128);
     LCD_ShowString0608(49, 2, VERSION_152,       1, 128);
     LCD_ShowString0608(19, 3, VERSION_BOOT,      1, 128);
-    while(1) {
-        switch(Matrix_KEY_Scan(0)) {
+    while (1) {
+        switch (Matrix_KEY_Scan(0)) {
         case MATRIX_RESULT_ENT:
         case MATRIX_RESULT_CLR:
             return ENT2LAST;
         default:
             break;
         }
-        switch(Encoder_Switch_Scan(0)) {
+        switch (Encoder_Switch_Scan(0)) {
         case key_click:
         case key_double:
             return ENT2LAST;
@@ -284,8 +284,8 @@ void menuUpdate(void) {
     int ENSURE = 0;
     LCD_Clear(GLOBAL32);
     LCD_ShowMenu41(MENU_UPDATE, MENU_UPDATE_NUM, num);
-    while(1) {
-        switch(Matrix_KEY_Scan(0)) {
+    while (1) {
+        switch (Matrix_KEY_Scan(0)) {
         case MATRIX_RESULT_ENT:
             ENSURE = 1;
             break;
@@ -300,17 +300,17 @@ void menuUpdate(void) {
             TIMES--;
             break;
         }
-        if(TIMES > 0) {
+        if (TIMES > 0) {
             num = (num + 1) % MENU_UPDATE_NUM;
             TIMES = 0;
             LCD_ShowMenu41(MENU_UPDATE, MENU_UPDATE_NUM, num);
-        } else if(TIMES < 0) {
+        } else if (TIMES < 0) {
             num = (num + MENU_UPDATE_NUM - 1) % MENU_UPDATE_NUM;
             TIMES = 0;
             LCD_ShowMenu41(MENU_UPDATE, MENU_UPDATE_NUM, num);
         }
         // //////////////////////////////////////////////////////////
-        switch(Encoder_Switch_Scan(0)) {
+        switch (Encoder_Switch_Scan(0)) {
         case key_click:
             ENSURE = 1;
             break;
@@ -321,9 +321,9 @@ void menuUpdate(void) {
             break;
         }
         // //////////////////////////////////////////////////////////
-        if(ENSURE) {
+        if (ENSURE) {
             ENSURE = 0;
-            switch(num) {
+            switch (num) {
             case 0:
                 channelSetting();
                 break;
@@ -348,13 +348,13 @@ void menuUpdate(void) {
 //
 void enterSecondSystem() {
     u8 key=0, i = 0;
-    while(1) { //检测是否要进入更新程序，更新成功重启
-        if(SQUELCH_READ == 0) {
+    while (1) { //检测是否要进入更新程序，更新成功重启
+        if (SQUELCH_READ == 0) {
             key++;
         } else {
             key=0;
         }
-        if(key>5) {
+        if (key>5) {
             key=0;
             delay_ms(1500);
             LCD_Clear(GLOBAL32);
@@ -362,7 +362,7 @@ void enterSecondSystem() {
         }
         delay_ms(200);
         D_printf("Waiting for UPGRADE~~~~~~\n");
-        if(i++ >= 15) {
+        if (i++ >= 15) {
             break;
         }
     }

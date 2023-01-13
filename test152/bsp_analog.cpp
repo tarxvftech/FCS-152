@@ -38,7 +38,7 @@ uint32_t Use_ADC(void) {
              max_v0   = MY_ADC_VAL[0],
              min_v0   = MY_ADC_VAL[0];
 
-    for(int i=1; i<ADC_SAMPLE_NUM; i++) {
+    for (int i=1; i<ADC_SAMPLE_NUM; i++) {
         max_v0 = (max_v0 > MY_ADC_VAL[i]) ? max_v0 : MY_ADC_VAL[i];
         min_v0 = (min_v0 < MY_ADC_VAL[i]) ? min_v0 : MY_ADC_VAL[i];
         v0  += MY_ADC_VAL[i];

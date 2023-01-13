@@ -30,23 +30,23 @@ static unsigned char key_driver(void) {
     unsigned char key_return = key_idle;
     unsigned char key = 0;
 
-    if(ENCODER_CLICK_READ==0) {
+    if (ENCODER_CLICK_READ==0) {
         delay_ms(5);
-        if(ENCODER_CLICK_READ==0) {
+        if (ENCODER_CLICK_READ==0) {
             key=1;
         }
     }
 
-    switch(key_state_buffer1) {
+    switch (key_state_buffer1) {
     case key_state_0:
-        if(key) {
+        if (key) {
             key_state_buffer1 = key_state_1;
         }
         //The button is pressed, and the state transitions to the button debounce and confirmation state
         break;
 
     case key_state_1:
-        if(key) {
+        if (key) {
             key_timer_cnt1 = 0;
             key_state_buffer1 = key_state_2;
             //the button is still pressed
@@ -59,10 +59,10 @@ static unsigned char key_driver(void) {
         break;  //end of software debounce
 
     case key_state_2:
-        if(!key) {
+        if (!key) {
             key_return = key_click;  //button released, so it's a click
             key_state_buffer1 = key_state_0;  //back to initial state
-        } else if(key && key_timer_cnt1 >= 15) {
+        } else if (key && key_timer_cnt1 >= 15) {
             //continue to press the button, timing exceeds 1000ms
             ClearShut();
             key_return = key_long;  //send the long press event
@@ -71,7 +71,7 @@ static unsigned char key_driver(void) {
         break;
 
     case key_state_3:  //wait for key release
-        if(!key) { //key release
+        if (!key) { //key release
             key_state_buffer1 = key_state_0;  //back to initial state
         }
         break;
@@ -93,9 +93,9 @@ u8 Encoder_Switch_Scan(u8 mode) {
 
     key = key_driver();
 
-    switch(key_state_buffer2) {
+    switch (key_state_buffer2) {
     case key_state_0:
-        if(key == key_click) {
+        if (key == key_click) {
             key_timer_cnt2 = 0;  //Click for the first time, do not return, go to the next state to judge whether there will be double-click
             key_state_buffer2 = key_state_1;
             ClearShut();
@@ -105,11 +105,11 @@ u8 Encoder_Switch_Scan(u8 mode) {
         break;
 
     case key_state_1:
-        if(key == key_click)  {
+        if (key == key_click)  {
             //another click within 500ms
             key_return = key_double;  //return to the double click event
             key_state_buffer2 = key_state_0; //and return to initial state
-        } else if(key_timer_cnt2 > 3) {  //4
+        } else if (key_timer_cnt2 > 3) { //4
             //Here, all the keyless events must be read within 500ms, because the long press is greater than 1000ms
             //Before 1s, the bottom layer returns no key
 
@@ -128,7 +128,7 @@ void disposeEncoderSpined(void) {
     //to handle this well requires replacing all uses of TIMES. oh well.
     //delete the rest of this function after all input handling is fixed
 
-    if(L_LAST != ENCODER_SPIN_L_READ && spin_cal - spin_old > 100) {
+    if (L_LAST != ENCODER_SPIN_L_READ && spin_cal - spin_old > 100) {
         ClearShut();
         L_LAST = ENCODER_SPIN_L_READ;
         TIMES = (ENCODER_SPIN_L_READ != ENCODER_SPIN_R_READ ? 1 : -1);

@@ -22,11 +22,11 @@ void LCD_ShowAscii0408(unsigned char l, unsigned char p, int ch);               
 void LCD_ShowAscii0608(unsigned char l, unsigned char p, int ch, unsigned char flag);                               //6列8行 字符(16页)
 void LCD_ShowAscii1016(unsigned char l, unsigned char p, int ch, unsigned char flag);                               //收音机频率显示
 
-void LCD_ShowString0408(unsigned char l, unsigned char p, const char* s, unsigned char flag);                       //4列8行 字符串
-void LCD_ShowString0608(unsigned char l, unsigned char p, const char* s, unsigned char flag, unsigned char limit);  //6列8行 字符串
-void LCD_ShowString1016(unsigned char l, unsigned char p, const char* s, unsigned char flag, unsigned char limit);
+void LCD_ShowString0408(unsigned char l, unsigned char p, const char * s, unsigned char flag);                      //4列8行 字符串
+void LCD_ShowString0608(unsigned char l, unsigned char p, const char * s, unsigned char flag, unsigned char limit); //6列8行 字符串
+void LCD_ShowString1016(unsigned char l, unsigned char p, const char * s, unsigned char flag, unsigned char limit);
 
-void LCD_ShowPICALL(const unsigned char* pic);
+void LCD_ShowPICALL(const unsigned char * pic);
 void LCD_ShowPIC0408(unsigned char l, unsigned char p, unsigned char  ch);                                          //上下箭头，音量小黑块
 void LCD_ShowPIC0608(unsigned char l, unsigned char p, int ch, unsigned char flag);
 void LCD_ShowPIC0808(unsigned char l, unsigned char p, int ch);
@@ -42,19 +42,19 @@ void LCD_ShowContrast(int contrast);
 
 void LCD_ShowPageBar(int num, int sel_pos, int per_page_num);
 
-void LCD_ShowMenu31(const char* menu[], int item, int sel_pos);
-void LCD_ShowMenu41(const char* menu[], int item, int sel_pos);
+void LCD_ShowMenu31(const char * menu[], int item, int sel_pos);
+void LCD_ShowMenu41(const char * menu[], int item, int sel_pos);
 void LCD_ShowMatrixMenu22(char menu[][2][12], int item, int sel_pos);
-void LCD_ShowMatrixMenu33(const char* menu[][3],    int item, int sel_pos);
+void LCD_ShowMatrixMenu33(const char * menu[][3],    int item, int sel_pos);
 
 void LCD_ShowVolume(unsigned char vol);
-void LCD_ShowOption(unsigned char l, unsigned char p, const char* buf[], unsigned char item, unsigned char sel_pos);
+void LCD_ShowOption(unsigned char l, unsigned char p, const char * buf[], unsigned char item, unsigned char sel_pos);
 void LCD_ShowFreq(unsigned char l, unsigned char p, double f, unsigned char flag);
 void LCD_ShowChan(unsigned char l, unsigned char p, unsigned char chan, unsigned char flag);
 
 void LCD_Clear(_ClearScope clean_area);
 
 void LCD_SetPos(unsigned char l, unsigned char p, int ch);
-void LCD_Show_Strloop(uint8_t l, uint8_t p, const char* str, int flag, int limit);
+void LCD_Show_Strloop(uint8_t l, uint8_t p, const char * str, int flag, int limit);
 
 #endif

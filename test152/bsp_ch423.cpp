@@ -44,12 +44,12 @@ unsigned char CH423_ReadByte() {  // 读取数据
     IIC_Wait_Ack();
     din=IIC_Read_Byte(0);               // 读取数据
     IIC_Stop();                         // 结束总线
-    return(din);
+    return (din);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 void SetIOChannel(unsigned char IOChannel) {
-    if(IOChannel > 7) {
+    if (IOChannel > 7) {
         return;
     }
     SaveCurrentIO |= (0x01 <<IOChannel);
@@ -57,7 +57,7 @@ void SetIOChannel(unsigned char IOChannel) {
 }
 
 void ClrIOChannel(unsigned char IOChannel) {
-    if(IOChannel > 7) {
+    if (IOChannel > 7) {
         return;
     }
     SaveCurrentIO &= (~(0x01<<IOChannel)) ;
@@ -65,10 +65,10 @@ void ClrIOChannel(unsigned char IOChannel) {
 }
 
 void SetOCChannel(unsigned char OCChannel) {
-    if(OCChannel > 15) {
+    if (OCChannel > 15) {
         return;
     }
-    if(OCChannel > 7) {
+    if (OCChannel > 7) {
         SaveCurrentOCH |= (0x01 << (OCChannel-8));
         CH423_WriteByte(CH423_OC_H_CMD | SaveCurrentOCH);
     } else {
@@ -79,10 +79,10 @@ void SetOCChannel(unsigned char OCChannel) {
 }
 
 void ClrOCChannel(unsigned char OCChannel) {
-    if(OCChannel > 15) {
+    if (OCChannel > 15) {
         return;
     }
-    if(OCChannel > 7) {
+    if (OCChannel > 7) {
         SaveCurrentOCH &= (~(0x01 << (OCChannel-8)));
         CH423_WriteByte(CH423_OC_H_CMD | SaveCurrentOCH);
     } else {

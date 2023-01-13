@@ -1,12 +1,12 @@
 #include "font.h"
-const char* CONFIRM_OPT[] = {"NO", "YES"};
-const char* opt_state[] = {"OFF", "ON "};
-const char* FM_Show[]   = {"FM ", "WFM"};
-const char* POWER_SHOW[2] = {"HIGH", "LOW "};
-const char* LIGHT_SHOW[]= {"MOMENTARY", "OFF"};
-const char* LAMP_SHOW[] = { "ALWAYS", "AUTO  "};
-const char* TRF_Show[]      = {"LOW ",  "MID ", "HIGH"};
-const char* STEP_SHOW[]     = {"5K   ", "10K  ", "12.5K"};
+const char * CONFIRM_OPT[] = {"NO", "YES"};
+const char * opt_state[] = {"OFF", "ON "};
+const char * FM_Show[]   = {"FM ", "WFM"};
+const char * POWER_SHOW[2] = {"HIGH", "LOW "};
+const char * LIGHT_SHOW[]= {"MOMENTARY", "OFF"};
+const char * LAMP_SHOW[] = { "ALWAYS", "AUTO  "};
+const char * TRF_Show[]      = {"LOW ",  "MID ", "HIGH"};
+const char * STEP_SHOW[]     = {"5K   ", "10K  ", "12.5K"};
 const char prefix_buf[][16]= {
     //接收判断
     "ASKALL         ",      //返回第一次请求的      所有数据
@@ -71,7 +71,7 @@ const char prefix_buf[][16]= {
 };
 //
 
-const char* menu1[6]= {
+const char * menu1[6]= {
     "1.CALLSIGN",
     "2.LAMPTIMER",
     "3.TOT(TX LIMIT TIMER)",
@@ -80,12 +80,12 @@ const char* menu1[6]= {
     "6.VER / QR CODE"
 };
 
-const char* MENU_ZERO[MENU_ZERO_NUM]= {
+const char * MENU_ZERO[MENU_ZERO_NUM]= {
     "1.ZEROIZE ALL",
 };
 
 
-const char* MENU_PGM[MENU_PGM_NUM]= {
+const char * MENU_PGM[MENU_PGM_NUM]= {
     "1.AUDIO_SET",
     "2.SQL",
     "3.STEP",
@@ -95,12 +95,12 @@ const char* MENU_PGM[MENU_PGM_NUM]= {
     "7.PTT TONE",
 };
 //
-const char* MENU_OPT[2]= {
+const char * MENU_OPT[2]= {
     "1.LOCK KEYPAD",
     "2.KEY_TEST",
 };
 //
-const char* MENU_TOOLS[MENU_TOOLS_NUM] = {
+const char * MENU_TOOLS[MENU_TOOLS_NUM] = {
     "  LCD INVERTED       ",
     "1.FCS-PRC117G        ",
     "2.FCS-PRC148 MARKII  ",
@@ -109,18 +109,18 @@ const char* MENU_TOOLS[MENU_TOOLS_NUM] = {
 
 };
 //
-const char* menu_tone[2]= {
+const char * menu_tone[2]= {
     "1.PTT PRE_TONE",
     "2.PTT END_TONE"
 };
-const char* menu_audio[3]= {
+const char * menu_audio[3]= {
     "1.IN",
     "2.TOP",
     "3.SIDE"
 };
 
 //亚音
-const char* menu_subvoice[122]= {
+const char * menu_subvoice[122]= {
     "OFF     ","67.0Hz  ","71.9Hz  ","74.4Hz  ","77.0Hz  ","79.7Hz  ","82.5Hz  ","85.4Hz  ","88.5Hz  ","91.5Hz  ",
     "94.8Hz  ","97.4Hz  ","100.0Hz ","103.5Hz ","107.2Hz ","110.9Hz ","114.8Hz ","118.8Hz ","123.0Hz ","127.3Hz ",
     "131.8Hz ","136.5Hz ","141.3Hz ","146.2Hz ","151.4Hz ","156.7Hz ","162.2Hz ","167.9Hz ","173.8Hz ","179.9Hz ",
@@ -138,7 +138,7 @@ const char* menu_subvoice[122]= {
 };
 //
 //矩阵亚音
-const char* matrix_menu_subvoice[41][3]= {
+const char * matrix_menu_subvoice[41][3]= {
     {"OFF   ","67.0  ","71.9  ",},//0
     {"74.4  ","77.0  ","79.7  ",},//1
     {"82.5  ","85.4  ","88.5  ",},//2

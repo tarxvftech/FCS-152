@@ -27,7 +27,7 @@ void RDA5807_Set_Freq(short freq);
 void RDA5807_Init(char off_on);
 
 void Radio_Freq_Show(int fm_freq, int mode);
-int FM_Freq_Set_Show(int x,int y,int* result);
+int FM_Freq_Set_Show(int x,int y,int * result);
 void Enter_Radio(void);
 
 #endif

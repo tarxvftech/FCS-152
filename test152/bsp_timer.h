@@ -28,7 +28,7 @@
 
 //TIMER0
 void    bsp_Timer0_Init(void);
-void    timer0_cb(void* arg);
+void    timer0_cb(void * arg);
 //TIMER1
 void    bsp_Timer1_Init(void);
 void    timer1_cb(void);

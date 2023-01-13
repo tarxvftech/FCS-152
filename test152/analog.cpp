@@ -31,7 +31,7 @@ void DAC_Init(void) {
 void LightBacklight(void) {
 // Serial.printf("LAMP_TIME :%d && KDU_INSERT = %d\n", LAMP_TIME, KDU_INSERT);
 // Serial.printf(" \n@@@@@%04d  KDU_INSERT = %d@@@@@%\n", __LINE__, KDU_INSERT);
-    if(LAMP_TIME > 0 && KDU_INSERT == OFF) {
+    if (LAMP_TIME > 0 && KDU_INSERT == OFF) {
         // D_printf("*****%s\n", __FUNCTION__);
         bsp_StartAutoTimer(TMR_FLOW, LAMP_TIME);
         BackLight_SetVal(BL);
@@ -39,29 +39,29 @@ void LightBacklight(void) {
 }
 
 
-int  Get_Battery_Vol(void) {
+int Get_Battery_Vol(void) {
     int voltage  = Use_ADC();
     static u8 lowBatteryCal = 0;    //检测电池电压低次数
-    if(POWER_SELECT_FLAG) {         //12V
-        if(voltage < VOLTAGE_OFF_12_FLOOR || voltage > VOLTAGE_OFF_12_UPPER) {
+    if (POWER_SELECT_FLAG) {        //12V
+        if (voltage < VOLTAGE_OFF_12_FLOOR || voltage > VOLTAGE_OFF_12_UPPER) {
             lowBatteryCal++;
         }
         voltage = (voltage - VOLTAGE_12_CAL) / 30;
     } else {                        //8V
-        if(voltage < VOLTAGE_OFF_8_FLOOR || voltage > VOLTAGE_OFF_8_UPPER) {
+        if (voltage < VOLTAGE_OFF_8_FLOOR || voltage > VOLTAGE_OFF_8_UPPER) {
             lowBatteryCal++;
         }
         voltage = (voltage - VOLTAGE_8_CAL) / 20;
     }
-    if(lowBatteryCal >= 5) {
+    if (lowBatteryCal >= 5) {
         D_printf("Low Power to Shut...\n");
         SHUT();
     }
 
 
-    if(voltage < 0) {
+    if (voltage < 0) {
         voltage = 0;
-    } else if(voltage > 100) {
+    } else if (voltage > 100) {
         voltage = 100;
     }
 
@@ -72,7 +72,7 @@ int  Get_Battery_Vol(void) {
 void Start_Tone(unsigned char STOP_START) {
     SPK_SWITCH(AUD, ON);//==>响 发射提示
 
-    if(VOLUME>0) {
+    if (VOLUME>0) {
         M62364_SetSingleChannel(A20_LINE_CHAN, 5);
         M62364_SetSingleChannel(8, 50);
     } else {
@@ -85,7 +85,7 @@ void Start_Tone(unsigned char STOP_START) {
 
     pinMode(18, OUTPUT);
     ESP_ERROR_CHECK(dac_output_enable(DAC_CHAN));
-    if(STOP_START==1) { //开始
+    if (STOP_START==1) { //开始
         //前置提示音
         RingTone(TONE2K, ON);
         delay_ms(100);//delay_ms(80);

@@ -41,9 +41,9 @@ uint8_t IIC_Wait_Ack(void) {
     delay_us(I2C_DELAY);
     IIC_SCL1;
     delay_us(I2C_DELAY);
-    while(READ_SDA) {
+    while (READ_SDA) {
         ucErrTime++;
-        if(ucErrTime>250) {
+        if (ucErrTime>250) {
             IIC_Stop();
             return 1;
         }
@@ -79,9 +79,9 @@ void IIC_Send_Byte(uint8_t txd) {
     uint8_t t;
     SDA_OUT();
     IIC_SCL0;//拉低时钟开始数据传输
-    for(t=0; t<8; t++) {
+    for (t=0; t<8; t++) {
         //IIC_SDA=(txd&0x80)>>7;
-        if((txd&0x80)>>7) {
+        if ((txd&0x80)>>7) {
             IIC_SDA1;
         } else {
             IIC_SDA0;
@@ -98,17 +98,17 @@ void IIC_Send_Byte(uint8_t txd) {
 uint8_t IIC_Read_Byte(uint8_t ack) {
     uint8_t i,receive=0;
     SDA_IN();//SDA设置为输入
-    for(i=0; i<8; i++) {
+    for (i=0; i<8; i++) {
         IIC_SCL0;
         delay_us(I2C_DELAY);
         IIC_SCL1;
         receive<<=1;
-        if(READ_SDA) {
+        if (READ_SDA) {
             receive++;
         }
         delay_us(I2C_DELAY);
     }
-    if(!ack) {
+    if (!ack) {
         IIC_NAck();    //发送nACK
     } else {
         IIC_Ack();    //发送ACK

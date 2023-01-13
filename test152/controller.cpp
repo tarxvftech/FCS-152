@@ -7,7 +7,7 @@
 extern void SHUT(void);
 extern uint8_t SQL;
 void EN_GPIO_Init(void) {       //使能引脚初始化
-    switch(Select_Power()) {
+    switch (Select_Power()) {
     case VOLTAGE_NORMAL:
         D_printf("Normal voltage startup\n");
         return;
@@ -34,7 +34,7 @@ void A002_Init(void) {          //A20控制引脚初始化
     delay_ms(2);
 
     unsigned char a002_send_buff[20]="AT+DMOSETVOLUME=5\r\n";
-    for(int i=0; i<19; i++) {
+    for (int i=0; i<19; i++) {
         UART2_Put_Char(a002_send_buff[i]);
     }
 
@@ -50,14 +50,14 @@ u8 Select_Power(void) {
     uint32_t adc_val = Use_ADC();
     Serial.printf("\n当前电压:%d\n", adc_val);
 
-    if(adc_val>VOLTAGE_ON_8_FLOOR && adc_val<VOLTAGE_ON_8_UPPER) {
+    if (adc_val>VOLTAGE_ON_8_FLOOR && adc_val<VOLTAGE_ON_8_UPPER) {
         POWER_EN_12_SET;
         delay_ms(100);
         POWER_EN_12_CLR;//硬件错误导致:8V电源电流被12V电源电路瞬间拉低导致电源关
         POWER_EN_8_SET;
         POWER_SELECT_FLAG=0;
         return VOLTAGE_NORMAL;
-    } else if(adc_val>VOLTAGE_ON_12_FLOOR && adc_val<VOLTAGE_ON_12_UPPER) {
+    } else if (adc_val>VOLTAGE_ON_12_FLOOR && adc_val<VOLTAGE_ON_12_UPPER) {
         POWER_EN_12_SET;
         POWER_SELECT_FLAG=1;
         return VOLTAGE_NORMAL;
@@ -73,8 +73,8 @@ void MIC_SWITCH(char mic_temp, char on_off) {
     D_printf("\nMIC:%d, sta:%d\n", mic_temp, on_off);
     //开运放
     //设置增益
-    if(on_off) {
-        switch(mic_temp) {
+    if (on_off) {
+        switch (mic_temp) {
         case IN:            //内mic
             MIC_IN_SET;
             M62364_SetSingleChannel(MIC_IN_CHAN, MIC_LEVEL[1]);
@@ -99,9 +99,9 @@ void MIC_SWITCH(char mic_temp, char on_off) {
 //
 void SPK_SWITCH(char spk_temp, char on_off) {
     D_printf("\nSPK:%d, sta:%d\n", spk_temp, on_off);
-    if(on_off) {
+    if (on_off) {
         //开功放
-        switch(spk_temp) {
+        switch (spk_temp) {
         case IN:            //内spk
             SPK_IN_SET;
             break;
@@ -119,7 +119,7 @@ void SPK_SWITCH(char spk_temp, char on_off) {
     delay_ms(1);
 }
 void VDO_SWITCH(unsigned char on_off) { //6针头电源输出
-    if(on_off) {
+    if (on_off) {
         VDO_SET;
         return;
     }

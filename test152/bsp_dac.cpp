@@ -17,7 +17,7 @@ static int test_val[200]= {
 };
 
 void prepare_data(int array[], int pnt_num) {
-    for(int i = 0; i < pnt_num; i ++) {
+    for (int i = 0; i < pnt_num; i ++) {
         array[i] = (int)((sin(i * CONST_PERIOD_2_PI / pnt_num) + 1) * (double)(AMP_DAC)/2 + 0.5); //2 * PI
         // array[i] =(int) ((1.5*sin(( 2.0*i/pnt_num)*CONST_PERIOD_2_PI)+1.5)*255/3.3);
         // D_printf("array[%d]:%d\n", i, array[i]);
@@ -48,7 +48,7 @@ void bsp_DAC_Init(void) {
 }
 
 void RingTone(ToneClass tone, int state) {
-    if(state) {
+    if (state) {
         // A002_PD_CLR;
         // Serial1.end();
         // pinMode(18, OUTPUT);
@@ -67,10 +67,10 @@ void RingTone(ToneClass tone, int state) {
 }
 
 void RingArray_Intr(void) {
-    if(ToneState) {
-        switch(Tone) {
+    if (ToneState) {
+        switch (Tone) {
         case TONE2K:
-            if(i1 >= DAC_SAMPLE_2K) {
+            if (i1 >= DAC_SAMPLE_2K) {
                 i1 = 0;
             }
             dac_output_voltage(DAC_CHAN, *(SineWave_Value_2K + i1));
@@ -82,7 +82,7 @@ void RingArray_Intr(void) {
             break;
 
         case TONE1_5K:
-            if(i2 >= DAC_SAMPLE_1_5K) {
+            if (i2 >= DAC_SAMPLE_1_5K) {
                 i2 = 0;
             }
             dac_output_voltage(DAC_CHAN, *(SineWave_Value_nK + i2));

@@ -48,7 +48,7 @@ void bsp_Matrix_Init(void) {
 }
 
 static void Key_Select_Row(uint8_t row) {
-    switch(row) {
+    switch (row) {
     case 0:
         KEY_ROW1_SELECT();
         break;
@@ -75,26 +75,26 @@ uint16_t Key_Read_Col(void) {
 }
 //
 unsigned char Matrix_KEY_Scan(unsigned char mode) {
-    if(bsp_CheckTimer(TMR_KEY_SCAN)==0) {
+    if (bsp_CheckTimer(TMR_KEY_SCAN)==0) {
         return MATRIX_RESULT_ERROR;
     }
     static volatile int key_val=MATRIX_RESULT_ERROR;
 
     uint16_t col_Value = 0;
     //  KeyEvent key_e;
-    for(unsigned char r = 0; r < MATRIX_ROWS; r++) {
+    for (unsigned char r = 0; r < MATRIX_ROWS; r++) {
         Key_Select_Row(r);
         col_Value = Key_Read_Col();
         // D_printf("ROW_ON:%d, COL:%x\n", r, col_Value);
-        for(uint8_t c = 0; c < MATRIX_COLS; c++) {
-            if(col_Value & (uint16_t)1<<c) {
+        for (uint8_t c = 0; c < MATRIX_COLS; c++) {
+            if (col_Value & (uint16_t)1<<c) {
                 ClearShut();
-                if(keymaps[r][c] ^ key_val) {
+                if (keymaps[r][c] ^ key_val) {
                     bsp_StartAutoTimer(TMR_KEY_SAME, 400);//TMR_PERIOD_500MS    TMR_PERIOD_1Sbsp_StartAutoTimer
                     key_val = keymaps[r][c];
                     return key_val;
                 } else {
-                    if(bsp_CheckTimer(TMR_KEY_SAME)) {      //400ms
+                    if (bsp_CheckTimer(TMR_KEY_SAME)) {     //400ms
                         return key_val;
                     }
                     return MATRIX_RESULT_ERROR;

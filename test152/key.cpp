@@ -19,19 +19,19 @@ void Key_Init(void) {
 extern void ClearShut(void);
 unsigned char VolumeKeyScan(unsigned char mode) { //音量加减按键扫描
     static unsigned char key_up=1;
-    if(mode) {
+    if (mode) {
         key_up=1;
     }
-    if(key_up&&(VOL_ADD_READ==0||VOL_SUB_READ==0)) {
+    if (key_up&&(VOL_ADD_READ==0||VOL_SUB_READ==0)) {
         ClearShut();
         delay_ms(10);
         key_up=0;
-        if(VOL_ADD_READ==0) {
+        if (VOL_ADD_READ==0) {
             return 1;
-        } else if(VOL_SUB_READ==0) {
+        } else if (VOL_SUB_READ==0) {
             return 2;
         }
-    } else if(VOL_ADD_READ==1&&VOL_SUB_READ==1) {
+    } else if (VOL_ADD_READ==1&&VOL_SUB_READ==1) {
         key_up=1;
     }
     return 0;

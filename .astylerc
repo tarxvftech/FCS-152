@@ -15,3 +15,8 @@
 --convert-tabs
 --keep-one-line-blocks
 --keep-one-line-statements
+--unpad-return-type
+--pad-header
+--align-pointer=middle
+--align-reference=middle
+

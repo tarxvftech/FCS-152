@@ -31,8 +31,8 @@ uint8_t load_CurrentChannel(void);
 void save_ChannelParameter(uint8_t chan, CHAN_ARV S);
 void load_ChannelParameter(uint8_t chan, CHAN_ARV_P L);
 //
-void load_ChannelParameterStr(uint8_t chan, char* L);
-void save_ChannelParameterStr(uint8_t chan, char* S);
+void load_ChannelParameterStr(uint8_t chan, char * L);
+void save_ChannelParameterStr(uint8_t chan, char * S);
 
 //数据初始化
 void DATA_Init(void);
