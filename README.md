@@ -14,6 +14,10 @@ so we're assuming it's something fairly open.
 Long term I'd like this to get pulled into OpenRTX, but meanwhile we
 can still make some improvements.
 
+## Branches
+
+* master - main development branch. Not guaranteed to build.
+* release - guaranteed to build and run for some value of 'run'.
 
 ## Upstream
 
