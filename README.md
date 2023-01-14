@@ -129,57 +129,6 @@ since you have to hold the power button down the entire time.
 We don't yet know the optimal settings for the project but the radio
 still appears to run, so that's nice.
 
-## Problems with dreams
-
-At least right now, it doesn't look like the ESP32 has any way to sample
-the baseband. It also doesn't appear able to drive the speakers/headphones
-or sample the microphone directly. There is definitely some kind of
-way that it can send tones through the transmission, but that's not
-characterized yet.
-
-In short, it's probably stuck as what it is for now. Maybe there can be
-some improvements to allow it to do other things with a hardware revision.
-
-
-## Dreams
-
-Radios - it's easy to forget this has two radios. You can do short-range
-very-high-bandwidth encrypted communications very easily using the
-ESP32 itself.
-
-The radio module uses serial, and could be trivially replaced with an
-MMDVM module and then you can have a multi-protocol data radio, or P25
-and M17 with relatively little effort. Getting more power out than
-a hotspot will require new hardware, but a PoC with a hotspot modem
-could be done on the hardware side in a night.
-
-Similarly the RF board could be replaced with basically any RF board you
-like and you can finally have a some low-VHF or other non 2m/70cm boards.
-
-For that matter you can put a 2.4GHz antenna on the antenna port and
-find a way to extend the main coax down to the ESP32 and disable the RF
-board entirely, or put a 2.4ghz amplifier in place.
-* https://github.com/Jeija/esp32free80211
-* https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/esp-wifi-mesh.html
-* https://github.com/espressif/esp-idf/blob/master/docs/en/api-guides/wifi.rst#wi-fi-80211-packet-send
-
-If the baseband is unfiltered and the ESP32 samples it directly, we
-might be able to bring M17 to the radio natively without hardware
-changes. I wouldn't get my hopes up, but this is on the list of things
-to test.
-
-If I understand correctly, the ESP32S2 has native USB. It might be
-possible to provide sane CPS programming (drag and drop files, ...),
-ethernet over USB for packet, etc. Unfortunately, it seems the encoder
-is connected to the USB pins, so this won't be happening on this hardware.
-
-Similarly it has wifi. Connecting with ATAK should be a cinch once it
-can do data.
-
-GPS could be provided over wifi or serial on the side port. Maybe provided
-from a connected mobile phone. Once we map all the pins we may find enough
-to shoehorn a GPS in. APRS transmission seems possible since the ESP32 is
-generating beeps that get transmitted, but APRS RX has yet to be proven.
 
 
 ## Documentation derived from the source code:
@@ -260,3 +209,68 @@ AT Commands to setup the radio -- copied direct from source:
 
     USB D+ GPIO20, pin 20 (Note the same assignment as the encoder gpios)
     USB D- GPIO19, Pin 19
+
+
+
+
+
+
+
+
+
+
+
+## Problems with dreams
+
+At least right now, it doesn't look like the ESP32 has any way to sample
+the baseband. It also doesn't appear able to drive the speakers/headphones
+or sample the microphone directly. There is definitely some kind of
+way that it can send tones through the transmission, but that's not
+characterized yet.
+
+In short, it's probably stuck as what it is for now. Maybe there can be
+some improvements to allow it to do other things with a hardware revision.
+
+
+## Dreams - probably really only for future hardware revisions
+
+Radios - it's easy to forget this has two radios. You can do short-range
+very-high-bandwidth encrypted communications very easily using the
+ESP32 itself.
+
+The radio module uses serial, and could be trivially replaced with an
+MMDVM module and then you can have a multi-protocol data radio, or P25
+and M17 with relatively little effort. Getting more power out than
+a hotspot will require new hardware, but a PoC with a hotspot modem
+could be done on the hardware side in a night.
+
+Similarly the RF board could be replaced with basically any RF board you
+like and you can finally have a some low-VHF or other non 2m/70cm boards.
+
+None of this matters much if there's no ability to read the microphone
+and drive the speaker from the ESP32.
+
+For that matter you can put a 2.4GHz antenna on the antenna port and
+find a way to extend the main coax down to the ESP32 and disable the RF
+board entirely, or put a 2.4ghz amplifier in place.
+* https://github.com/Jeija/esp32free80211
+* https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-guides/esp-wifi-mesh.html
+* https://github.com/espressif/esp-idf/blob/master/docs/en/api-guides/wifi.rst#wi-fi-80211-packet-send
+
+If the baseband is unfiltered and the ESP32 samples it directly, we
+might be able to bring M17 to the radio natively without hardware
+changes. I wouldn't get my hopes up, but this is on the list of things
+to test.
+
+If I understand correctly, the ESP32S2 has native USB. It might be
+possible to provide sane CPS programming (drag and drop files, ...),
+ethernet over USB for packet, etc. Unfortunately, it seems the encoder
+is connected to the USB pins, so this won't be happening on this hardware.
+
+Similarly it has wifi. Connecting with ATAK should be a cinch once it
+can do data.
+
+GPS could be provided over wifi or serial on the side port. Maybe provided
+from a connected mobile phone. Once we map all the pins we may find enough
+to shoehorn a GPS in. APRS transmission seems possible since the ESP32 is
+generating beeps that get transmitted, but APRS RX has yet to be proven.
