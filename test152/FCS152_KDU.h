@@ -4,7 +4,7 @@
 #ifndef __FCS152_KDU_H__
 #define __FCS152_KDU_H__
 
-#define DEBUG 1
+//#define DEBUG 1
 
 
 
