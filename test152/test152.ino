@@ -64,5 +64,5 @@ void loop(){
     Encoder_process(Encoder_Switch_Scan(0));
     Argument_process(Event_Matrix(Matrix_KEY_Scan(0)));	//matrix button event
     KDU_Processor();
-    input_scan_task();
+    /*input_scan_task();*/
 }
