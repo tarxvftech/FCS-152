@@ -4,6 +4,7 @@
 #include "view.h"
 
 void setup(){  
+    Serial.begin(460800); 
     CH423_Init();       //IIC initialization-->CH423 initialization-->CH423 pin initialization
 
     SPK_SWITCH(IN, OFF); //limit startup noise
@@ -11,7 +12,7 @@ void setup(){
     Key_Init();         //Initialize button: initialize encoder button; detect whether to enter BOOT mode
     Standby_Init();     //Confirm whether the encoder is a normal long press; long press to enable the 3.3V control pin ////PO WER_EN_SET;//
 
-    UART1_Init();       //init serial port
+    /*UART1_Init();       //init serial port*/ //skip because we're doing gdbstub
     ADC_Init();         //检测电压使用 'detection voltage use', didn't translate well
     Timer_Init();       //Start timer processing ADC detection voltage program DAC output voltage timer interrupt
 
@@ -30,16 +31,16 @@ void setup(){
     VFO_Load_Data();
     A002_Init();
     VFO_Clear();
-    /*input_init();*/
-    /*view_init();*/
+    input_init();
+    view_init();
 
 }
 void loop(){
     MY_GLOBAL_FUN();
-    VFO_Refresh();
+    /*VFO_Refresh();*/
     Encoder_process(Encoder_Switch_Scan(0));
-    Argument_process(Event_Matrix(Matrix_KEY_Scan(0)));	//matrix button event
+    /*Argument_process(Event_Matrix(Matrix_KEY_Scan(0)));	//matrix button event*/
     /*KDU_Processor();*/
-    /*input_scan();*/
-    /*ui_draw(&root);*/
+    input_scan();
+    ui_draw(&root);
 }

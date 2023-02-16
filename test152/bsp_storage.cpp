@@ -537,7 +537,7 @@ void DATA_Init(void) {
     int i = 0;
     int val = 0xAA;
     val = get_Flag(RESETADDR);
-//    Serial.printf("resetflag:%0#x\n", val);
+    D_printf("resetflag:%0#x\n", val);
 
     if (val != RESET_VAL) {
         D_printf("RESETING\n");
