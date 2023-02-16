@@ -13,7 +13,7 @@ jobs:
       - name: Upload bin
         uses: actions/upload-artifact@v3
         with:
-          name: just the flashable bin
+          name: test152.ino.bin
           path: |
             test152/build/*.ino.bin
             
