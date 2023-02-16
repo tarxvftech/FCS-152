@@ -1322,9 +1322,9 @@ void MY_GLOBAL_FUN(void) { //全局功能函数
 
     VOL_Reflash();
 
-    if (bsp_CheckTimer(TMR_FM_CTRL) && WFM) {
-        RDA5807_Init(ON);
-    }
+    //if (bsp_CheckTimer(TMR_FM_CTRL) && WFM) {
+        //RDA5807_Init(ON);
+    //}
 }
 
 //

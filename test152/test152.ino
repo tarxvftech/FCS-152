@@ -1,5 +1,7 @@
 #define FREERTOS_CONFIG_XTENSA_H
 #include "main.h"  
+#include "input.h"
+#include "view.h"
 
 void VFO_Refresh_Task(void * parameter){
     // A002_Init();
@@ -56,13 +58,16 @@ void setup(){
     VFO_Load_Data();
     A002_Init();
     VFO_Clear();
+    input_init();
+    view_init();
 
 }
 void loop(){
     MY_GLOBAL_FUN();
-    VFO_Refresh();
+    /*VFO_Refresh();*/
     Encoder_process(Encoder_Switch_Scan(0));
-    Argument_process(Event_Matrix(Matrix_KEY_Scan(0)));	//matrix button event
-    KDU_Processor();
+    /*Argument_process(Event_Matrix(Matrix_KEY_Scan(0)));	//matrix button event*/
+    /*KDU_Processor();*/
     /*input_scan_task();*/
+    ui_draw(&root);
 }
