@@ -3,34 +3,6 @@
 #include "input.h"
 #include "view.h"
 
-void VFO_Refresh_Task(void * parameter){
-    // A002_Init();
-    // DAC_Init();
-
-    delay_ms(1000);
-    // Serial.printf("Create page refresh task\n");
-    Serial.printf("创建写入任务成功\n");
-    unsigned char a002_send_buff[20]="AT+DMOSETVOLUME=5\r\n";
-    while(1){
-        FeedDog();
-        Serial1.begin(9600);
-        for(int i=0;i<19;i++)
-        {
-            UART1_Put_Char(a002_send_buff[i]);
-            UART2_Put_Char(a002_send_buff[i]);
-        }
-        delay_ms(1000);
-        Serial1.end();
-        // delay_ms(500);
-
-        // Start_Tone(1);
-        // delay_ms(500);
-        // Start_Tone(0);
-        // delay_ms(1000);
-        //VFO_Refresh();
-    }
-}
-extern void menuUpdate(void);
 void setup(){  
     CH423_Init();       //IIC initialization-->CH423 initialization-->CH423 pin initialization
 
@@ -50,7 +22,7 @@ void setup(){
     PWM_Init();
     LCD_ShowPICALL(pic_HARRIS);
     Init_Storage();
-    enterSecondSystem(); //menuUpdate();
+    enterSecondSystem(); 
 
     EN_GPIO_Init();  //POWER_EN_8_SET;
 
@@ -58,16 +30,16 @@ void setup(){
     VFO_Load_Data();
     A002_Init();
     VFO_Clear();
-    input_init();
-    view_init();
+    /*input_init();*/
+    /*view_init();*/
 
 }
 void loop(){
     MY_GLOBAL_FUN();
-    /*VFO_Refresh();*/
+    VFO_Refresh();
     Encoder_process(Encoder_Switch_Scan(0));
-    /*Argument_process(Event_Matrix(Matrix_KEY_Scan(0)));	//matrix button event*/
+    Argument_process(Event_Matrix(Matrix_KEY_Scan(0)));	//matrix button event
     /*KDU_Processor();*/
-    /*input_scan_task();*/
-    ui_draw(&root);
+    /*input_scan();*/
+    /*ui_draw(&root);*/
 }

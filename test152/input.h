@@ -18,5 +18,6 @@
 extern input_t _inpstorage[max_inp];
 extern inp_q_t input_q;
 void input_init();
+void input_scan();
 
 #endif

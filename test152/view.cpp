@@ -61,6 +61,9 @@ void menu_simple_draw(menu * parent, menu * m){
     //getmaxyx(stdscr,row,col); //not a function, but a macro
     //wmove(rightwin,1,1);
     //wprintw(rightwin, "current: %d\n", m->current);
+    D_printf("simplemenu draw\n");
+    //LCD_Clear(GLOBAL32);
+    LCD_ShowString0408(0, 0, "simplemenu", 1);
     if( m->numchildren > 0 && m->children != NULL ){
         for( int i = 0; i < m->numchildren; i++ ){
             //wmove(display,1+i,1);
@@ -105,6 +108,9 @@ void menu_simple_input(menu * parent,menu * m){
 void menu_unimplemented_draw(menu * parent, menu * m){
         //wmove(display, 1, 1);
         //wprintw(display,"Unimplemented Menu Type");
+    D_printf("unimplemented draw\n");
+    //LCD_Clear(GLOBAL32);
+    LCD_ShowString0408(0, 0, "unimplemented", 1);
 }
 
 menu mainmenu = {

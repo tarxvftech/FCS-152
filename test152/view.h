@@ -4,6 +4,9 @@
 #include "int_q_t.h"
 #include "input.h"
 
+#include "FCS152_KDU.h"
+#include "lcd.h"
+
 #define maxmenudepth 15
 extern int _menustackstorage[maxmenudepth];
 extern int_q_t menustack;

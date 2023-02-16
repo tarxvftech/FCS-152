@@ -19,7 +19,7 @@ typedef enum rkey_t {
 	VOL_DN_BTN,
 	PTT_BTN,
 	SQL_BTN,
-	KEY_0,
+	KEY_0, //KEY_0 and onwards must match order in bsp_matrixkeyboard.h because I just add an offset to transform
 	KEY_1,
 	KEY_2,
 	KEY_3,
@@ -29,12 +29,12 @@ typedef enum rkey_t {
 	KEY_7,
 	KEY_8,
 	KEY_9,
+	KEY_CLR,
+	KEY_ENT,
 	KEY_PLUS,
 	KEY_MINUS,
 	KEY_LEFT,
 	KEY_RIGHT,
-	KEY_ENT,
-	KEY_CLR
 } rkey_t;
 
 typedef struct input_et {
