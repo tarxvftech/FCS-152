@@ -1,4 +1,4 @@
-name: test
+name: build
 on: [push, pull_request]
 jobs:
   compile:  
@@ -10,3 +10,9 @@ jobs:
           arduino-cli core update-index --additional-urls https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
           arduino-cli core install esp32:esp32 --additional-urls https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json
       - run: cd test152; arduino-cli compile --fqbn esp32:esp32:esp32s2
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: just the flashable bin
+          path: |
+            /tmp/arduino-sketch-*/*.ino.bin
