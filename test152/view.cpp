@@ -4,6 +4,7 @@ int _menustackstorage[maxmenudepth] = {0};
 int_q_t menustack;
 
 void VFO_Refresh();
+void VFO_Clear(void);
 void base_draw(menu * parent, menu * m){
     if( int_q_empty(&menustack) ){
         m->current = 0;
