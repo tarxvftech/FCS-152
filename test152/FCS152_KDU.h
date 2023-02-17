@@ -67,33 +67,33 @@
 #endif
 
 //define the flash address to store the BOOTLOADER, APP and FLAG
-#if     (THISCHIP == THISCHIP_ESP32S2)              ////暂时不需要接收地址设定
-#elif   (THISCHIP == THISCHIP_CM32M101A)            ////仅KDU
+#if     (THISCHIP == THISCHIP_ESP32S2)              ////No need to set the receiving address for the time being
+#elif   (THISCHIP == THISCHIP_CM32M101A)            ////only KDU
 /*
     0x0800 0000 ~ 0x0800 4800: 18K boot
         bootloader  : 18K = 18*1024 = 18432 = 0x4800
     0x0800 4800 ~ 0x0800 5000: 2K  USER FLAG
         USERFLAG    : 2K  = 2*1024  = 2048  = 0x0800
 
-    0x0800 5000 ~ 0x0801 2800: 54K App空间
+    0x0800 5000 ~ 0x0801 2800: 54K              //App space
         APP RUN     : 54K = 54*1024 = 55296 = 0xD800
-    0x0801 2800 ~ 0x0802 0000: 54K 接收新程序
+    0x0801 2800 ~ 0x0802 0000: 54K              //Receive new programs
         APP RCV     : 54K = 54*1024 = 55296 = 0xD800
 */
-#define     APP_PAGE_SIZE       0xD800          //54K   //存放运行APP的空间  存放接收APP的空间    均为54K
-#define     USER_PAGE_SIZE      0x0800          //2K    //每一页空间大小
-#define     KDU_FLAG_ADDR       0x08004800      //程序更新信息      储存地址        0X55
-#define     KDU_SIZE_ADDR       0x08004900      //KDU接收数据大小   储存地址
-#define     KDU_RUN_ADDR        0x08005000      //KDU运行起始地址
-#define     KDU_RCV_ADDR        0x08012800      //KDU接收起始地址
-#elif   (THISCHIP == THISCHIP_STM32F103RET6)        ////152和KDU都需要设定
+#define     APP_PAGE_SIZE       0xD800          //54K   //The space to store the running APP, the space to store the receiving APP, is 54K
+#define     USER_PAGE_SIZE      0x0800          //2K    //Space size of each page
+#define     KDU_FLAG_ADDR       0x08004800      //Program update information storage address        0X55
+#define     KDU_SIZE_ADDR       0x08004900      //KDU Receiving data size storage address
+#define     KDU_RUN_ADDR        0x08005000      //KDU Run start address
+#define     KDU_RCV_ADDR        0x08012800      //KDU Receiving start address
+#elif   (THISCHIP == THISCHIP_STM32F103RET6)        ////Both PRC-152 and KDU need to be set
 #define     KDU_RUN_ADDR        0x08010000      //
 #define     KDU_RCV_ADDR        0x08020000      //
-#define     KDU_FLAG_ADDR       0x08030000      //程序更新信息      储存地址        0X55
+#define     KDU_FLAG_ADDR       0x08030000      //Program update information storage address        0X55
 
 //Start address for 152 IAP
 #if !defined UPBOOT
-#define     _152_RUN_ADDR   0x8020000       //128K空间存放APP 
+#define     _152_RUN_ADDR   0x8020000       //128K space to store APPS
 #else
 #define     _152_RUN_ADDR   0x8000000
 #endif
@@ -109,7 +109,7 @@
 #define  STR_152         "FCS PRC152"
 #define  STR_KDU         " FCS  KDU "
 #define  VERSION_152     "Rev 1.0.000"
-#define  VERSION_KDU     "Rev 1.1.000"          //修改兼容ESP
+#define  VERSION_KDU     "Rev 1.1.000"          //Modify compatible ESP
 #else
 #define  STR_152         "FCS PRC152-N"
 #define  STR_KDU         "FCS KDU-N "
@@ -117,12 +117,12 @@
 #define  VERSION_KDU     "Rev 2.0.000"
 #endif
 
-#define  VERSION_UPBOOT     "Upgrade Bootloader0.1" //用于更新152底层       的152 版本
-#define  VERSION_BOOT       "BOOT Rev 0.0.003"      //用于升级152           的BOOT版本
+#define  VERSION_UPBOOT     "Upgrade Bootloader0.1" //Used to update the PRC-152 program version of the underlying
+#define  VERSION_BOOT       "BOOT Rev 0.0.003"      //Used to upgrade the BOOT version of PRC-152
 
 //////////////////////////////////////////////////////////////////////////////////
-#define     USART1_BUF_SIZE         1024+8+1+50     //缓冲长度
-#define     USART2_BUF_SIZE         255             //串口2缓冲长度
+#define     USART1_BUF_SIZE         1024+8+1+50     //define Serial Port 1 buffer length
+#define     USART2_BUF_SIZE         255             //define Serial port 2 buffer length
 
 #define     NO_OPERATE          0
 #define     RELOAD_ARG          1
@@ -142,24 +142,24 @@
 //#define   WRO_APP             0xAA
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////
-//8.4V开机电压上/下限制
+//8.4V boot voltage up/down limit - Setting the battery voltage limits. In case of 8.4V battery.
 #define  VOLTAGE_ON_8_UPPER         8700
-#define  VOLTAGE_ON_8_FLOOR         6400    //电量太少开机无用
-//12.V开机电压上/下限制
+#define  VOLTAGE_ON_8_FLOOR         6400    //Too little power, useless to boot
+//12.4V boot voltage up/down limit - Setting the battery voltage limits. In case of 12.4V battery.
 #define  VOLTAGE_ON_12_UPPER        13250
 #define  VOLTAGE_ON_12_FLOOR        9250
 
-//8.4V关机电压上下限制
+//8.4V Shutdown voltage upper and lower limit
 #define  VOLTAGE_OFF_8_UPPER        8680
-#define  VOLTAGE_OFF_8_FLOOR        6100    //尽可能放到安全电压
-//12.4V关机电压上/下限制
+#define  VOLTAGE_OFF_8_FLOOR        6100    //Put it to a safe voltage as much as possible
+//12.4V Shutdown voltage up/down limit
 #define  VOLTAGE_OFF_12_UPPER       13250
 #define  VOLTAGE_OFF_12_FLOOR       8900
-//计算电压基值
+//Calculate the voltage base value
 #define  VOLTAGE_8_CAL              6400
 #define  VOLTAGE_12_CAL             9600
 
-//电压水平定义
+//Voltage level definition
 typedef enum {
     VOLTAGE_NORMAL=0,
     VOLTAGE_LOW,
@@ -172,6 +172,7 @@ typedef enum {
     PASSED = !FAILED
 } Status;
 
+//Sound output port definition 
 typedef enum {
     IN=0,
     TOP,
@@ -212,8 +213,8 @@ enum {
     DUAL_MODE
 };
 enum recv_mess {
-    ASKALL=0,       //接收
-    _ASKALL,        //发送
+    ASKALL=0,       //receive
+    _ASKALL,        //send
 
     ASKCHAN,
     _ASKCHAN,
@@ -261,19 +262,19 @@ enum recv_mess {
     _SETOP,
 
     SETVOLU,
-    _SETVOLU,//音量大小
+    _SETVOLU,           //Volume
 
     SETTONE,
-    _SETTONE,
+    _SETTONE,           //Tone
 
     SETFM,
-    _SETFM,
+    _SETFM,             //FM Radio (?)
 
     SETDUALPOS,
     _SETDUALPOS,
 };
 //
-//PGM菜单定义
+//PGM Menu definition
 typedef enum {
     normal_set_mic_gain,
     normal_set_sql,
@@ -284,33 +285,33 @@ typedef enum {
     normal_set_ptttone,
 } normal_set;
 
-//数据长度
-#define Length_CHAN             3   //信道
-#define Length_RX               8   //接收频率
-#define Length_TX               8   //发射频率
-#define Length_RS               3   //接收亚音
-#define Length_TS               3   //发射亚音
-#define Length_POWER            1   //功率
-#define Length_BW               1   //带宽
-#define Length_NN               8   //别名
-#define Length_SCAN             1   //扫描标志
+//Data length
+#define Length_CHAN             3   //channel
+#define Length_RX               8   //Receiving frequency
+#define Length_TX               8   //Transmit frequency
+#define Length_RS               3   //Receive subsonic - defining filtering subsonic frequencies (?)
+#define Length_TS               3   //Emit subsonic - defining filtering subsonic frequencies (?)
+#define Length_POWER            1   //Power - defining output power (?)
+#define Length_BW               1   //Bandwidth - defining radio bandwidth (?)
+#define Length_NN               8   //Alias (?)
+#define Length_SCAN             1   //Scan logo - I don't know what it would be!! Must be SCAN option, but radio doesn't have any.
 
-#define Length_CF               1   //当前信道/频率模式
-#define Length_VU               1   //当前V/U段
-#define Length_CHANA            3   //双守信道A
-#define Length_CHANB            3   //双守信道B
+#define Length_CF               1   //Current channel/frequency mode
+#define Length_VU               1   //Current V/U segment
+#define Length_CHANA            3   //Dual Channel A
+#define Length_CHANB            3   //Dual Channel B
 
-#define Length_VOLUME           1   //音量
-#define Length_STEP             1   //步进
-#define Length_SQL              1   //静噪
-#define Length_AUDIO            1   //音频选通
-#define Length_MIC              1   //mic灵敏度
-#define Length_ENCRYPTION       1   //发射加密
-#define Length_TOT              1   //发射限时
-#define Length_OUTPOWER         1   //六针头电压输出
-#define Length_PRETONE          1   //发射前置提示音
-#define Length_ENDTONE          1   //发射结束提示音
-#define Length_FMFREQ           4   //收音机频率   
+#define Length_VOLUME           1   //Volume
+#define Length_STEP             1   //Step
+#define Length_SQL              1   //Squelch
+#define Length_AUDIO            1   //Audio
+#define Length_MIC              1   //mic sensitivity (?)
+#define Length_ENCRYPTION       1   //Launch encryption
+#define Length_TOT              1   //Length of transmission limit
+#define Length_OUTPOWER         1   //Six-pin voltage output (at top of radio)
+#define Length_PRETONE          1   //Pre-launch tone. Used to beeping before start of transmission. 
+#define Length_ENDTONE          1   //Launch end tone. Use to beeping at the end of transmission.
+#define Length_FMFREQ           4   //Radio frequency  
 //KDU
 #define Length_WFM              1   //收音机开关
 #define Length_FMCHAN           1   //收音机频道
