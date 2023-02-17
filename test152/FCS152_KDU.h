@@ -255,8 +255,8 @@ enum recv_mess {
     SETENC,
     _SETENC,
 
-    SETTOT,
-    _SETTOT,
+    SETTOT,             
+    _SETTOT,            //Time of continuous transmission
 
     SETOP,
     _SETOP,
@@ -287,19 +287,19 @@ typedef enum {
 
 //Data length
 #define Length_CHAN             3   //channel
-#define Length_RX               8   //Receiving frequency
+#define Length_RX               8   //Receive frequency
 #define Length_TX               8   //Transmit frequency
-#define Length_RS               3   //Receive subsonic - defining filtering subsonic frequencies (?)
-#define Length_TS               3   //Emit subsonic - defining filtering subsonic frequencies (?)
-#define Length_POWER            1   //Power - defining output power (?)
-#define Length_BW               1   //Bandwidth - defining radio bandwidth (?)
-#define Length_NN               8   //Alias (?)
-#define Length_SCAN             1   //Scan logo - I don't know what it would be!! Must be SCAN option, but radio doesn't have any.
+#define Length_RS               3   //Receive sub-tone 
+#define Length_TS               3   //Transmit sub-tone
+#define Length_POWER            1   //Power - defining output power 1W/5W/10W (?)
+#define Length_BW               1   //Bandwidth - defining radio bandwidth (Wide/Narrow) (?)
+#define Length_NN               8   //Alias - Have no idea what is it. (?)
+#define Length_SCAN             1   //Scan logo - I don't know what it would be!! Must be SCAN option, but radio doesn't have any. Maybe this is a logo "Harris" at startup?
 
 #define Length_CF               1   //Current channel/frequency mode
 #define Length_VU               1   //Current V/U segment
-#define Length_CHANA            3   //Dual Channel A
-#define Length_CHANB            3   //Dual Channel B
+#define Length_CHANA            3   //Channel A parameters in dual watch mode
+#define Length_CHANB            3   //Channel B parameters in dual watch mode
 
 #define Length_VOLUME           1   //Volume
 #define Length_STEP             1   //Step
@@ -307,32 +307,32 @@ typedef enum {
 #define Length_AUDIO            1   //Audio
 #define Length_MIC              1   //mic sensitivity (?)
 #define Length_ENCRYPTION       1   //Launch encryption
-#define Length_TOT              1   //Length of transmission limit
-#define Length_OUTPOWER         1   //Six-pin voltage output (at top of radio)
-#define Length_PRETONE          1   //Pre-launch tone. Used to beeping before start of transmission. 
+#define Length_TOT              1   //Time of continuous transmission
+#define Length_OUTPOWER         1   //Six-pin power output - this option needed for enabling power amplifier for dynamic microphone
+#define Length_PRETONE          1   //Launch pre-tone. Used to beeping before start of transmission. 
 #define Length_ENDTONE          1   //Launch end tone. Use to beeping at the end of transmission.
-#define Length_FMFREQ           4   //Radio frequency  
+#define Length_FMFREQ           4   //Radio frequency (I don't sure is it refer to FM radio receiver or just radio) 
 //KDU
-#define Length_WFM              1   //收音机开关
-#define Length_FMCHAN           1   //收音机频道
-#define Length_VOLTAGE          3   //电压
-#define Length_RSSI             3   //信号强度
-#define Length_KEYSQ            1   //接收信号状态
-#define Length_KEYSQU           1   //按键静噪状态
-#define Length_KEYPTT           1   //按键PTT状态 
-#define Length_HOMEMODE         1   //主页模式
-#define Length_NOWRCVCHAN       3   //当前接收到信号的信道(双守模式下)
-#define Length_NOWSELCHAN       1   //当前选中双守模式的信道//A或B
+#define Length_WFM              1   //Radio frequency mode (?)
+#define Length_FMCHAN           1   //Radio channel name mode (?)
+#define Length_VOLTAGE          3   //Voltage
+#define Length_RSSI             3   //Signal strength for monitoring (?)
+#define Length_KEYSQ            1   //Received signal squelch level (?)
+#define Length_KEYSQU           1   //Button squelch status
+#define Length_KEYPTT           1   //Button PTT status (pressed or not) (?) 
+#define Length_HOMEMODE         1   //Homepage mode (?)
+#define Length_NOWRCVCHAN       3   //The channel of the currently received signal (in dual-guard mode) (?)
+#define Length_NOWSELCHAN       1   //The channel of the currently selected dual-guard mode//A or B (?)
 //MEMORY
-#define Length_BACKLIGHTNESS    3   //背光亮度
-#define Length_FLAGBACKLIGHT    1   //背光开关
-#define Length_LAMPTIME         1   //背光时间
-#define Length_SCREENCONTRAST   1   //屏幕对比度
+#define Length_BACKLIGHTNESS    3   //Backlight intensity (backlight level)
+#define Length_FLAGBACKLIGHT    1   //Backlight switch (on/off maybe?)
+#define Length_LAMPTIME         1   //Backlight time (setting a time of backlite: always or auto - as on radio menu)
+#define Length_SCREENCONTRAST   1   //Screen contrast level
 
-//AT保存数据地址
-//100-499 全局变量
-//100-199 设置
-//排列顺序
+//AT save data address (?)
+//100-499 Global variables (?)
+//100-199 Set up (?)
+//Order (?)
 #define CHAN_RANK                           0
 #define RX_RANK                             (CHAN_RANK          +Length_CHAN      ) //3
 #define TX_RANK                             (RX_RANK            +Length_RX        ) //11
@@ -360,7 +360,7 @@ typedef enum {
 #define ENDTONE_RANK                        (PRETONE_RANK       +Length_PRETONE   ) //53
 #define FMFREQ_RANK                         (ENDTONE_RANK       +Length_ENDTONE   ) //54
 
-//KDU用
+//KDU
 #define WFM_RANK                            (FMFREQ_RANK        +Length_FMFREQ    ) //////58
 #define FMCHAN_RANK                         (WFM_RANK           +Length_WFM       ) //59
 
@@ -374,13 +374,14 @@ typedef enum {
 #define NOWRCVCHAN_RANK                     (HOMEMODE_RANK      +Length_HOMEMODE  ) //70
 #define NOWSELCHAN_RANK                     (NOWRCVCHAN_RANK    +Length_NOWRCVCHAN) //73
 
-//记忆存储用
+//For memory storage
 #define BACKLIGHTNESS_RANK                  (FMFREQ_RANK        +Length_FMFREQ    ) //////58
 #define FLAG_BACKLIGHT_RANK                 (BACKLIGHTNESS_RANK +Length_BACKLIGHTNESS)  //61
 #define LAMPTIME_RANK                       (FLAG_BACKLIGHT_RANK+Length_FLAGBACKLIGHT)  //62
 #define SCREEN_CONTRAST_RANK                (LAMPTIME_RANK      +Length_LAMPTIME  )     //63
 
-//将数据全部发送和接收,一帧数据包含所有信息, 根据命令不同解读即可获取不同内容
+//Send and receive all the data, one frame of data contains all the information, 
+//and different content can be obtained according to different interpretations of the command.
 #define kdu_start_rank                      16
 #define chan_rank                           kdu_start_rank + CHAN_RANK
 #define rx_rank                             kdu_start_rank + RX_RANK
@@ -407,16 +408,16 @@ typedef enum {
 #define op_rank                             kdu_start_rank + VDO_RANK
 #define pre_rank                            kdu_start_rank + PRETONE_RANK
 #define end_rank                            kdu_start_rank + ENDTONE_RANK
-#define ffreq_rank                          kdu_start_rank + FMFREQ_RANK    //FM_Freq   收音机频率
+#define ffreq_rank                          kdu_start_rank + FMFREQ_RANK    //FM_Freq   Radio frequency
 
-#define wfm_rank                            kdu_start_rank + WFM_RANK       //收音机开关标志
-#define fmchan_rank                         kdu_start_rank + FMCHAN_RANK    //fm频率是否是频道
+#define wfm_rank                            kdu_start_rank + WFM_RANK       //Radio switch logo (?) - Is this defines activating the "Harris" logo on startup?
+#define fmchan_rank                         kdu_start_rank + FMCHAN_RANK    //Is the FM frequency a channel?
 
 #define volt_rank                           kdu_start_rank + VOLTAGE_RANK
-#define rssi_rank                           kdu_start_rank + RSSI_RANK      //A20信号强度
-#define sq_rank                             kdu_start_rank + KEY_SQ_RANK    //信号状态
-#define squ_rank                            kdu_start_rank + KEY_SQU_RANK   //静噪状态
-#define ptt_rank                            kdu_start_rank + KEY_PTT_RANK   //PTT状态
+#define rssi_rank                           kdu_start_rank + RSSI_RANK      //A20 signal strength (what is A20?)
+#define sq_rank                             kdu_start_rank + KEY_SQ_RANK    //Signal status (signal level maybe?)
+#define squ_rank                            kdu_start_rank + KEY_SQU_RANK   //Squelch status (squelch level maybe?)
+#define ptt_rank                            kdu_start_rank + KEY_PTT_RANK   //PTT status (pressed or not?)
 #define homemode_rank                       kdu_start_rank + HOMEMODE_RANK
 #define nowrcvchan_rank                     kdu_start_rank + NOWRCVCHAN_RANK
 #define nowselchan_rank                     kdu_start_rank + NOWSELCHAN_RANK
@@ -428,53 +429,53 @@ typedef enum {
 #define  EN_EEROOM
 #endif
 
-#ifdef EN_EEROOM                            //AT保存数据地址
+#ifdef EN_EEROOM                            //AT save data address
 
 #define RESETADDR                           99
-#define SETADDR                             100                         //基地址
-#define CURRENT_CHANNEL_ADDR                SETADDR+CHAN_RANK           //当前信道号
+#define SETADDR                             100                         //Base address
+#define CURRENT_CHANNEL_ADDR                SETADDR+CHAN_RANK           //Current channel number
 #define FLAG_CF_SWITCH_ADDR                 SETADDR+CF_RANK             //0C,   1F
 #define FLAG_VU_SWITCH_ADDR                 SETADDR+VU_RANK             //0V，  1U
 #define CHANA_ADDR                          SETADDR+CHANA_RANK
 #define CHANB_ADDR                          SETADDR+CHANB_RANK
 
-#define STEP_ADDR                           SETADDR+STEP_RANK           //步进     5k 10k 12.5k
-#define SQ_ADDR                             SETADDR+SQL_RANK            //静噪等级 0-8
-#define AUDIO_SELECT_ADDR                   SETADDR+AUDIO_RANK          //音频输出选择
-#define MIC_LEVEL_ADDR                      SETADDR+MIC_RANK            //咪灵敏度 0-7
-#define SCRAM_LEVEL_ADDR                    SETADDR+ENCRYPTION_RANK     //发射加密 0-8
-#define TOT_ADDR                            SETADDR+TOT_RANK            //发射限时 0-9min
-#define OUTPOWER_ADDR                       SETADDR+VDO_RANK       //6针头输出
-#define PRETONE_ADDR                        SETADDR+PRETONE_RANK        //PTT前置提示音
-#define ENDTONE_ADDR                        SETADDR+ENDTONE_RANK        //PTT结束提示音
-#define OVER_VOLUME_ADDR                    SETADDR+VOLUME_RANK         //全局音量 0-7
-//#define FLAG_WFMMOD_ADDR                  SETADDR+WFM_RANK            //收音机   OFF0  ON1
-#define FM_RADIO_FREQ_ADDR                  SETADDR+FMFREQ_RANK         //收音机频 4位
-#define LAMPTIME_ADDR                       SETADDR+LAMPTIME_RANK       //背光时间 0/1 常亮/10秒
-#define BACKLIGHTNESS_ADDR                  SETADDR+BACKLIGHTNESS_RANK  //背光强度 0-100
-#define FLAG_BACKLIGHT_ADDR                 SETADDR+FLAG_BACKLIGHT_RANK //背光开关
-#define ScreenContrast_ADDR                 SETADDR+SCREEN_CONTRAST_RANK//对比度
+#define STEP_ADDR                           SETADDR+STEP_RANK           //Frequency step     5k 10k 12.5k
+#define SQ_ADDR                             SETADDR+SQL_RANK            //Squelch level 0-8
+#define AUDIO_SELECT_ADDR                   SETADDR+AUDIO_RANK          //Audio output selection
+#define MIC_LEVEL_ADDR                      SETADDR+MIC_RANK            //Microphone sensitivity level 0-7
+#define SCRAM_LEVEL_ADDR                    SETADDR+ENCRYPTION_RANK     //Encryption level 0-8
+#define TOT_ADDR                            SETADDR+TOT_RANK            //Time of continuous transmission 0-9min
+#define OUTPOWER_ADDR                       SETADDR+VDO_RANK            //6-pin output power out - this option needed for enabling power amplifier for dynamic microphone on NATO 6-pin plug.
+#define PRETONE_ADDR                        SETADDR+PRETONE_RANK        //PTT launch pre-tone. Used to beeping before start of transmission.
+#define ENDTONE_ADDR                        SETADDR+ENDTONE_RANK        //PTT Launch end tone. Use to beeping at the end of transmission.
+#define OVER_VOLUME_ADDR                    SETADDR+VOLUME_RANK         //Global volume 0-7
+//#define FLAG_WFMMOD_ADDR                  SETADDR+WFM_RANK            //FM Radio   OFF0  ON1
+#define FM_RADIO_FREQ_ADDR                  SETADDR+FMFREQ_RANK         //Radio frequency 4 digits
+#define LAMPTIME_ADDR                       SETADDR+LAMPTIME_RANK       //Backlight time 0 / 1 constant light / 10 seconds
+#define BACKLIGHTNESS_ADDR                  SETADDR+BACKLIGHTNESS_RANK  //Backlight intensity 0-100
+#define FLAG_BACKLIGHT_ADDR                 SETADDR+FLAG_BACKLIGHT_RANK //Backlight switch
+#define ScreenContrast_ADDR                 SETADDR+SCREEN_CONTRAST_RANK//Contrast
 #define DATA_ADDR                           896
 //#define MEM_LENGTH                          64
-#define V_CHANNEL_ADDR                      DATA_ADDR+CHAN_RANK         //V信道info起始地址
-#define V_RX_ADDR                           DATA_ADDR+RX_RANK           //V收频
-#define V_TX_ADDR                           DATA_ADDR+TX_RANK           //V发频
-#define V_RS_ADDR                           DATA_ADDR+RS_RANK           //V收亚音
-#define V_TS_ADDR                           DATA_ADDR+TS_RANK           //V发亚音
-#define V_TX_POWER_ADDR                     DATA_ADDR+POWER_RANK        //发射功率
-#define V_GBW_ADDR                          DATA_ADDR+BW_RANK           //带宽
-#define V_NN_ADDR                           DATA_ADDR+NN_RANK           //别名
-#define V_SCAN_ADDR                         DATA_ADDR+SCAN_RANK         //扫描标志
+#define V_CHANNEL_ADDR                      DATA_ADDR+CHAN_RANK         //V channel info starting address
+#define V_RX_ADDR                           DATA_ADDR+RX_RANK           //V receive radio frequency
+#define V_TX_ADDR                           DATA_ADDR+TX_RANK           //V transmit radio frequency
+#define V_RS_ADDR                           DATA_ADDR+RS_RANK           //V receive sub-tone
+#define V_TS_ADDR                           DATA_ADDR+TS_RANK           //V transmit sub-tone
+#define V_TX_POWER_ADDR                     DATA_ADDR+POWER_RANK        //V transmit power
+#define V_GBW_ADDR                          DATA_ADDR+BW_RANK           //V bandwidth
+#define V_NN_ADDR                           DATA_ADDR+NN_RANK           //Alias (?)
+#define V_SCAN_ADDR                         DATA_ADDR+SCAN_RANK         //Scan logo (?)
 #define U_FREQ_CHANNEL                      100
-#define U_CHANNEL_ADDR                      (DATA_ADDR+MEM_LENGTH*U_FREQ_CHANNEL)    //U信道info起始地址
-#define U_RX_ADDR                           U_CHANNEL_ADDR+RX_RANK      //U收频
-#define U_TX_ADDR                           U_CHANNEL_ADDR+TX_RANK      //U发频
-#define U_RS_ADDR                           U_CHANNEL_ADDR+RS_RANK      //U收亚音
-#define U_TS_ADDR                           U_CHANNEL_ADDR+TS_RANK      //U发亚音
-#define U_TX_POWER_ADDR                     U_CHANNEL_ADDR+POWER_RANK   //发射功率
-#define U_GBW_ADDR                          U_CHANNEL_ADDR+BW_RANK      //带宽
-#define U_NN_ADDR                           U_CHANNEL_ADDR+NN_RANK      //别名
-#define U_SCAN_ADDR                         U_CHANNEL_ADDR+SCAN_RANK    //扫描标志
+#define U_CHANNEL_ADDR                      (DATA_ADDR+MEM_LENGTH*U_FREQ_CHANNEL)    //U channel info starting address
+#define U_RX_ADDR                           U_CHANNEL_ADDR+RX_RANK      //U receive radio frequency
+#define U_TX_ADDR                           U_CHANNEL_ADDR+TX_RANK      //U transmit radio frequency
+#define U_RS_ADDR                           U_CHANNEL_ADDR+RS_RANK      //U receive sub-tone
+#define U_TS_ADDR                           U_CHANNEL_ADDR+TS_RANK      //U transmit sub-tone
+#define U_TX_POWER_ADDR                     U_CHANNEL_ADDR+POWER_RANK   //U transmit power
+#define U_GBW_ADDR                          U_CHANNEL_ADDR+BW_RANK      //U bandwidth
+#define U_NN_ADDR                           U_CHANNEL_ADDR+NN_RANK      //Alias (?)
+#define U_SCAN_ADDR                         U_CHANNEL_ADDR+SCAN_RANK    //Scan logo (?)
 #else //above non-ESP32, but use this enum if it's an ESP32
 typedef enum {
     RESETADDR=0, //wasn't explicitly set in OEM code
