@@ -423,7 +423,7 @@ typedef enum {
 #define BUF_SIZE                            nowselchan_rank + Length_NOWSELCHAN+1
 //////////////////////////////////////////////////////////////////////////////////////////
 //Enable the eeprom
-#if (THISCHIP != ESP32S2)
+#if (THISCHIP != THISCHIP_ESP32S2)
 #define  EN_EEROOM
 #endif
 
@@ -474,9 +474,9 @@ typedef enum {
 #define U_GBW_ADDR                          U_CHANNEL_ADDR+BW_RANK      //带宽
 #define U_NN_ADDR                           U_CHANNEL_ADDR+NN_RANK      //别名
 #define U_SCAN_ADDR                         U_CHANNEL_ADDR+SCAN_RANK    //扫描标志
-#else
+#else //above non-ESP32, but use this enum if it's an ESP32
 typedef enum {
-    RESETADDR,
+    RESETADDR=0, //wasn't explicitly set in OEM code
     FLAG_CF_SWITCH_ADDR,
     FLAG_VU_SWITCH_ADDR,
 } FLAG;

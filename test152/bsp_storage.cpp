@@ -43,6 +43,7 @@ void Init_Storage(void) {
 
 //修改标志位
 void set_Flag(int flag_number, uint8_t Flag) {
+    D_printf("set_Flag(flag_number=%d, Flag=%d)", flag_number, Flag);
     err = nvs_set_u8(PRC152handle, TAG_FLAG[flag_number], Flag);
     if (err) {
         log_v("set_Flag fail: %s", nvs_error(err));

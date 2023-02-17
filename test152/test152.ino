@@ -38,7 +38,7 @@ void setup(){
 void loop(){
     MY_GLOBAL_FUN();
     /*VFO_Refresh();*/
-    Encoder_process(Encoder_Switch_Scan(0));
+    /*Encoder_process(Encoder_Switch_Scan(0));*/
     /*Argument_process(Event_Matrix(Matrix_KEY_Scan(0)));	//matrix button event*/
     /*KDU_Processor();*/
     input_scan();
