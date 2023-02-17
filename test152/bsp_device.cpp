@@ -360,9 +360,9 @@ void enterSecondSystem() {
             LCD_Clear(GLOBAL32);
             menuUpdate();
         }
-        delay_ms(200);
+        delay_ms(100);
         D_printf("Waiting for UPGRADE~~~~~~\n");
-        if (i++ >= 15) {
+        if (i++ >= 5) {
             break;
         }
     }

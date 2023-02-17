@@ -8,13 +8,14 @@ void base_draw(menu * parent, menu * m){
     if( int_q_empty(&menustack) ){
         m->current = 0;
     }
+    VFO_Clear();
     VFO_Refresh();
 }
 void base_input_handler(menu * parent,menu * m){
     //variadic argument function to jump to specific menus for things like zeroize without having to using ints directly, but finding by string name
     if( ! inp_q_empty(&input_q) ){
         input_et in = inp_q_get(&input_q);
-        if( in.key == '\n' ){
+        if( in.key == KEY_ENT ){
             m->current = child_idx_by_name(m, "MainMenu");
             assert(m->current >= 0);
             int_q_rpush(&menustack, m->current);
@@ -25,27 +26,27 @@ void base_input_handler(menu * parent,menu * m){
         if( in.key == KEY_MINUS ){
             //vfoA -= .0125;
         }
-        if( in.key == '8' ){
+        if( in.key == KEY_8 ){
             m->current = child_idx_by_name(m, "PGM");
             assert(m->current >= 0);
             int_q_rpush(&menustack, m->current);
         }
-        if( in.key == '2' ){
+        if( in.key == KEY_2 ){
             m->current = child_idx_by_name(m, "LT");
             assert(m->current >= 0);
             int_q_rpush(&menustack, m->current);
         }
-        if( in.key == '5' ){
+        if( in.key == KEY_5 ){
             m->current = child_idx_by_name(m, "Zeroize");
             assert(m->current >= 0);
             int_q_rpush(&menustack, m->current);
         }
-        if( in.key == '3' ){
+        if( in.key == KEY_3 ){
             m->current = child_idx_by_name(m, "FM");
             assert(m->current >= 0);
             int_q_rpush(&menustack, m->current);
         }
-        if( in.key == '7' ){
+        if( in.key == KEY_7 ){
             m->current = child_idx_by_name(m, "OPT");
             assert(m->current >= 0);
             int_q_rpush(&menustack, m->current);
@@ -57,20 +58,18 @@ void base_input_handler(menu * parent,menu * m){
     }
 }
 void menu_simple_draw(menu * parent, menu * m){
-    //int row, col;
-    //getmaxyx(stdscr,row,col); //not a function, but a macro
-    //wmove(rightwin,1,1);
-    //wprintw(rightwin, "current: %d\n", m->current);
     D_printf("simplemenu draw\n");
     //LCD_Clear(GLOBAL32);
-    LCD_ShowString0408(0, 0, "simplemenu", 1);
     if( m->numchildren > 0 && m->children != NULL ){
-        for( int i = 0; i < m->numchildren; i++ ){
-            //wmove(display,1+i,1);
-            //wprintw(display,"%s", m->current == i? ">":" ");
-            //wprintw(display, "%d %s",i, m->children[i]->name);
+        for( int i = 0; i < m->numchildren ; i++ ){ 
+            //TODO scrolling
+            if( i == m->current ){
+                LCD_ShowString0608(0, i, ">", 1, 128);
+            } else {
+                LCD_ShowString0608(0, i, " ", 1, 128);
+            }
+            LCD_ShowString0608(1, i, m->children[i]->name, 1, 128);
         }
-        //wprintw(display,"\n");
     }
 }
 void menu_viewonly_input(menu * parent,menu * m){
@@ -90,14 +89,14 @@ void menu_simple_input(menu * parent,menu * m){
 	if( in.key == KEY_MINUS ){
 	    m->current = m->current < m->numchildren -1 ? (m->current + 1) %m->numchildren: m->numchildren -1;
 	}
-	if( in.key == '\n' ){
+	if( in.key == KEY_ENT ){
 	    int_q_rpush(&menustack, m->current);
 	}
 	if( in.key == KEY_CLR ){
 	    int_q_rpop(&menustack);
 	}
-	if( in.key >= '0' && in.key <= '9' ){
-	    int idx= in.key - '0';
+	if( in.key >= KEY_0 && in.key <= KEY_9 ){
+	    int idx= in.key - KEY_0;
 	    if( idx >= 0 && idx < m->numchildren ){
 		m->current = idx;
 		int_q_rpush(&menustack, m->current);
@@ -112,12 +111,154 @@ void menu_unimplemented_draw(menu * parent, menu * m){
     //LCD_Clear(GLOBAL32);
     LCD_ShowString0408(0, 0, "unimplemented", 1);
 }
+char * view_enckeydetail_fieldlist[] = { 
+    "keylength",
+    "name",
+    "key",
+};
+char * view_channeldetail_fieldlist[] = { //order of fields displayed in draw_channeldetail and edited in menu_detailedit_input
+    "name",
+    "power",
+    "txf",
+    "rxf",
+    "encode",
+    "decode",
+};
+menu channeldetail = {
+    .name = "ChannelDetail",
+    .type = VIEW_CUSTOM,
+    //.draw = draw_channeldetail,
+    //.handle_input = menu_detailedit_input,
+    //.numfields = 6,
+    //.fields = view_channeldetail_fieldlist,
+};
+menu * channeldetailentry[] = {
+    &channeldetail
+};
+menu channelsmenu = {
+    .name = "Channels",
+    .type = VIEW_LISTING,
+    //.current = 0,
+    //.object = &channellist,
+    //.draw = draw_channellist,
+    //.handle_input = channellist_input,
+    //needs a 'detail' view somehow, .children[0].submenu points to it
+    //.children = channeldetailentry,
+    //.numchildren = 1,
+    //.numchildren = 1
+};
+
+menu enckeydetail = {
+    .name = "EncKeyDetail",
+    .type = VIEW_CUSTOM,
+    //.draw = draw_enckeydetail,
+    //.handle_input = menu_detailedit_input,
+    //.numfields = 3,
+    //.fields = view_enckeydetail_fieldlist,
+    /*.children = channelsettings,*/
+    /*.current = 0,*/
+    /*.numchildren = 3*/
+};
+menu * enckeydetailentry[] = {
+    &enckeydetail
+};
+menu encryptionsettingspage = {
+    .name = "Encryption Keys",
+    .type = VIEW_LISTING,
+    //.current = 0,
+    //.object = &ezkeyslist,
+    //.draw = draw_encryptionkeyslist,
+    //.handle_input = encryptionkeyslist_input,
+    //.children = enckeydetailentry,
+    //.numchildrenslots = 1,
+    //.numchildren = 1
+};
+menu * topsecuritysettingskids = {
+    &encryptionsettingspage
+};
+menu topsecuritysettings = {
+    .name = "Security",
+    .type = VIEW_SIMPLEMENU,
+    .children = &topsecuritysettingskids,
+    .numchildren = 1,
+    .numchildrenslots = 1,
+};
+menu topwaveformsettings = {
+    .name = "Waveform",
+    .type = VIEW_SIMPLEMENU,
+    .numchildren = 0
+};
+menu topchannelsettings = {
+    .name = "Channel",
+    .type = VIEW_SIMPLEMENU,
+    .numchildren = 0
+};
+menu toprfnetworksettings = {
+    .name = "RFNetwork",
+    .type = VIEW_SIMPLEMENU,
+    .numchildren = 0
+};
+
+char * wifinetworkfields[] = {
+    "enabled",
+    "connectssid",
+    "connectpsk"
+    "sharessid",
+    "sharepsk"
+};
+
+menu topwifinetworksettings = {
+    .name = "802.11Network",
+    .type = VIEW_CUSTOM,
+    //.numchildren = 0,
+    //.draw = draw_80211detail,
+    //.handle_input = menu_detailedit_input,
+    //.numfields = 4,
+    //.fields = view_enckeydetail_fieldlist,
+};
+menu topadminsettings = {
+    .name = "Admin",
+    .type = VIEW_SIMPLEMENU,
+    .numchildren = 0
+};
+menu toptransfersettings = {
+    .name = "Transfer",
+    .type = VIEW_SIMPLEMENU,
+    .numchildren = 0
+};
+menu topemergencysettings = {
+    .name = "Emergency",
+    .type = VIEW_SIMPLEMENU,
+    .numchildren = 0
+};
+menu * settings_top_entries[] = {
+    &topsecuritysettings ,
+    &topwifinetworksettings ,
+    //&topwaveformsettings ,
+    //&topchannelsettings ,
+    //&toprfnetworksettings ,
+    //&topadminsettings ,
+    //&toptransfersettings ,
+    //&topemergencysettings,
+};
+
+menu settings = {
+    .name = "Settings",
+    .type = VIEW_SIMPLEMENU,
+    .children = settings_top_entries,
+    .numchildren = 2,
+    .numchildrenslots = 2,
+};
+menu * main_entries[] = {
+    &channelsmenu,
+    &settings,
+};
 
 menu mainmenu = {
     .name = "MainMenu",
     .type = VIEW_SIMPLEMENU,
-    //.children = main_entries,
-    .numchildren = 0,
+    .children = main_entries,
+    .numchildren = 2,
     .numchildrenslots = 2,
 };
 menu mainPGM = {
@@ -155,7 +296,7 @@ menu root = {
 	.draw = base_draw,     
 	.handle_input = base_input_handler,     
 	.children = root_entries,     
-	.numchildren = 1,
+	.numchildren = 6,
 	.numchildrenslots = 6,     
 	.current = 0,     
 };
@@ -187,11 +328,13 @@ void ui_draw(menu * m){
         parent = m;
         m = s;
     }
-    //if( i != int_q_size(&menustack) ){
-        //printf("ERR:Did not consume all of menustack\n");
-    //}
+    if( i != int_q_size(&menustack) ){
+        D_printf("ERR:Did not consume all of menustack\n");
+    }
+    D_printf("Menu: %d, %s\n", i, m->name);
 
     //render the selected menu structure
+    assert(m!=NULL);
     if( m->type == VIEW_CUSTOM ){
         m->handle_input(parent,m);
         m->draw(parent,m);
@@ -202,6 +345,7 @@ void ui_draw(menu * m){
         menu_simple_input(parent,m);
         menu_simple_draw(parent,m);
     } else {
+        assert(parent!=NULL);
         menu_unimplemented_draw(parent,m);
     }
 }

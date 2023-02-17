@@ -168,7 +168,7 @@ void A002_CALLBACK(void) { //A20数据接收处理
             i++;
         } while (Serial1.available());
 
-        D_printf("length:%d, Serail1:%s\n", i, rx2_buf);
+        D_printf("length:%d, Serial1:%s\n", i, rx2_buf);
 
         if (strstr((const char *)rx2_buf, "+DMOCONNECT:0")) { //握手成功
             D_printf("Connected!!\n");

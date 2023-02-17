@@ -28,7 +28,8 @@ void input_scan(){
     //adapting existing system by inserting here - might replace lower-level input handling later, might not
     //in the meantime, this is a perfectly fine place to start replacing the UI input handling
     if( matrix_key == MATRIX_RESULT_ERROR ){
-	//? do nothing, as far as I can tell. "ERROR" might be too strong a word. 
+	//? should do nothing, as far as I can tell. 
+	//"ERROR" might be too strong a word. 
     } else {
 	in.key = (rkey_t) ((int)matrix_key + (int)KEY_0); 
 	//requires the KEY_ enums to be in same order as the matrix_key
