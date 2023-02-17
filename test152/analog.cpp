@@ -24,7 +24,7 @@ void ADC_Init(void) {
 }
 
 void DAC_Init(void) {
-    SineWave_Data();    //生成数据
+    SineWave_Data();    //Generate sinewave data
     bsp_DAC_Init();
 }
 
@@ -41,7 +41,7 @@ void LightBacklight(void) {
 
 int Get_Battery_Vol(void) {
     int voltage  = Use_ADC();
-    static u8 lowBatteryCal = 0;    //检测电池电压低次数
+    static u8 lowBatteryCal = 0;    //Number of times to detect low battery voltage
     if (POWER_SELECT_FLAG) {        //12V
         if (voltage < VOLTAGE_OFF_12_FLOOR || voltage > VOLTAGE_OFF_12_UPPER) {
             lowBatteryCal++;
@@ -70,7 +70,7 @@ int Get_Battery_Vol(void) {
 
 //PTT press: start and end transmission beeps
 void Start_Tone(unsigned char STOP_START) {
-    SPK_SWITCH(AUD, ON);//==>响 发射提示
+    SPK_SWITCH(AUD, ON);                            //==>Sound launch prompt
 
     if (VOLUME>0) {
         M62364_SetSingleChannel(A20_LINE_CHAN, 5);
@@ -79,14 +79,14 @@ void Start_Tone(unsigned char STOP_START) {
         M62364_SetSingleChannel(A20_LINE_CHAN, 0);
         M62364_SetSingleChannel(8, 0);
     }
-    M62364_SetSingleChannel(TONE_OUT_CHAN, 100);    //输出到A20发射
+    M62364_SetSingleChannel(TONE_OUT_CHAN, 100);    //Output to A20 transmitter - what is A20? what it does?
 
-    delay_ms(200);//必需的延时,否则缺失第一声
+    delay_ms(200);                                  //Necessary delay, otherwise the first sound is missing
 
     pinMode(18, OUTPUT);
-    ESP_ERROR_CHECK(dac_output_enable(DAC_CHAN));
-    if (STOP_START==1) { //开始
-        //前置提示音
+    ESP_ERROR_CHECK(dac_output_enable(DAC_CHAN));   //Sounding an error
+    if (STOP_START==1) { //start 
+        //Front tone
         RingTone(TONE2K, ON);
         delay_ms(100);//delay_ms(80);
         RingTone(TONE2K, OFF);
@@ -95,7 +95,7 @@ void Start_Tone(unsigned char STOP_START) {
         delay_ms(160);
         RingTone(TONE2K, OFF);
     } else {
-        //结束提示音
+        //End tone
         RingTone(TONE1_5K, ON);
         delay_ms(100);
         RingTone(TONE1_5K, OFF);
@@ -105,19 +105,19 @@ void Start_Tone(unsigned char STOP_START) {
     ESP_ERROR_CHECK(dac_output_disable(DAC_CHAN));
     pinMode(18, INPUT_PULLUP);
 
-    SPK_SWITCH(AUD, OFF);//==>发射提示
+    SPK_SWITCH(AUD, OFF);                             //==>Sound launch off
     M62364_SetSingleChannel(A20_LINE_CHAN, 0);
     M62364_SetSingleChannel(TONE_OUT_CHAN, 0);
     M62364_SetSingleChannel(8, 0);
 }
 
-//长按静噪按键进入常静噪模式的提示音
+//Press and hold the squelch button to enter the tone of normal squelch mode
 void Start_ToneSql0(void) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
-    M62364_SetSingleChannel(A20_LINE_CHAN, 5);                  //修改增益输出"Di"
-    M62364_SetSingleChannel(8, 50);                             //toneout输出打开
+    M62364_SetSingleChannel(A20_LINE_CHAN, 5);                  //Modify the DAC gain output "Di - Serial data input" (?)
+    M62364_SetSingleChannel(8, 50);                             //toneout output is on (?)
 //////////////////////////////////////////////////////////////////
-// configure DAC
+                                                    //Configure DAC
     pinMode(18, OUTPUT);                            //Set the pin to output mode in order to start the DAC
     ESP_ERROR_CHECK(dac_output_enable(DAC_CHAN));
     //////////////////////////////////////////////////
@@ -125,12 +125,12 @@ void Start_ToneSql0(void) {
     delay_ms(60);
     RingTone(TONE1_5K, OFF);
 //////////////////////////////////////////////////////
-//end DAC, reconfigure A002
+                                                    //End DAC reconfigure A002
     dac_output_voltage(DAC_CHAN, 0);
     ESP_ERROR_CHECK(dac_output_disable(DAC_CHAN));
-    pinMode(18, INPUT_PULLUP);                      //Pull high level to restore serial port 2 RX communication
+    pinMode(18, INPUT_PULLUP);                      //Pull high level to restore serial port 2 RX communication (?)
 //////////////////////////////////////////////////////////////////
-    M62364_SetSingleChannel(8, 0);                              //toneout输出关闭
-    M62364_SetSingleChannel(A20_LINE_CHAN, A20_LEVEL[VOLUME]);  //恢复当前增益大小输出声音
+    M62364_SetSingleChannel(8, 0);                              //toneout output is off (?)
+    M62364_SetSingleChannel(A20_LINE_CHAN, A20_LEVEL[VOLUME]);  //Restore the current gain size and output sound
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 }
