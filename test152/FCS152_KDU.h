@@ -100,7 +100,7 @@
 #endif
 
 //deside the device information string
-#if     (THISCHIP != STM32F103RET6)
+#if     (THISCHIP != THISCHIP_STM32F103RET6)
 #define   __NEW__                           //this program base on CM32M101, which is new
 #endif
 
