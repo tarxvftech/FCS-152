@@ -43,7 +43,7 @@ void bsp_Matrix_Init(void) {
     pinMode(KEY_COL4_PIN, INPUT_PULLDOWN);
 
 
-    KEY_ALL_ROW_UNSELECT();     //释放行
+    KEY_ALL_ROW_UNSELECT();     //Release line - I think this code is for radio keys definition or initialisation maybe(?)
 
 }
 
