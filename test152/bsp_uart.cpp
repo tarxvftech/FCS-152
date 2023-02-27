@@ -1,21 +1,21 @@
 #include "bsp_uart.h"
 #include "bsp_delay.h"
 
-volatile uint16_t rx1_len=0;                                                            //接收数据长度
-volatile unsigned char  rx1_buf[USART1_BUF_SIZE]= {0}, usart1_recv_end_flag=0;          //接收缓冲区//接收标志位
+volatile uint16_t rx1_len=0;                                                                    //Received data length
+volatile unsigned char  rx1_buf[USART1_BUF_SIZE]= {0}, usart1_recv_end_flag=0;                  //Receive buffer//Receive flag
 volatile unsigned char  rx2_buf[USART2_BUF_SIZE]= {0}, usart2_recv_end_flag=1, rx2_len=0;
 
 void bsp_UART1_Init(int baud) {
     Serial.begin(baud);
     delay_ms(50);
 }
-void UART1_EnRCV(void) {                    //启动串口1接收
+void UART1_EnRCV(void) {                    //Start serial port 1 to receive
     memset((char *)rx1_buf, '0', sizeof(char) * (USART1_BUF_SIZE - 1));
 }
-int UART1_getRcvFlag(void) {               //判断接收标志位
+int UART1_getRcvFlag(void) {                //Determine the receiving flag
     return (Serial.available());
 }
-int UART1_dataPreProcess(void) {           //数据预处理
+int UART1_dataPreProcess(void) {            //Data preprocessing
     int i = 0;
     memset((char *)rx1_buf, '0', sizeof(char) * (USART1_BUF_SIZE - 1));
     do {
@@ -68,8 +68,8 @@ void UART2_Send_Message(char s[], int size) {
     }
 }
 
-/*******************模块相关函数*****************/
-//设置主要收发参数
+/*******************Module related functions*****************/
+//Set the main sending and receiving parameters
 void Set_A20(CHAN_ARV set, unsigned char sq) {
     unsigned char a002_send_buff[47]="AT+DMOSETGROUP=1,436.025,436.025,000,1,001,1\r\n";
     int i=0;
@@ -97,7 +97,7 @@ void Set_A20(CHAN_ARV set, unsigned char sq) {
 
 }
 
-//设置控制参数
+//Set control parameters
 void Set_A20_MIC(unsigned char miclvl,unsigned char scramlvl,unsigned char tot) {
     unsigned char i=0,a002_send_buff[21]="AT+DMOSETMIC=1,0,0\r\n";
     //  printf("SETA002MIC: MIC:%d, SCRAM:%d, TOT:%d\n\n", miclvl, scramlvl, tot);
@@ -110,7 +110,7 @@ void Set_A20_MIC(unsigned char miclvl,unsigned char scramlvl,unsigned char tot) 
     }
 }
 
-//获取信号强度
+//Get signal strength
 int Get_A20_RSSI(void) {
     unsigned char i=0, a002_send_buff[17]="AT+DMOREADRSSI\r\n";
     int rssi=0, len=0;
@@ -123,7 +123,7 @@ int Get_A20_RSSI(void) {
     while (!Serial1.available() && i++<200) {
         delay_ms(1);
     }
-    D_printf("等待时间:%dms\n", i-16);
+    D_printf("等待时间:%dms\n", i-16);        //Waiting time
     if (Serial1.available()) {
         i = 0;
         do {
@@ -132,8 +132,8 @@ int Get_A20_RSSI(void) {
         } while (Serial1.available());
 
         len = strlen((char *)rx2_buf) - 1;
-// D_printf("接收A20length:%d, %s\n", len, rx2_buf);
-// D_printf("接收RSSI:%s\n", rx2_buf+13);
+// D_printf("接收A20length:%d, %s\n", len, rx2_buf);          //receive A20 length:
+// D_printf("接收RSSI:%s\n", rx2_buf+13);                     //receive RSSI:
 
         if (len==15) {
             rssi = rx2_buf[13]-'0';
@@ -146,7 +146,7 @@ int Get_A20_RSSI(void) {
 // D_printf("%dRSSI:%d\n", __LINE__,rssi);
 
         rssi=rssi*100/0xff;
-        delay_ms(1);//没延时计算不出来！！！
+        delay_ms(1);                                          //Can't calculate without delay！！！
         memset((char *)rx2_buf, 0, 255);
     }
 
@@ -159,7 +159,7 @@ int Get_A20_RSSI(void) {
     return rssi;
 }
 
-void A002_CALLBACK(void) { //A20数据接收处理
+void A002_CALLBACK(void) {                                     //A20 Data reception and processing
     //if (usart2_recv_end_flag)
     if (Serial1.available()) {
         int i = 0;
@@ -170,22 +170,22 @@ void A002_CALLBACK(void) { //A20数据接收处理
 
         D_printf("length:%d, Serial1:%s\n", i, rx2_buf);
 
-        if (strstr((const char *)rx2_buf, "+DMOCONNECT:0")) { //握手成功
+        if (strstr((const char *)rx2_buf, "+DMOCONNECT:0")) { //Handshake successfully
             D_printf("Connected!!\n");
         }
-        if (strstr((const char *)rx2_buf, "+DMOSETGROUP:0")) { //工作参数写入成功
+        if (strstr((const char *)rx2_buf, "+DMOSETGROUP:0")) { //Working parameters were written successfully
             D_printf("Successfully Write!\n");
         }
-        if (strstr((const char *)rx2_buf, "+DMOSETMIC:0")) { //MIC参数设置成功
+        if (strstr((const char *)rx2_buf, "+DMOSETMIC:0")) { //MIC Parameter setting is successful
             D_printf("Successfully Set MIC!\n");
         }
-        if (strstr((const char *)rx2_buf, "+DMOSETVOX:0")) { //声控设置成功
+        if (strstr((const char *)rx2_buf, "+DMOSETVOX:0")) { //Voice control is set up successfully
             D_printf("Successfully Set VOX!\n");
         }
-        if (strstr((const char *)rx2_buf, "+DMOAUTOPOWCONTR:0")) { //省电模式成功
+        if (strstr((const char *)rx2_buf, "+DMOAUTOPOWCONTR:0")) { //Power saving mode is successful 
             D_printf("Successfully Set AUTOPOWCONTR!\n");
         }
-        if (strstr((const char *)rx2_buf, "+ DMOSETVOLUME:0")) { //省电模式成功
+        if (strstr((const char *)rx2_buf, "+ DMOSETVOLUME:0")) { //Volume settings is successful  
             D_printf("Successfully Set VOLUME!\n");
         }
 
