@@ -2,13 +2,13 @@
 #define __BSP_M62364_H__
 #include "FCS152_KDU.h"
 
-#define TONE_OUT_CHAN               1       //音调使能通道->输出到A20_MIC
-#define FM_S_EN_CHAN                2       //收音机电源是能通道
-#define MIC_OUT_CHAN                3       //外置    MIC使能&增益控制  
-#define MIC_IN_CHAN                 4       //内置_顶部MIC使能&增益控制   
+#define TONE_OUT_CHAN               1       //Tone enable channel->output to A20_MIC
+#define FM_S_EN_CHAN                2       //The radio power supply is an energy channel
+#define MIC_OUT_CHAN                3       //External MIC enable & gain control - option for dynamic microphone, connected to military six-pin connector 
+#define MIC_IN_CHAN                 4       //Built-in_top MIC enable & gain control 
 
-#define WFM_LINE_CHAN               5       //收音机通道
-#define A20_LINE_CHAN               6       //射频模块接收语音
+#define WFM_LINE_CHAN               5       //Radio channel
+#define A20_LINE_CHAN               6       //RF module receives voice
 
 
 #define SET_FM_S_EN                 M62364_SetSingleChannel(FM_S_EN_CHAN, 180)
