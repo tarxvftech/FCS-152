@@ -6,18 +6,18 @@
 #include "bsp_MatrixKeyBoard.h"
 
 void Key_Init(void) {
-    // Encoder_Click_Init();   //编码器按下初始化
-    // Encoder_Spin_init();    //编码器旋转初始化
+    // Encoder_Click_Init();   //Encoder press initialize
+    // Encoder_Spin_init();    //Encoder rotation initialization
     Encoder_Init();
-    Function_Key_Init();    //独立功能按键初始化
+    Function_Key_Init();       //Independent function button initialization
 
-    bsp_Matrix_Init();      //矩阵键盘初始化
+    bsp_Matrix_Init();         //Matrix keyboard initialization
 
 }
 
 
 extern void ClearShut(void);
-unsigned char VolumeKeyScan(unsigned char mode) { //音量加减按键扫描
+unsigned char VolumeKeyScan(unsigned char mode) { //Volume up and down button scan
     static unsigned char key_up=1;
     if (mode) {
         key_up=1;
