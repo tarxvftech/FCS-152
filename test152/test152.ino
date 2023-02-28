@@ -24,7 +24,7 @@ void setup(){
 
     LCD_Init();
     PWM_Init();
-    LCD_ShowPICALL(pic_XVF);
+    LCD_ShowPICALL(xvf152.bmp);
     Init_Storage();
     enterSecondSystem(); 
 
