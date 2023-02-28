@@ -1,7 +1,13 @@
 
-
-compile:
+compile: pyclean
 	arduino-cli compile -b esp32:esp32:esp32s2
+pyclean:
+	#clean up anything from python font/img tools
+	-rm *.o *.so _font.*
+
+font.so: font.cpp font.h
+	g++ -c -Wno-narrowing font.cpp -o font.o
+	g++ -shared -o font.so font.o
 flash:
 	echo "hold 9 on the keypad, press and hold power on radio. You can release the 9 but must hold the power (encoder press) the entire time radio is flashing"
 	arduino-cli upload -b esp32:esp32:esp32s2:UploadSpeed=460800  -p /dev/ttyUSB0

@@ -38,7 +38,7 @@ pic2516[][50],
 extern const unsigned char
 
 ascii_0408[][4], ascii_0608[][6], ascii_1016[][20],
-           pic_0408[][4],   pic_KDUClear[],  pic_HARRIS[],     pic_BaoTong[];
+           pic_0408[][4],   pic_KDUClear[],  pic_HARRIS[], pic_BaoTong[], pic_XVF[];
 
 extern const unsigned char square_9[10][9];
 extern const char prefix_buf[][16];

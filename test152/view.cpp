@@ -3,14 +3,24 @@
 int _menustackstorage[maxmenudepth] = {0};
 int_q_t menustack;
 
-void VFO_Refresh();
-void VFO_Clear(void);
+
+void draw_clear(){
+    LCD_Clear(GLOBAL32);
+}
+void draw_battery(){
+}
+void draw_volume(){
+}
+void draw_VFO(){
+}
 void base_draw(menu * parent, menu * m){
     if( int_q_empty(&menustack) ){
         m->current = 0;
     }
-    VFO_Clear();
-    VFO_Refresh();
+    draw_clear();
+    LCD_ShowString0608(0, 1, "1                     ", 1, 128);
+    LCD_ShowString0608(0, 2, "2                     ", 1, 128);
+    LCD_ShowString0608(0, 3, "3                     ", 1, 128);
 }
 void base_input_handler(menu * parent,menu * m){
     //variadic argument function to jump to specific menus for things like zeroize without having to using ints directly, but finding by string name

@@ -15,8 +15,8 @@ u16 scan_cal = 0;               //用作计算 扫描模式下信号消失      
 u16 sql_cal  = 0;               //用作计算 按下静噪按键                   的时间
 
 //模式标志位
-volatile char Home_Mode = 0;            //主页显示模式    //0:常规, 1:大字 2:双守
-volatile char Flag_Main_Page = 1;       //主页显示模式
+volatile char Home_Mode = 0;            //Home page display mode //0: normal, 1: large characters 2: dual chan watch
+volatile char Flag_Main_Page = 1;       //Home display mode
 volatile char SQL_MODE = OFF;               //长静噪模式
 
 double STEP_LEVEL[] = {0.0050, 0.0100, 0.0125};    //步进等级
