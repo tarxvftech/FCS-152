@@ -19,8 +19,8 @@
 #define AMP_DAC                 80                                                 // Amplitude of DAC voltage. If it's more than 256 will causes dac_output_voltage() output 0.
 #define DAC_CHAN                DAC_CHANNEL_2
 //The number of output wave points.
-#define DAC_SAMPLE_2K           (int)(1000000 / (TIMER_INTR_US * 2000) + 0.5)       //dac2K采样数据
-#define DAC_SAMPLE_1_5K         (int)(1000000 / (TIMER_INTR_US * 1500) + 0.5)       //dac1.5K采样数据
+#define DAC_SAMPLE_2K           (int)(1000000 / (TIMER_INTR_US * 2000) + 0.5)       //dac2K Sampled data
+#define DAC_SAMPLE_1_5K         (int)(1000000 / (TIMER_INTR_US * 1500) + 0.5)       //dac1.5K Sampled data
 
 #define CONST_PERIOD_2_PI      6.2832
 
