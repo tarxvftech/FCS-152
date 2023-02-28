@@ -9,11 +9,11 @@
 
 Ticker t1;
 
-//定义一个周期重复运行的定时器结构体
+//Define a timer structure that runs repeatedly in a cycle
 esp_timer_create_args_t Mtimer0 = {
-    .callback = &timer0_cb,             //设置回调函数
-    .arg = NULL,                        //不携带参数
-    .name = "Timer_1ms"                 //定时器名字
+    .callback = &timer0_cb,             //Set the callback function
+    .arg = NULL,                        //Do not carry parameters
+    .name = "Timer_1ms"                 //Timer name
 };
 
 esp_timer_handle_t timer0_handle = 0;
@@ -24,7 +24,7 @@ void bsp_Timer0_Init(void) {
     esp_err_t err = esp_timer_create(&Mtimer0, &timer0_handle);
     err = esp_timer_start_periodic(timer0_handle, 1000);
 
-    D_printf("重复周期运行的定时器创建状态码: %s", err == ESP_OK ? "ok!\r\n" : "failed!\r\n");
+    D_printf("重复周期运行的定时器创建状态码: %s", err == ESP_OK ? "ok!\r\n" : "failed!\r\n"); //Create a status code for a timer that runs in repeated cycles
 }
 
 extern void disposeAllTimeData(void);
@@ -86,15 +86,15 @@ static void IRAM_ATTR timer2_cb(void * arg) {
 //int64_t tick = esp_timer_get_time();
 // if (tick > 100000000)
 // {
-//  //停止定时器工作，并获取是否停止成功
+//  //Stop the timer from working and get whether it stopped successfully
 //  esp_err_t err = esp_timer_stop(timer0_handle);
-//  printf("要停止的定时器名字：%s , 是否停止成功：%s", Mtimer0.name,
+//  printf("要停止的定时器名字：%s , 是否停止成功：%s", Mtimer0.name,    //Name of the timer to be stopped      //Whether to stop successfully
 //                err == ESP_OK ? "ok!\r\n" : "failed!\r\n");
 //  err = esp_timer_delete(timer0_handle);
-//  printf("要删除的定时器名字：%s , 是否停止成功：%s", Mtimer0.name,
+//  printf("要删除的定时器名字：%s , 是否停止成功：%s", Mtimer0.name,    //The name of the timer to be deleted      //Whether to stop successfully
 //                err == ESP_OK ? "ok!\r\n" : "failed!\r\n");
 // }
-//printf("方法回调名字: %s , 距离定时器开启时间间隔 = %lld \r\n", __func__, tick);
+//printf("方法回调名字: %s , 距离定时器开启时间间隔 = %lld \r\n", __func__, tick);   //Method callback name     //Distance timer turn on time interval
 
 
 
