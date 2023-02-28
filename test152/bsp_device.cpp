@@ -6,24 +6,24 @@ volatile u32 OFF_MS=0, OFF_HUR=0;
 void SHUT(void) {
     D_printf("<<<<<<SHUTING>>>>>>\n");
 
-    LCD_Clear(GLOBAL32); //关屏
+    LCD_Clear(GLOBAL32);            //Turn off the screen
     LCD_ShowPICALL(pic_HARRIS);
 
 #if FM_EN
-    //关收音机
+    //Turn off the radio
     if (WFM) {
         RDA5807_Init(OFF);
     }
 #endif
 
-    //62364关
+    //62364 off
     M62364_SetSingleChannel(4, 0);
     M62364_SetSingleChannel(6, 0);
 
     SPK_SWITCH(0, 0);
 
-    A002_PD_CLR; //对讲机睡眠
-    VDO_CLR;    //六针头关
+    A002_PD_CLR; //Walkie-talkie sleep
+    VDO_CLR;     //Six-pin head off - military 6-pin connector, placed on top of the radio.
 
     delay_ms(1000);
     LCD_Clear(GLOBAL32);
@@ -50,7 +50,7 @@ void Cal2Shut(void) {
 
 
 
-//系统进入待机模式
+//The system enters standby mode
 void Sys_Enter_Standby(void) {
     // pinMode(WAKE_UP_PIN, INPUT_PULLDOWN);
     // esp_sleep_enable_ext0_wakeup(WAKE_UP_PIN, HIGH); //1 = High, 0 = Low
@@ -60,26 +60,26 @@ void Sys_Enter_Standby(void) {
 
 }
 //
-//初始待机及退出
+//Initial standby and exit
 void Standby_Init() {
-    // Encoder_Init(); //编码器按键初始化
+    // Encoder_Init(); //Encoder button initialization
     // delay_ms(5);
 
-    //电源控制引脚首先使能
-    ControlGPIO_Init(); //总电源控制引脚初始化
-    int t = 0; //记录按下的时间
+    //The power control pin is enabled first
+    ControlGPIO_Init();             //Initialization of the total power supply control pin
+    int t = 0;                      //Record the time pressed
     while (1) {
-        FeedDog();//喂狗
+        FeedDog();                  //Feed the dog - what is this? Is it initialization of controller Watch Dog timer?
         if (ENCODER_CLICK_READ==0) {
-            t++; //已经按下了
+            t++;                    //Already pressed - counter of encoder's pressing (?)
             delay_ms(20);
-            if (t >= 75) { //按下超过3秒钟
+            if (t >= 75) {          //Press for more than 3 seconds - power on and turning on the radio (?)
                 POWER_EN_SET;
-                return;   //按下3s以上了
+                return;             //Press 3 sec or more
             }
 
         } else {
-            Sys_Enter_Standby();    //误触，不是开机，重新进入待机模式
+            Sys_Enter_Standby();    //Accidentally touched, not turned on, re-enter standby mode
         }
     }
 }
@@ -93,7 +93,7 @@ const char * MENU_UPDATE[3] = {
     "2.UPDATE             ",
     "3.DEVICE ABOUT       ",
 };
-//写频界面
+//Write frequency interface
 int i = 0;
 int channelSetting(void) {
     u8 lock=OFF;
@@ -127,26 +127,26 @@ int channelSetting(void) {
             } while (Serial.available());
 
             if (i<1024) {
-                //升级
+                //upgrade
                 if (strstr((char *)rx1_buf, "Line152")) {
-                    Serial.printf("%cReady", 5);                //准备完毕，可以接收数据
+                    Serial.printf("%cReady", 5);                //Ready to receive data
                 }
-                //写频
-                //覆盖某一地址数据
+                //Write frequency
+                //Overwrite a certain address data
                 else if (strstr((char *)rx1_buf, "Cover")) {
                     // W_addr = (rx1_buf[ 5] - '0')*0x10000 + (rx1_buf[ 6] - '0')*0x1000 + (rx1_buf[ 7] - '0')*0x100 + (rx1_buf[ 8] - '0')*0x10 + (rx1_buf[9] - '0');
                     // W_data = rx1_buf[10];
                     // AT24CXX_WriteOneByte(W_addr, W_data);
                     // Serial.printf("%cRecover", 7);
                 }
-                //查看某一地址数据
+                //View a certain address data
                 else if (strstr((char *)rx1_buf, "Seek")) {
                     // W_addr = (rx1_buf[ 5] - '0')*0x10000 + (rx1_buf[ 6] - '0')*0x1000 + (rx1_buf[ 7] - '0')*0x100 + (rx1_buf[ 8] - '0')*0x10 + (rx1_buf[9] - '0');
                     // W_data = AT24CXX_ReadOneByte(W_addr);
                     // EN_Recv();
                     // printf("%cReSeek%c", 7, W_data);
                 }
-                //读取所有参数
+                //Read all parameters
                 else if (strstr((char *)rx1_buf, "Get")) {
                     TakeDataFromMem(rx1_buf[3] - '0');
                 } else if (strstr((char *)rx1_buf, "Write")) {
@@ -157,7 +157,7 @@ int channelSetting(void) {
                     WriteDataBackMem(page);
                     Serial.printf("%cElse%d", 5, (page+1));
                 }
-                //升级成功/写频完成均使用这个
+                //Use this for successful upgrade/write frequency completion
                 else if (strstr((char *)rx1_buf, "Endfile")) {
                     Serial.printf("%cOK", 2);
                     delay_ms(500);
@@ -195,7 +195,7 @@ void TakeDataFromMem(int page) {
         data2write[ 9 + pre_size] = get_Flag(FLAG_CF_SWITCH_ADDR)  + '0';
         data2write[10 + pre_size] = get_Flag(FLAG_VU_SWITCH_ADDR)  + '0';
 
-        //信道号
+        //Channel number
         sprintf(data2write + pre_size + 11, "%03d", load_CurrentChannel());
 
         //VHF
@@ -229,7 +229,7 @@ void WriteDataBackMem(int page) {
         set_Flag(FLAG_CF_SWITCH_ADDR, rx1_buf[15] - '0') ;
         set_Flag(FLAG_VU_SWITCH_ADDR, rx1_buf[16] - '0') ;
 
-        //信道号
+        //Channel number
         uint8_t chan = (rx1_buf[17]-'0')*100+(rx1_buf[18]-'0')*10+(rx1_buf[19]-'0');
         save_CurrentChannel(chan);
 
@@ -249,7 +249,7 @@ void WriteDataBackMem(int page) {
 }
 //
 
-int checkAbout(void) { //设备信息查询
+int checkAbout(void) { //Equipment information query
     LCD_Clear(GLOBAL32);
     LCD_ShowString0608(31, 0, "INFORMATION",     1, 128);
     LCD_ShowString0608(0,  1, "Device :",        0, 128);
@@ -348,7 +348,7 @@ void menuUpdate(void) {
 //
 void enterSecondSystem() {
     u8 key=0, i = 0;
-    while (1) { //检测是否要进入更新程序，更新成功重启
+    while (1) { //Detect whether you want to enter the update program, and the update restarts successfully
         if (SQUELCH_READ == 0) {
             key++;
         } else {
@@ -366,8 +366,8 @@ void enterSecondSystem() {
             break;
         }
     }
-    //没有进入bootloader
-    //Iap_load(_152_RUN_ADDR); //检测app2是否更新成功，优先进入app2
+    //Did not enter bootloader
+    //Iap_load(_152_RUN_ADDR); //Detect whether app2 is successfully updated, and enter app2 first
 }
 //
 
