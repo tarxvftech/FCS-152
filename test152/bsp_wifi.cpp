@@ -15,8 +15,8 @@ WebServer server(80);
 const char * serverIndex = "<form method='POST' action='/update' enctype='multipart/form-data'><input type='file' name='update'><input type='submit' value='Update'></form>";
 String upUrl = "http://fcs.fun/filedownload/78941";
 
-// true: 自动配置连接成功
-// false: 自动配置连接失败
+// true:  Automatic configuration connection is successful
+// false: Automatic configuration connection failed
 bool autoConfig() {
     const char * defaultWifiConfig = "FCS152WiFi";
     LCD_ShowString0608(0, 0, "Connecting           ", 1, 128);
@@ -37,9 +37,9 @@ bool autoConfig() {
     return false;
 }
 
-// CLR2LAST: 智能配置失败(不会到达)
-// ENT2LAST: 智能配置成功
-// BACK2MAIN:取消智能配置, 返回菜单
+// CLR2LAST:  Smart configuration failed (will not arrive)
+// ENT2LAST:  Successful smart configuration
+// BACK2MAIN: Cancel the smart configuration and return to the menu
 int ConfigSmartWiFi() {
     Serial.println("Start SmartWIFI Config:");
     WiFi.beginSmartConfig();
@@ -66,10 +66,10 @@ int ConfigSmartWiFi() {
             return BACK2MAIN;
         }
     }
-    return CLR2LAST; //不会到达
+    return CLR2LAST; //Will not arrive
 }
 
-//打印wifi域名和IP
+//Print wifi domain name and IP
 void LCD_ShowAddressIP(void) {
     LCD_ShowString0608(0, 0, " http://FCS152.local ", 1, 128);
     char IP_SHOW[128] = {0};
@@ -82,8 +82,8 @@ void LCD_ShowAddressIP(void) {
     LCD_ShowString0608(0, 1, IP_SHOW, 1, 128);
 }
 
-// true : 配置服务器成功
-// false: wifi断开
+// true : Successfully configured the server
+// false: wifi disconnect
 bool ConfigUpdateProcess() {
 #if 01
     if (WiFi.waitForConnectResult() == WL_CONNECTED) {
@@ -137,13 +137,13 @@ bool ConfigUpdateProcess() {
     WiFiClient UpdateClient;
     t_httpUpdate_return ret = httpUpdate.update(UpdateClient, upUrl);
     switch (ret) {
-    case HTTP_UPDATE_FAILED: //当升级失败
+    case HTTP_UPDATE_FAILED:                    //When the upgrade fails
         Serial.println("[update] Update failed.");
         break;
-    case HTTP_UPDATE_NO_UPDATES: //当无升级
+    case HTTP_UPDATE_NO_UPDATES:                //When there is no upgrade
         Serial.println("[update] Update no Update.");
         break;
-    case HTTP_UPDATE_OK: //当升级成功
+    case HTTP_UPDATE_OK:                        //When the upgrade is successful
         Serial.println("[update] Update ok.");
         LCD_Clear(GLOBAL32);
         LCD_ShowString0608(0, 2, "Update OK!", 1, 128);
@@ -180,14 +180,14 @@ void StartServer(void) {
             LCD_ShowString0608(0, 0, "Need to reconfig     ", 1, 128);
             LCD_ShowString0608(0, 1, "                     ", 1, 128);
             if (WiFi.smartConfigDone()) {
-                WiFi.stopSmartConfig();    //     Serial.printf("stopSmart:%d\n", WiFi.stopSmartConfig());
+                WiFi.stopSmartConfig();                    // Serial.printf("stopSmart:%d\n", WiFi.stopSmartConfig());
             }
             // WiFi.disconnect(false, false);              // Serial.printf("WIFI DISCON:%d\n", WiFi.disconnect(false, false));
             WiFi.disconnect(false, true);
-            if (ConfigSmartWiFi() == BACK2MAIN) { //取消重新智能配置并返回菜单
+            if (ConfigSmartWiFi() == BACK2MAIN) {          //Cancel the smart configuration and return to the menu
                 WiFi.stopSmartConfig();
                 return;
-            } else { //重新智能配置成功
+            } else {                                       //Successfully re-intelligent configuration
                 if (!ConfigUpdateProcess()) {
                     LCD_Clear(GLOBAL32);
                     LCD_ShowString0608(0, 0, "WIFI DISCONNECTED    ", 1, 128);
@@ -197,7 +197,7 @@ void StartServer(void) {
             }
         }
         server.handleClient();
-        delay(2); // allow the cpu to switch to other tasks
+        delay(2);                                          //Allow the CPU to switch to other tasks
     }
 }
 
