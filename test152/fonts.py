@@ -6,6 +6,10 @@ import pprint
 pp=pprint.pprint
 
 path = os.getcwd()
+
+
+#Uses cffi to load up the C arrays from the source code after compiling it.
+#Has to be declared here to show up in the _fonts python library later.
 ffi = cffi.FFI()
 ffi.cdef("extern const unsigned char ascii_0408[66][4];")
 ffi.cdef("extern const unsigned char pic_0408[3][4];")
@@ -48,14 +52,21 @@ def show_pixels(cols,rows,bs):
     sys.stdout.write("\n")
 
 def read():
-    ffi.compile(verbose=True)
-    import _font
-    globals().update({name: getattr(_font.lib, name) for name in dir(_font.lib)})
+    ffi.compile(verbose=True) #compile the 'library' of the font.cpp file - will totally fail if you don't have something sanely linuxy
+    import _font #import the python version of that file
+    #load everything declared in the lib into the global namespace
+    globals().update({name: getattr(_font.lib, name) for name in dir(_font.lib)}) 
+    #so now pic_HARRIS is in python
     print("picall")
-    show_pixels(128,32,pic_HARRIS)
+    show_pixels(128,32,pic_HARRIS) #show_pixels prints to your terminal,
+    #where each pixel is a either a full-block character or a space. Needs
+    #a big enough resolution/small enough font to get $COLUMNS to be
+    #greater than 128, and $LINES to be greater than 32, if you don't
+    #want to scroll
     # show_pixels(128,32,pic_BaoTong)
-    # show_pixels(128,64,pic_KDUClear)
+    # show_pixels(128,64,pic_KDUClear) #KDUClear is a bigger image, since the KDU has a larger display. Is it even used in the test152 firmware?
     # print("pics")
+    #you can now print all the pictograms to your terminal (or fonts, if you use the ascii_ entries)
     # for i in range(len(pic_0408)):
         # show_pixels(4,8,pic_0408[i])
     # for i in range(len(pic_0608)):
@@ -163,10 +174,24 @@ def pretty_c_array_hex(bs):
     return s
 
 if __name__ == "__main__":
-    read()
-    drawbmplist2term(bmp2list("simple.bmp")) #sanity check bmp
+    # read() #
+
+    #simple.bmp is a sanity-check for the bmp parser and display here 
+    #xvf152.bmp is the source image for pic_XVF splash image.
+
+    #display those bitmap images
+    # drawbmplist2term(bmp2list("simple.bmp")) #sanity check bmp
     # drawbmplist2term(bmp2list("xvf152.bmp")) 
-    c = bmp2lcdbits("xvf152.bmp")
-    # print(c)
-    show_pixels(128,32,c)
-    print(pretty_c_array_hex(c))
+
+
+    #load the 128x32 24bit color uncompressed (and non-RLE) bitmap,
+    c = bmp2lcdbits("xvf152.bmp") 
+    #c is now a list of lists of 8-bit-each rgb tuples like c[row][column] == (r,g,b) == (255,255,255)
+    show_pixels(128,32,c)  #show it on the terminal as a text 'image'
+    #and output a thresholded C array of that image suitable for putting
+    #into font.cpp for the FCS-152 display.
+    print(pretty_c_array_hex(c)) 
+
+    #the CFFI stuff can also be used to display fonts and pic arrays
+    #as stored on the radio firmware. The bitmap stuff here can also serve as a
+    #foundation on how to make new font entries if needed with a little extra effort.
