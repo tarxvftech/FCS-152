@@ -30,7 +30,7 @@ void setup(){
     Key_Init();         //Initialize button: initialize encoder button; detect whether to enter BOOT mode
     Standby_Init();     //Confirm whether the encoder is a normal long press; long press to enable the 3.3V control pin ////PO WER_EN_SET;//
 
-    /*UART1_Init();       //init serial port*/ //skip because we're doing gdbstub
+    /*UART1_Init();       //init serial port*/ //skip because we're doing it ourselves up above with Serial.begin
     ADC_Init();         //检测电压使用 'detection voltage use', didn't translate well
     Timer_Init();       //Start timer processing ADC detection voltage program DAC output voltage timer interrupt
 
