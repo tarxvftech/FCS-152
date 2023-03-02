@@ -1315,12 +1315,12 @@ void VOL_Reflash(void) {
 void MY_GLOBAL_FUN(void) { //全局功能函数
     // D_printf("%s\n", __FUNCTION__);
     FeedDog(); //喂狗
-    PTT_Control();
+    //PTT_Control();
 
-    SQUELCH_Control();
-    SQ_Read_Control();  //接收信号处理，A002设置应答，双守切换处理，KDU检测处理
+    //SQUELCH_Control();
+    //SQ_Read_Control();  //接收信号处理，A002设置应答，双守切换处理，KDU检测处理
 
-    VOL_Reflash();
+    //VOL_Reflash();
 
     //if (bsp_CheckTimer(TMR_FM_CTRL) && WFM) {
         //RDA5807_Init(ON);

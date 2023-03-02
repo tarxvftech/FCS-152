@@ -14,3 +14,7 @@ flash:
 flash2:
 	arduino-cli upload -b esp32:esp32:esp32s2:UploadSpeed=460800,EraseFlash=all  -p /dev/ttyUSB0
 
+flashweb:
+	cp /tmp/arduino-sketch-*/test152.ino.bin test152.ino.bin
+	curl 'http://esp32s2-D7594A/_ac/update_act' -X POST -F "bin=@test152.ino.bin" -o/dev/null
+	rm test152.ino.bin

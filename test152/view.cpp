@@ -1,35 +1,51 @@
+#include "main.h"
 #include "view.h"
 #include <assert.h>
 int _menustackstorage[maxmenudepth] = {0};
 int_q_t menustack;
 
-
 void draw_clear(){
     LCD_Clear(GLOBAL32);
 }
-void draw_battery(){
+extern u8 VOLUME;
+bool must_clear_screen = false;
+
+void menu_in(int entry){
+    int_q_rpush(&menustack, entry);
+    must_clear_screen = true;
 }
-void draw_volume(){
+void menu_out(){
+    int_q_rpop(&menustack);
+    must_clear_screen = true;
+}
+void submenu_by_name(menu * m, char * name){
+    m->current = child_idx_by_name(m, name);
+    assert(m->current >= 0);
+    menu_in( m->current);
 }
 void draw_VFO(){
+    LCD_ShowString0408(0, 0, "R BAT", 1);
+    LCD_ShowBattery(Get_Battery_Vol());
+    LCD_ShowString0408(48, 0, "VULOS MOI", 1);
+    LCD_ShowString0408(88, 0, "------- PT", 1);
+    LCD_ShowVolume(VOLUME);
+
+    LCD_ShowString0608(0, 1, "1                     ", 1, 128);
+    LCD_ShowString0608(0, 2, "2                     ", 1, 128);
+    LCD_ShowString0608(0, 3, "3                     ", 1, 128);
 }
 void base_draw(menu * parent, menu * m){
     if( int_q_empty(&menustack) ){
         m->current = 0;
     }
-    draw_clear();
-    LCD_ShowString0608(0, 1, "1                     ", 1, 128);
-    LCD_ShowString0608(0, 2, "2                     ", 1, 128);
-    LCD_ShowString0608(0, 3, "3                     ", 1, 128);
+    draw_VFO();
 }
 void base_input_handler(menu * parent,menu * m){
     //variadic argument function to jump to specific menus for things like zeroize without having to using ints directly, but finding by string name
     if( ! inp_q_empty(&input_q) ){
         input_et in = inp_q_get(&input_q);
         if( in.key == KEY_ENT ){
-            m->current = child_idx_by_name(m, "MainMenu");
-            assert(m->current >= 0);
-            int_q_rpush(&menustack, m->current);
+            submenu_by_name(m, "MainMenu");
         }
         if( in.key == KEY_PLUS ){
             //vfoA += .0125;
@@ -38,29 +54,19 @@ void base_input_handler(menu * parent,menu * m){
             //vfoA -= .0125;
         }
         if( in.key == KEY_8 ){
-            m->current = child_idx_by_name(m, "PGM");
-            assert(m->current >= 0);
-            int_q_rpush(&menustack, m->current);
+            submenu_by_name(m, "PGM");
         }
         if( in.key == KEY_2 ){
-            m->current = child_idx_by_name(m, "LT");
-            assert(m->current >= 0);
-            int_q_rpush(&menustack, m->current);
+            submenu_by_name(m, "LT");
         }
         if( in.key == KEY_5 ){
-            m->current = child_idx_by_name(m, "Zeroize");
-            assert(m->current >= 0);
-            int_q_rpush(&menustack, m->current);
+            submenu_by_name(m, "Zeroize");
         }
         if( in.key == KEY_3 ){
-            m->current = child_idx_by_name(m, "FM");
-            assert(m->current >= 0);
-            int_q_rpush(&menustack, m->current);
+            submenu_by_name(m, "FM");
         }
         if( in.key == KEY_7 ){
-            m->current = child_idx_by_name(m, "OPT");
-            assert(m->current >= 0);
-            int_q_rpush(&menustack, m->current);
+            submenu_by_name(m, "OPT");
         }
         if( in.key == KEY_CLR && m->current != 0 ){ 
             assert( int_q_empty(&menustack) );
@@ -70,7 +76,6 @@ void base_input_handler(menu * parent,menu * m){
 }
 void menu_simple_draw(menu * parent, menu * m){
     D_printf("simplemenu draw\n");
-    //LCD_Clear(GLOBAL32);
     if( m->numchildren > 0 && m->children != NULL ){
         for( int i = 0; i < m->numchildren ; i++ ){ 
             //TODO scrolling
@@ -79,7 +84,7 @@ void menu_simple_draw(menu * parent, menu * m){
             } else {
                 LCD_ShowString0608(0, i, " ", 1, 128);
             }
-            LCD_ShowString0608(1, i, m->children[i]->name, 1, 128);
+            LCD_ShowString0608(6, i, m->children[i]->name, 1, 128);
         }
     }
 }
@@ -87,7 +92,7 @@ void menu_viewonly_input(menu * parent,menu * m){
     if( ! inp_q_empty(&input_q) ){
         input_et in = inp_q_get(&input_q);
         if( in.key == KEY_CLR ){
-            int_q_rpop(&menustack);
+            menu_out();
         }
     }
 }
@@ -101,25 +106,22 @@ void menu_simple_input(menu * parent,menu * m){
 	    m->current = m->current < m->numchildren -1 ? (m->current + 1) %m->numchildren: m->numchildren -1;
 	}
 	if( in.key == KEY_ENT ){
-	    int_q_rpush(&menustack, m->current);
+	    menu_in( m->current);
 	}
 	if( in.key == KEY_CLR ){
-	    int_q_rpop(&menustack);
+            menu_out();
 	}
 	if( in.key >= KEY_0 && in.key <= KEY_9 ){
 	    int idx= in.key - KEY_0;
 	    if( idx >= 0 && idx < m->numchildren ){
 		m->current = idx;
-		int_q_rpush(&menustack, m->current);
+		menu_in( m->current);
 	    }
 	}
     }
 }
 void menu_unimplemented_draw(menu * parent, menu * m){
-        //wmove(display, 1, 1);
-        //wprintw(display,"Unimplemented Menu Type");
     D_printf("unimplemented draw\n");
-    //LCD_Clear(GLOBAL32);
     LCD_ShowString0408(0, 0, "unimplemented", 1);
 }
 char * view_enckeydetail_fieldlist[] = { 
@@ -343,6 +345,10 @@ void ui_draw(menu * m){
         D_printf("ERR:Did not consume all of menustack\n");
     }
     D_printf("Menu: %d, %s\n", i, m->name);
+    if( must_clear_screen ){
+        draw_clear();
+        must_clear_screen = false;
+    }
 
     //render the selected menu structure
     assert(m!=NULL);

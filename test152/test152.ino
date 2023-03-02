@@ -46,8 +46,8 @@ void setup(){
     http.on("/", rootPage); //anything in addition to the captive portal
     LCD_ShowPICALL(pic_XVF);
     char hostname[32] = "";
-    snprintf(hostname, 32, "FCS152-%llX", ESP.getEfuseMac());
-    portalconfig.hostName = hostname;
+    snprintf(hostname, 31, "FCS152-%llX", ESP.getEfuseMac());
+    portalconfig.hostName = String(hostname);
     portalconfig.autoReconnect = true; //connect to any already-saved wifi on first-start
     portalconfig.autoReset = false; //don't reset after wifi disconnect
     portalconfig.autoRise = false; //keep the captive portal enabled on soft-ap when connected successfully in sta mode?
@@ -68,7 +68,8 @@ void setup(){
 }
 void loop(){
     now = millis();
-    MY_GLOBAL_FUN();
+    FeedDog(); //喂狗
+    /*MY_GLOBAL_FUN();*/
     /*VFO_Refresh();*/
     /*Encoder_process(Encoder_Switch_Scan(0));*/
     /*Argument_process(Event_Matrix(Matrix_KEY_Scan(0)));	//matrix button event*/
