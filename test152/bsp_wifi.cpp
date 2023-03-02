@@ -11,6 +11,7 @@
 #include <HTTPUpdate.h>
 
 const char * host = "FCS152";
+/*
 WebServer server(80);
 const char * serverIndex = "<form method='POST' action='/update' enctype='multipart/form-data'><input type='file' name='update'><input type='submit' value='Update'></form>";
 String upUrl = "http://fcs.fun/filedownload/78941";
@@ -36,6 +37,7 @@ bool autoConfig() {
     D_printf("Cannot Connect~~~~~~~~~~~");
     return false;
 }
+*/
 
 // CLR2LAST:  Smart configuration failed (will not arrive)
 // ENT2LAST:  Successful smart configuration
@@ -84,6 +86,7 @@ void LCD_ShowAddressIP(void) {
 
 // true : Successfully configured the server
 // false: wifi disconnect
+/*
 bool ConfigUpdateProcess() {
 #if 01
     if (WiFi.waitForConnectResult() == WL_CONNECTED) {
@@ -200,7 +203,7 @@ void StartServer(void) {
         delay(2);                                          //Allow the CPU to switch to other tasks
     }
 }
-
+*/
 void ConfigureToUpdate(void) {
     LCD_Clear(GLOBAL32);
     LCD_ShowString0608(43, 2, "PROGRAM", 1, 128);
@@ -210,16 +213,16 @@ void ConfigureToUpdate(void) {
 #ifdef UPBOOT
     LCD_ShowString0608(0, 3, VERSION_UPBOOT, 1, 128);
 #endif
-    if (!autoConfig()) {
-        Serial.println("Need to reconnected!");
-        LCD_ShowString0608(0, 0, "Need to reconfig     ", 1, 128);
-        WiFi.mode(WIFI_AP_STA);
-        if (ConfigSmartWiFi() == BACK2MAIN) {
-            return;
-        }
-    }
-    StartServer();
-    WiFi.disconnect(true, false);
+    //if (!autoConfig()) {
+        //Serial.println("Need to reconnected!");
+        //LCD_ShowString0608(0, 0, "Need to reconfig     ", 1, 128);
+        //WiFi.mode(WIFI_AP_STA);
+        //if (ConfigSmartWiFi() == BACK2MAIN) {
+            //return;
+        //}
+    //}
+    //StartServer();
+    //WiFi.disconnect(true, false);
 
     // ESP.restart();
 }

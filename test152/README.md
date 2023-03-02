@@ -11,7 +11,14 @@ made the radio fail to boot due to a flash storage issue, despite that
 code being _after_ the crash and not executing.
 
 
+## Features added, or other improvements
+### Of interest to users:
+### Of interest to devs:
+* Wifi softAP, captive portal, STA mode with multiple SSID support, web server, local http firmware upgrade
 
+
+## Libraries
+AutoConnect
 
 # Code map
 ## Serial ports (code references, not necessarily hardware names)
