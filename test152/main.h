@@ -10,11 +10,11 @@
 #include "bsp_timer.h"
 #include "bsp_m62364.h"
 #include "bsp_storage.h"
-#include "bsp_device.h"      //Sleep Init
+#include "bsp_device.h"         //Sleep Init
 #include "bsp_MatrixKeyBoard.h"
 
-#include "lcd.h"
-#include "key.h"                //key:Independent Key, MatrixKeyBoard, EncoderClick/Spin
+#include "lcd.h"                //LCD 
+#include "key.h"                //key: Independent Key, MatrixKeyBoard, EncoderClick/Spin
 #include "analog.h"             //ADC DAC PWM
 #include "encoder.h"
 #include "tim_int.h"            //Timing
@@ -24,79 +24,83 @@
 
 #if FM_EN
 #include "rda5807.h"
-extern volatile u8 WFM;                 //FM开关
+extern volatile u8 WFM;             //FM switch. Enablig FM broadcast radio receiver
 #endif
 
 
-extern int TIMES;                   //记录编码器操作
-// extern int  UART1_getRcvFlag(void);                //判断接收标志位
-// extern int  UART1_dataPreProcess(void);            //数据预处理
+extern int TIMES;                   //Record encoder operation
+// extern int  UART1_getRcvFlag(void);                //Determine the receiving flag
+// extern int  UART1_dataPreProcess(void);            //Data preprocessing
 
 void VFO_Load_Data(void);
-void VFO_Clear(void);               //主界面初始化
-void VFO_Refresh(void);             //主页界面刷新
+void VFO_Clear(void);               //Main interface initialization
+void VFO_Refresh(void);             //Homepage interface refresh
 
 void Encoder_process(u8 operate);
-u8 Event_Matrix(u8 matrix_key);     //主界面矩阵按键触发事件检测 0：不做修改， 1：重载  2：保存
+u8 Event_Matrix(u8 matrix_key);     //The main interface matrix button trigger event detection 
+                                    //0: No modification, 
+                                    //1: Overload 
+                                    //2: Save
 void Argument_process(u8 key_pro_ret);
 
-void MY_GLOBAL_FUN(void);           //全局处理函数
-void PTT_Control(void);             //按下或松开PTT后只执行一次的代码
-void SQ_Read_Control(void);
-void SQUELCH_Contol(void);
-void SendALL(void);                 //发送全部数据
-int  KDUCheck(void);                //
-int  KDU_Processor(void);           //KDU数据交互
-void VOL_Reflash(void);             //音量设置
-void A20_CALLBACK(void);            //A20数据交互,必须处理了才有a20数据返回
-void Switch_Dual_Chan(void);        //双守模式下双信道切换
-void SetNowChanSql0(u8 on);         //开关常静噪状态
-//主界面功能选择
-void ShortCut_Menu(void);           //主界面快捷设置
-void ShortCut_MICGAIN_Select(void); //主界面快捷设置mic灵敏度
-void ShortCut_FM_Select(void);      //主界面快捷开关收音机
-void ShortCut_CHAN_Select(void);    //主界面信道切换
-int Lock_Screen_KeyBoard(void);    //锁屏锁盘
+void MY_GLOBAL_FUN(void);           //Global processing function
+void PTT_Control(void);             //Code that is executed only once after pressing or releasing PTT
+void SQ_Read_Control(void);         //(?)
+void SQUELCH_Contol(void);          //Code controlling squelch (?)
+void SendALL(void);                 //Send all data
+int  KDUCheck(void);                //KDU Check - is this part of code checking connection of radio with KDU(?) Not find source code yet.
+int  KDU_Processor(void);           //KDU Data interaction
+void VOL_Reflash(void);             //Volume setting
+void A20_CALLBACK(void);            //A20 Data interaction, A20 data must be processed before it can be returned
+void Switch_Dual_Chan(void);        //Dual-channel switching in dual-guard mode
+void SetNowChanSql0(u8 on);         //Switch normally squelch state
+
+//Main interface function selection
+void ShortCut_Menu(void);           //Quick settings of the main interface
+void ShortCut_MICGAIN_Select(void); //The main interface quickly sets the mic sensitivity
+void ShortCut_FM_Select(void);      //The main interface quickly switches the radio
+void ShortCut_CHAN_Select(void);    //Main interface channel switching
+int Lock_Screen_KeyBoard(void);     //Lock screen lock panel
 
 
-//收发设置
+//Send and receive settings
 void RT_Menu(void);
 void RT_Menu_Clear(void);
 int  RT_FREQ_Set(int x, int y, double * vfo_freq_temp, int vu_switch);
-int  RT_SubVoice_Set(int row, int subvoice);                            //亚音设置
-int  RT_SubVoice_Matrix_Menu_Select(int subvoice);                      //矩阵亚音设置
-int  RT_TX_POWER_Set(int power_temp);                                   //发射功率选择
-int  RT_GBW_Set(int gbw_temp);                                          //带宽选择
-void RT_NICKNAME_Set(u8 current_channel, unsigned char nn_temp[7]);     //别名设置
-void RT_CHAN_Switch(void);                                              //信道号切换
+int  RT_SubVoice_Set(int row, int subvoice);                            //Subtone setting (?) - Maybe my incorrect translation. I think it's all about subtone, but maybe its all about subsonic (?)
+int  RT_SubVoice_Matrix_Menu_Select(int subvoice);                      //Matrix subsonic setting - same thing !
+int  RT_TX_POWER_Set(int power_temp);                                   //Transmit power selection
+int  RT_GBW_Set(int gbw_temp);                                          //Bandwidth selection (WIDE/NAROW)
+void RT_NICKNAME_Set(u8 current_channel, unsigned char nn_temp[7]);     //Alias setting - It's all about of naming received channels (?)
+void RT_CHAN_Switch(void);                                              //Channel number switching
 
 
-//按键2
+//Button *2(LT)*: Initialize the backlight menu
 void  Light_Mode_Set(void);
 
-//按键5:初始化菜单
-int Zeroize_All(void);
-void Zero_Menu(void);
+//Button *5(Zero)*: Initialize the zeroize menu
+int Zeroize_All(void);                  //Deletting all of settings, including all channel memory
+void Zero_Menu(void);                   //Zeroize menu
 
 
-//按键7 OPTION菜单
+//Button *7(OPT)*: Initialize the option menu
 void OPTION_Menu(void);
-void Key_Test(void);                    //测试按键
+void Key_Test(void);                    //Test button option
 
-//按键8 PGM菜单
+//Button *8(PGM)*: Initialize another bunch of option menu
 void PGM_Menu(void);
 
-int  PGM_AUDIO_Select(u8 row);          //音频选通并设置咪灵敏度
-int  PGM_SQL_Set(u8 row);               //静噪等级
-int  PGM_STEP_Set(u8 row);              //步进
-int  PGM_ENCRPY_Set(u8 row);            //加密
-int  PGM_TOT_Set(u8 row);               //发射限时
-int  PGM_LAMP_TIME_Set(u8 row);         //背光灯时长
-int  PGM_POWEROUT_Set(u8 row);          //六针头电源输出
-int  PGM_TONE_Select(u8 row);           //提示音设置
+int  PGM_AUDIO_Select(u8 row);          //Audio strobe and set microphone sensitivity. In actual version is only audio output menu exist. I can't find any mic sensitivity option. 
+int  PGM_SQL_Set(u8 row);               //Squelch level
+int  PGM_STEP_Set(u8 row);              //Step set
+int  PGM_ENCRPY_Set(u8 row);            //Encryption set. In actual firmware version this option doesn't exist.
+int  PGM_TOT_Set(u8 row);               //Launch time limit. Setting the limit of continuously transmission by radio.
+int  PGM_LAMP_TIME_Set(u8 row);         //Backlight duration
+int  PGM_POWEROUT_Set(u8 row);          //Six-pin power output. Enabling dynamic mic amplifier.
+int  PGM_TONE_Select(u8 row);           //Tone setting. Enabling/disabling pre- or end- tone setting.
 
 
-void SHUT(void);                    //关闭所有功能
+void SHUT(void);                    //Turn off all functions
 //void Update_Check(void);          //IAP
 
 //uint16_t Get_JTAG_ID(void);
