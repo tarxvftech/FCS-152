@@ -65,8 +65,8 @@
 #define MATRIX_RESULT_9         9
 #define MATRIX_RESULT_CLR       10
 #define MATRIX_RESULT_ENT       11
-#define MATRIX_RESULT_P         12  //shang
-#define MATRIX_RESULT_N         13  //xia
+#define MATRIX_RESULT_P         12  //Up (?)
+#define MATRIX_RESULT_N         13  //Down (?)
 #define MATRIX_RESULT_LEFT      14
 #define MATRIX_RESULT_RIGHT     15
 #define MATRIX_RESULT_ERROR     17
