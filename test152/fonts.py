@@ -4,6 +4,7 @@ import math
 import cffi
 import pprint
 pp=pprint.pprint
+import argparse
 
 path = os.getcwd()
 
@@ -174,7 +175,24 @@ def pretty_c_array_hex(bs):
     return s
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-p","--print")
+    parser.add_argument("-b","--bmp")
+    args = parser.parse_args()
+    if args.print:
     # read() #
+        ffi.compile(verbose=True) 
+        import _font 
+        globals().update({name: getattr(_font.lib, name) for name in dir(_font.lib)}) 
+        show_pixels(8,8, pic_0808[0])
+    if args.bmp:
+        c = bmp2lcdbits("xvf152.bmp") 
+        #c is now a list of lists of 8-bit-each rgb tuples like c[row][column] == (r,g,b) == (255,255,255)
+        show_pixels(128,32,c)  #show it on the terminal as a text 'image'
+        #and output a thresholded C array of that image suitable for putting
+        #into font.cpp for the FCS-152 display.
+        print(pretty_c_array_hex(c)) 
+
 
     #simple.bmp is a sanity-check for the bmp parser and display here 
     #xvf152.bmp is the source image for pic_XVF splash image.
@@ -185,12 +203,6 @@ if __name__ == "__main__":
 
 
     #load the 128x32 24bit color uncompressed (and non-RLE) bitmap,
-    c = bmp2lcdbits("xvf152.bmp") 
-    #c is now a list of lists of 8-bit-each rgb tuples like c[row][column] == (r,g,b) == (255,255,255)
-    show_pixels(128,32,c)  #show it on the terminal as a text 'image'
-    #and output a thresholded C array of that image suitable for putting
-    #into font.cpp for the FCS-152 display.
-    print(pretty_c_array_hex(c)) 
 
     #the CFFI stuff can also be used to display fonts and pic arrays
     #as stored on the radio firmware. The bitmap stuff here can also serve as a

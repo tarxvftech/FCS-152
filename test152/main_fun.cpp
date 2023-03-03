@@ -59,7 +59,7 @@ void VFO_Load_Data(void) {
     load_ChannelParameter(chan_arv[NOW].CHAN, &chan_arv[NOW]);
     chan_arv[TMP] = chan_arv[NOW];
 
-    //Load dual-guard mode data (?) - what is "dual-guard"??
+    //Load dual-guard mode data - which is where it switches between two channels, listening for activity on each, and stopping on whichever has traffic.
     chan_arv[CHANA].CHAN = load_ChanA();
     chan_arv[CHANB].CHAN = load_ChanB();
     load_ChannelParameter(chan_arv[CHANA].CHAN, &chan_arv[CHANA]);

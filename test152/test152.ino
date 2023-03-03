@@ -3,13 +3,14 @@
 #include "input.h"
 #include "view.h"
 
+#include <WiFi.h>
 #include <AutoConnect.h>
 WebServer http(80); //We can use this to support setting channels and such from a web client on the same network. modified by AutoConnect below but shouldn't interfere with our own use of it.
 AutoConnect portal(http); //captive portal with dns capture to allow
 //wifi clients to connect to us and allow easy configuration of wifi settings.
 //should also allow setting from radio eventually, and from serial a little sooner
-unsigned long portaltimeoutms = 100;
-AutoConnectConfig portalconfig("FCS152", "thankyouforopensourcing!", portaltimeoutms); //no channel is set - unsure if it would cause problems to have a channel for the portal set when the STA mode is connected to something else
+AutoConnectConfig portalconfig; 
+
 void rootPage(){
     char content[] = "<html><head></head><body>"
     "<h1>FCS-152</h2>"
@@ -46,13 +47,23 @@ void setup(){
     http.on("/", rootPage); //anything in addition to the captive portal
     LCD_ShowPICALL(pic_XVF);
     char hostname[32] = "";
-    snprintf(hostname, 31, "FCS152-%llX", ESP.getEfuseMac());
-    portalconfig.hostName = String(hostname);
+    snprintf(hostname, 13, "FCS152-%llX", ESP.getEfuseMac()); //13 to get six characters
+    String hostn = hostname;
+    WiFi.setHostname(hostname); //the wifi stuff may not have hostname set in time by portal if it already has creds saved for a network to join
+    portalconfig.hostName = hostn;
+
+    portalconfig.apid = String(hostname);
+    portalconfig.psk = String("thankyouforopensourcing!");
+    portalconfig.portalTimeout = 1; //in milliseconds (ms) - low so it doesn't stick around and prevent boot - can't be 0 or it will wait forever to be configured
+    portalconfig.channel = 1; //not sure if this'll cause issues with preserveAPMode
+    portalconfig.beginTimeout = 10000;  //look for APs for this long (ms)
+
     portalconfig.autoReconnect = true; //connect to any already-saved wifi on first-start
     portalconfig.autoReset = false; //don't reset after wifi disconnect
-    portalconfig.autoRise = false; //keep the captive portal enabled on soft-ap when connected successfully in sta mode?
-    portalconfig.retainPortal = false; //keep captive portal up after timeout?
-    portalconfig.preserveAPMode = true; //keep the softAP up after connected in sta mode?
+    portalconfig.immediateStart = false; //start captive portal even before wifi.begin()
+    portalconfig.autoRise = true; //if first wifi.begin fails to connect, do we start captive portal?
+    portalconfig.retainPortal = true; //keep captive portal up after timeout?
+    portalconfig.preserveAPMode = false; //keep the softAP up after connected in sta mode?
     portalconfig.ota = AC_OTA_BUILTIN; //enable the OTA (over the air) firmware update support in the portal
     portal.config(portalconfig);
     portal.begin();
