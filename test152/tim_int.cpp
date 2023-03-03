@@ -8,30 +8,30 @@ static SOFT_TMR s_tTmr[TMR_COUNT];
 volatile int32_t g_iRunTime = 0;
 
 void Timer_Init(void) {
-    bsp_Timer0_Init();  //1ms
-    bsp_Timer1_Init();  //100ms
-    bsp_Timer2_Init();  //7us
+    bsp_Timer0_Init();  //1 ms
+    bsp_Timer1_Init();  //100 ms
+    bsp_Timer2_Init();  //7 us
 
     bsp_InitTimer();
     bsp_StartAutoTimer(TMR_KEY_SCAN,      TMR_PERIOD_20MS);
     bsp_StartAutoTimer(TMR_POS_BLINK,     TMR_PERIOD_200MS);
     bsp_StartAutoTimer(TMR_RSSI_CTRL,     TMR_PERIOD_1S);
-    bsp_StartAutoTimer(TMR_VOLT_REFRESH,  TMR_PERIOD_3S); //定时检测电压
+    bsp_StartAutoTimer(TMR_VOLT_REFRESH,  TMR_PERIOD_3S);           //Timing detection voltage
 }
 
 void bsp_InitTimer(void) {
     uint8_t i;
 
-    /* 清零所有的软件定时器 */
+    /* Clear all software timers */
     for (i = 0; i < TMR_COUNT; i++) {
         s_tTmr[i].Count = 0;
         s_tTmr[i].PreLoad = 0;
         s_tTmr[i].Flag = 0;
-        s_tTmr[i].Mode = TMR_ONCE_MODE; /* 缺省是一次性工作模式 */
+        s_tTmr[i].Mode = TMR_ONCE_MODE;         /* The default is one-time working mode */
     }
 }
 
-//获取运行次数
+//Get the number of runs
 int32_t bsp_GetRunTime(void) {
     int32_t runtime;
 
@@ -44,7 +44,7 @@ int32_t bsp_GetRunTime(void) {
     return runtime;
 }
 
-//启动"定时器"
+//Start the "timer"
 void bsp_StartTimer(uint8_t _id, uint32_t _period) {
     if (_id >= TMR_COUNT) {
         while (1);
@@ -60,7 +60,7 @@ void bsp_StartTimer(uint8_t _id, uint32_t _period) {
     ENABLE_INT();
 }
 
-//启动自动填装重载值的"定时器"
+//Start the "timer" that automatically fills the overloaded value
 void bsp_StartAutoTimer(uint8_t _id, uint32_t _period) {
     if (_id >= TMR_COUNT) {
         while (1);
@@ -75,7 +75,7 @@ void bsp_StartAutoTimer(uint8_t _id, uint32_t _period) {
 
     ENABLE_INT();           /*  */
 }
-//停止"定时器"
+//Stop the "timer"
 void bsp_StopTimer(uint8_t _id) {
     if (_id >= TMR_COUNT) {
         /*  */
@@ -91,7 +91,7 @@ void bsp_StopTimer(uint8_t _id) {
     ENABLE_INT();       /*  */
 }
 //
-//在程序中检查"定时器"的标志是否已经达到flag
+//Check in the program whether the "timer" flag has reached the flag
 uint8_t bsp_CheckTimer(uint8_t _id) {
     if (_id >= TMR_COUNT) {
         return 0;
@@ -106,7 +106,7 @@ uint8_t bsp_CheckTimer(uint8_t _id) {
 }
 //
 
-//定时器中断中更新结构体数组的数值
+//Update the value of the structure array in the timer interrupt
 static void bsp_SoftTimerDec(SOFT_TMR * _tmr) {
     if (_tmr->Count > 0) {
 
