@@ -38,6 +38,7 @@ void input_scan(){
 	in.type = PRESS_CLICK; //keyboard is always just a click in the original firmware. We could fix that if we wanted, later.
 	inp_q_put(&input_q, in);
     }
+    //vTaskDelay( 10/portTICK_PERIOD_MS);
 }
 
 //typedef struct input_et {

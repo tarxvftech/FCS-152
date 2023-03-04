@@ -141,9 +141,10 @@ void menu_simple_draw(menu * parent, menu * m){
         //m->current is the currently 'hovered' j, about to be selected, 
         //and is what controls our scrolling
         //we have to know where to start j, based on m->current and m->numchildren
-        int offset = MAX(0,MIN(MAX(0, m->current-2),m->numchildren-4));
         int i = 0;
         int numlines = 4;
+        int scrollwhen = 2; //i.e. scroll at position 3 on the screen (on a screen of four lines, scroll only once you're at the second from the bottom
+        int offset = MAX(0,MIN(MAX(0, m->current-scrollwhen),m->numchildren-numlines)); 
         while( i < numlines && i < m->numchildren ){
             if( i+offset == m->current ){ //selector indicator
                 LCD_ShowString0608(0, i, ">", 1, 128);
@@ -440,6 +441,8 @@ void draw_channeldetail(menu * parent, menu * m){//TODO
     assert(parent->object != NULL);
     channellist_t * chl = (channellist_t *) parent->object;
     //make sure this matches the order specified in m->fields or there will be problems.
+    
+    //how the fuck am i going to scroll this?
     draw_field(m, EDIT_CHANNEL_T, (void*)&chl->channels[i], "name", NULL);
     draw_field(m, EDIT_CHANNEL_T, (void*)&chl->channels[i], "power", "%03.2f W");
     draw_field(m, EDIT_CHANNEL_T, (void*)&chl->channels[i], "txf", "%03.4f MHz");
