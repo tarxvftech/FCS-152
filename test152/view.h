@@ -6,6 +6,8 @@
 
 #include "FCS152_KDU.h"
 #include "lcd.h"
+#include "editabletypes.h"
+#include "chan.h"
 
 #define maxmenudepth 15
 extern int _menustackstorage[maxmenudepth];
@@ -13,4 +15,9 @@ extern int_q_t menustack;
 void view_init();
 void ui_draw( menu * m);
 extern menu root;
+
+
+
+
+
 #endif

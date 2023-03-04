@@ -12,6 +12,7 @@ typedef enum press_t {
 } press_t;
 
 typedef enum rkey_t {
+	NO_KEY = 0,
 	ENCODER_BTN,
 	ENCODER_LEFT,
 	ENCODER_RIGHT,
@@ -19,7 +20,7 @@ typedef enum rkey_t {
 	VOL_DN_BTN,
 	PTT_BTN,
 	SQL_BTN,
-	KEY_0, //KEY_0 and onwards must match order in bsp_matrixkeyboard.h because I just add an offset to transform
+	KEY_0, //==8, KEY_0 and onwards must match order in bsp_matrixkeyboard.h because I just add an offset to transform
 	KEY_1,
 	KEY_2,
 	KEY_3,
@@ -29,7 +30,7 @@ typedef enum rkey_t {
 	KEY_7,
 	KEY_8,
 	KEY_9,
-	KEY_CLR,
+	KEY_CLR, //18
 	KEY_ENT,
 	KEY_PLUS,
 	KEY_MINUS,

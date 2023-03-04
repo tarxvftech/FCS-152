@@ -35,7 +35,7 @@ void input_scan(){
 	//requires the KEY_ enums to be in same order as the matrix_key
 	//defines (specifically done to allow this rather than a long
 	//switch case)
-	in.type = PRESS_CLICK; //keyboard is always just a click in the original firmware. We could fix that.
+	in.type = PRESS_CLICK; //keyboard is always just a click in the original firmware. We could fix that if we wanted, later.
 	inp_q_put(&input_q, in);
     }
 }

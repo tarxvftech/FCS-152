@@ -86,7 +86,7 @@ void loop(){
     /*Argument_process(Event_Matrix(Matrix_KEY_Scan(0)));	//matrix button event*/
     /*KDU_Processor();*/
     input_scan();
-    if( now > last_draw_ts + 100 ){ 
+    if( now > last_draw_ts + 200 ){ 
         ui_draw(&root); 
         last_draw_ts = now;
     }
