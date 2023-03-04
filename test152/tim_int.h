@@ -3,11 +3,11 @@
 #include "bsp_timer.h"
 
 
-/* 开关全局中断的宏 */
-#define ENABLE_INT()            /* 使能全局中断 */
-#define DISABLE_INT()           /* 禁止全局中断 */
+/* Macro for switching global interrupts */
+#define ENABLE_INT()            /* Enable global interrupt */
+#define DISABLE_INT()           /* Disable global interrupts */
 
-#define TMR_COUNT           12  /* 软件定时器的个数 （定时器ID范围 0 - 3) */
+#define TMR_COUNT           12  /* The number of software timers (timer ID range 0-3) */
 
 #define TMR_PERIOD_2MS       2
 #define TMR_PERIOD_10MS     10
@@ -26,31 +26,31 @@
 #define TMR_PERIOD_3S       3000
 #define TMR_PERIOD_8S       8000
 
-/* 定时器结构体，成员变量必须是 volatile, 否则C编译器优化时可能有问题 */
+/* Timer structure, the member variable must be volatile, otherwise there may be problems when the C compiler optimizes */
 typedef enum {
-    TMR_ONCE_MODE = 0,      /* 一次工作模式 */
-    TMR_AUTO_MODE = 1       /* 自动定时工作模式 */
+    TMR_ONCE_MODE = 0,      /* One-time working mode */
+    TMR_AUTO_MODE = 1       /* Automatic timing working mode */
 } TMR_MODE_E;
 
 enum {
-    TMR_FLOW=0,         //背光睡眠
-    TMR_KEY_SCAN,       //按键扫描间隔
-    TMR_KEY_SAME,       //按相同键间隔
-    TMR_RSSI_CTRL,      //刷新信号强度间隔
-    TMR_VOLT_REFRESH,   //刷新电量间隔
-    TMR_DUAL_REFRESH,   //双守模式 正常切换 时间间隔
-    TMR_FM_CTRL,        //收音机回复时间
-    TMR_OUT_CTRL,       //退出设置定时
-    TMR_WAIT_KDU,       //检测KDU插入
-    TMR_POS_BLINK,      //编辑光标闪烁
-    TMR_ANY             //单一随处使用
+    TMR_FLOW=0,         //Backlight sleep
+    TMR_KEY_SCAN,       //Key scan interval
+    TMR_KEY_SAME,       //Press the same key interval
+    TMR_RSSI_CTRL,      //Refresh signal strength interval
+    TMR_VOLT_REFRESH,   //Refresh battery interval
+    TMR_DUAL_REFRESH,   //Normal switching time interval for dual-guard mode
+    TMR_FM_CTRL,        //Radio response time
+    TMR_OUT_CTRL,       //Exit setting timing
+    TMR_WAIT_KDU,       //Detect KDU insertion
+    TMR_POS_BLINK,      //Edit cursor flashes
+    TMR_ANY             //Single use everywhere
 };
 
 typedef struct {
-    volatile uint32_t Count;    /* 计数器 */
-    volatile uint32_t PreLoad;  /* 计数器预装值 */
-    volatile uint8_t  Mode;     /* 计数器模式，1次性 */
-    volatile uint8_t  Flag;     /* 定时到达标志  */
+    volatile uint32_t Count;    /* counter */ 
+    volatile uint32_t PreLoad;  /* Counter pre-installed value */
+    volatile uint8_t  Mode;     /* Counter mode, 1 shot */
+    volatile uint8_t  Flag;     /* Timed arrival sign  */
 } SOFT_TMR;
 
 
