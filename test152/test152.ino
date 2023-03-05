@@ -2,22 +2,71 @@
 #include "main.h"  
 #include "input.h"
 #include "view.h"
+#include <stdlib.h>
 
 #include <WiFi.h>
 #include <AutoConnect.h>
+
+#include <ArduinoJson.h>
 WebServer http(80); //We can use this to support setting channels and such from a web client on the same network. modified by AutoConnect below but shouldn't interfere with our own use of it.
 AutoConnect portal(http); //captive portal with dns capture to allow
 //wifi clients to connect to us and allow easy configuration of wifi settings.
 //should also allow setting from radio eventually, and from serial a little sooner
 AutoConnectConfig portalconfig; 
 
+
+//https://github.com/espressif/arduino-esp32/tree/master/libraries/WebServer/examples
 void rootPage(){
     char content[] = "<html><head></head><body>"
-    "<h1>FCS-152</h2>"
-    "<a href='/_ac'>Wifi Settings Portal</a>"
-    "<p>Hello World!</p>"
+    "<h1>FCS-152</h1>"
+    "<a href='/_ac'>Wifi Settings Portal</a><br>"
+    "<a href='/cps'>Program this radio</a><br>"
+    "<a href='/clone'>Share from this radio</a><br>"
+    "<a href='https://xvf.is/152'>Source Code and information</a>"
     "</body></html>";
     http.send(200, "text/html", content);
+}
+void cpsPage(){
+    char content[] = "<html><head></head><body>"
+    "<h1>FCS-152 embedded CPS</h1>"
+    "<script>fetch('/api/channel?c=0',{ method: 'GET'}).then((r)=>r.text()).then(console.log)</script>"
+    "</body></html>";
+    http.send(200, "text/html", content);
+}
+void getChannel(){
+    if( http.hasArg("c") ){
+        String c = http.arg("c");
+        long idx = strtol(c.c_str(), NULL, 10);
+        StaticJsonDocument<250> jd;
+        char buf[250];
+        jd.clear(); //necessary?
+        JsonObject obj = jd.createNestedObject();
+        //load channel number indicated by c
+        //fake data here for testing
+        obj["idx"] = idx;
+        obj["name"] = "ChannelName";
+        obj["txf"] = 451.8;
+        obj["rxf"] = 451.8;
+        serializeJson(jd, buf);
+        http.send(200, "application/json", buf);
+    } else {
+        http.send(200, "application/json", "{}");
+    }
+}
+void setChannel(){
+    String body = server.arg("plain");
+    StaticJsonDocument<250> jd;
+    deserializeJson(jd, body);
+    int idx = jd["idx"];
+    String name = jd["name"];
+    float txf= jd["txf"];
+    float rxf= jd["rxf"];
+    char content[] = "{\"status\":\"ok\"}";
+    http.send(200, "application/json", content);
+}
+void newChannel(){
+    char content[] = "{}";
+    http.send(200, "application/json", content);
 }
 
 unsigned long now = 0;
@@ -43,9 +92,17 @@ void setup(){
     LCD_ShowPICALL(pic_XVF);
     Init_Storage();
     enterSecondSystem(); 
-
-    http.on("/", rootPage); //anything in addition to the captive portal
     LCD_ShowPICALL(pic_XVF);
+
+    //anything in addition to the captive portal
+    //order matters - more specific should be registered first.
+    http.on("/api/channel", HTTP_POST, newChannel);  
+    http.on("/api/channel", HTTP_PUT, setChannel); 
+    http.on("/api/channel", getChannel); 
+    http.on("/cps", cpsPage); 
+    http.on("/", rootPage); 
+
+
     char hostname[32] = "";
     snprintf(hostname, 13, "FCS152-%llX", ESP.getEfuseMac()); //13 to get six characters
     String hostn = hostname;
