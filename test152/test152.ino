@@ -54,7 +54,7 @@ void getChannel(){
     }
 }
 void setChannel(){
-    String body = server.arg("plain");
+    String body = http.arg("plain");
     StaticJsonDocument<250> jd;
     deserializeJson(jd, body);
     int idx = jd["idx"];
