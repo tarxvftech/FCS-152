@@ -7,7 +7,7 @@
 #define MENU_TOOLS_NUM      6 
 
 #define MATRIX_MENU1_ROW    4 
-#define MATRIX_MENU1_TOTALN1 MATRIX_MENU1_ROW*2-1   //RT_Menu菜单总项数-1
+#define MATRIX_MENU1_TOTALN1 MATRIX_MENU1_ROW*2-1   //Total number of RT_Menu menu items-1
 
 extern char matrix_menu1[4][2][12];
 extern const char
@@ -17,9 +17,9 @@ extern const char
     *POWER_SHOW[2]                  ,
     *LIGHT_SHOW[]                   ,
     *LAMP_SHOW[]                    ,
-	*TRF_Show[]						,
-	*STEP_SHOW[]					,
-    *menu1[6]                      	,
+	*TRF_Show[]		    ,
+	*STEP_SHOW[]		    ,
+    *menu1[6]                       ,
     *MENU_ZERO[MENU_ZERO_NUM]       ,
     *MENU_PGM[MENU_PGM_NUM]         ,
     *MENU_OPT[MENU_OPT_NUM]         ,
@@ -30,7 +30,7 @@ extern const char
     pic_0608[][6]                   ,
     pic_0808[][8]                   ,
     pic_0816[]                      ,
-    pic_2424[]                     	,
+    pic_2424[]                      ,
     pic_1616[]                      ,
     pic2516[][50]                   ,
     *menu_subvoice[122];
