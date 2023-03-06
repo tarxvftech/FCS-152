@@ -7,7 +7,7 @@
 #define MENU_TOOLS_NUM      6
 
 #define MATRIX_MENU1_ROW    4
-#define MATRIX_MENU1_TOTALN1 MATRIX_MENU1_ROW*2-1       //RT_Menu菜单总项数-1
+#define MATRIX_MENU1_TOTALN1 MATRIX_MENU1_ROW*2-1       //Total number of RT_Menu menu items-1
 
 extern char matrix_menu1[4][2][12];
 extern const char
