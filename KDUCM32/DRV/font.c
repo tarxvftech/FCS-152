@@ -5,16 +5,16 @@ const char *opt_state[]     = {"OFF", "ON "};
 const char *FM_Show[]       = {"FM ", "WFM"};
 const char *POWER_SHOW[2]   = {"HIGH", "LOW "};
 const char *LIGHT_SHOW[]    = {"MOMENTARY", "OFF"};
-const char *LAMP_SHOW[]     = { "ALWAYS", "AUTO  "};
-const char *TRF_Show[] 		= {"LOW ",	"MID ",	"HIGH"};
-const char *STEP_SHOW[] 	= {"5K   ", "10K  ", "12.5K"};
+const char *LAMP_SHOW[]     = {"ALWAYS", "AUTO "};
+const char *TRF_Show[] 	    = {"LOW ", "MID ", "HIGH"};
+const char *STEP_SHOW[]     = {"5K ", "10K ", "12.5K"};
 const char prefix_buf[][16] =
 {
-    //接收判断
-    "ASKALL         ",      //返回第一次请求的      所有数据
-    "FCS+ASKALL     ",      //发送前置
+    //Receive judgment (?)
+    "ASKALL         ",      //Return all data for the first request
+    "FCS+ASKALL     ",      //Send pre- (?)
     
-    "ASKCHAN        ",      //返回询问的            当前信道参数
+    "ASKCHAN        ",      //Returns the current channel parameter of the inquiry
     "FCS+ASKCHAN    ",
     
     "ASKA           ",
@@ -23,7 +23,7 @@ const char prefix_buf[][16] =
     "ASKB           ",
     "FCS+ASKB       ",
     
-    "RELOAD         ",      //返回重载当前信道的    信道参数
+    "RELOAD         ",      //Returns the channel parameters of the overloaded current channel (?)
     "FCS+RELOAD     ",
     
     "RELA           ",
@@ -68,12 +68,12 @@ const char prefix_buf[][16] =
     "SETFM          ",
     "FCS+SETFM      ",
 
-	"SETDUALPOS     ",
-	"FCS+SETDUALPOS ",
+    "SETDUALPOS     ",
+    "FCS+SETDUALPOS ",
 };
 //
 
-const char *menu1[6]=
+const char *menu1[6]=				//Returns the menu options when button *?* pressed (not realised in radio)
 {
     "1.CALLSIGN"                , 
     "2.LAMPTIMER"               ,
@@ -83,13 +83,13 @@ const char *menu1[6]=
     "6.VER / QR CODE"
 };
 
-const char *MENU_ZERO[MENU_ZERO_NUM]=
+const char *MENU_ZERO[MENU_ZERO_NUM]=   	//Returns the menu options when radio/KDU button *5/Zero* is pressed
 {
     "1.ZEROIZE ALL"     ,
 };
 
 
-const char *MENU_PGM[MENU_PGM_NUM]=
+const char *MENU_PGM[MENU_PGM_NUM]=		//Returns the menu options when radio/KDU button *8/PGM* is pressed
 {
     "1.AUDIO_SET"       ,
     "2.SQL"             ,
@@ -100,13 +100,13 @@ const char *MENU_PGM[MENU_PGM_NUM]=
     "7.PTT TONE"        ,
 };
 //
-const char *MENU_OPT[2]=
+const char *MENU_OPT[2]=			//Returns the menu options when radio/KDU button *7/OPT* is pressed
 {
     "1.LOCK KEYPAD"     ,
     "2.KEY_TEST"        ,
 };
 //
-const char *MENU_TOOLS[MENU_TOOLS_NUM] = 
+const char *MENU_TOOLS[MENU_TOOLS_NUM] = 	//Returns the menu options when KDU (only for KDU ! ! !) button *Tools* is pressed
 {
     "  LCD INVERTED       "     ,
     "1.FCS-PRC117G        "     ,
@@ -116,19 +116,20 @@ const char *MENU_TOOLS[MENU_TOOLS_NUM] =
     "5.DEVICE ABOUT       "     ,
 };
 //
-const char *menu_tone[2]=
+const char *menu_tone[2]=			//The "7.PTT TONE" submenu
 {
-    "1.PTT PRE_TONE",
-    "2.PTT END_TONE"
-};
-const char *menu_audio[3]=
-{
-    "1.IN",
-    "2.TOP",
-    "3.SIDE"
+    "1.PTT PRE_TONE",				//Defines pre- transmission tone is ON/OFF
+    "2.PTT END_TONE"				//Defines end- transmission tone is ON/OFF
 };
 
-//亚音
+const char *menu_audio[3]=			//The "1.AUDIO_SET" submenu
+{
+    "1.IN",					//Defines inside speaker is ON
+    "2.TOP",					//Defines top 6-pin military plug audio is ON
+    "3.SIDE"					//Defines side plug audio is ON
+};
+
+//Subtones list
 const char *menu_subvoice[122]={
 "OFF     ","67.0Hz  ","71.9Hz  ","74.4Hz  ","77.0Hz  ","79.7Hz  ","82.5Hz  ","85.4Hz  ","88.5Hz  ","91.5Hz  ",
 "94.8Hz  ","97.4Hz  ","100.0Hz ","103.5Hz ","107.2Hz ","110.9Hz ","114.8Hz ","118.8Hz ","123.0Hz ","127.3Hz ",
@@ -146,7 +147,7 @@ const char *menu_subvoice[122]={
 "734N    ","743N    ","754N    "
 };
 //
-//矩阵亚音
+//Subtones list
 const char *matrix_menu_subvoice[41][3]=
 {
     {"OFF   ","67.0  ","71.9  ",},//0
@@ -219,7 +220,7 @@ const unsigned char square_9[10][9] =
     {'9', 'Y', 'Z', 'y', 'z', '<', '>', '/', '?'}
 };
 
-//频率设置菜单
+//Frequency setting menu
 char matrix_menu1[4][2][12]=
 {
     {{"R:435.5500"},{"OFF     "}},
