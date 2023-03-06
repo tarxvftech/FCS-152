@@ -3,9 +3,9 @@
 
 #include "FCS152_KDU.h"
 
-#define FLASH_PAGE_SIZE		64				//64页
-#define SECTOR_SIZE 		2048 			  //每页2K
-#define FlashByte			sizeof(uint32_t)//无符号整型-->4字节
+#define FLASH_PAGE_SIZE		64				//64 pages
+#define SECTOR_SIZE 		2048 			  	//2K per page
+#define FlashByte		sizeof(uint32_t)		//Unsigned integer-->4 bytes
 	
 enum 
 {
@@ -15,18 +15,18 @@ enum
   FLASH_PROTECTION_ERRROR
 };
 
-void FLASH_Init(void);														        //初始化，对Flash进行操作之前需要调用
-uint32_t FLASH_ReadWord(uint32_t faddr);									//读取一个字长度的数据
-uint32_t FLASH_ReadUser(uint32_t addr, uint32_t *data, int32_t length);		//读出
-uint32_t FLASH_EraseUser(uint32_t faddr);									//擦除使用的片区
-uint32_t FLASH_WriteUser(uint32_t addr, uint32_t *data, int32_t length);	//写入
+void FLASH_Init(void);								//Initialization, you need to call before operating on Flash
+uint32_t FLASH_ReadWord(uint32_t faddr);					//Read data of one word length
+uint32_t FLASH_ReadUser(uint32_t addr, uint32_t *data, int32_t length);		//Read out
+uint32_t FLASH_EraseUser(uint32_t faddr);					//Erase the used area
+uint32_t FLASH_WriteUser(uint32_t addr, uint32_t *data, int32_t length);	//Write
 
 
 
-//以下为汇编函数
-void WFI_SET(void);		//执行WFI指令
-void INTX_DISABLE(void);//关闭所有中断
-void INTX_ENABLE(void);	//开启所有中断
-void MSR_MSP(u32 addr);	//设置堆栈地址
+//The following is the assembly function
+void WFI_SET(void);			//Execute WFI instruction
+void INTX_DISABLE(void);		//Turn off all interrupts
+void INTX_ENABLE(void);			//Turn on all interrupts
+void MSR_MSP(u32 addr);			//Set the stack address
 
 #endif
