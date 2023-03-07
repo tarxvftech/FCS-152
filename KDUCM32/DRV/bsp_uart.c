@@ -51,11 +51,11 @@
 #define LOG_TX_PIN      GPIO_PIN_9
 #define LOG_RX_PIN      GPIO_PIN_10
 
-uint8_t	 usart1_recv_end_flag=0;			//接收标志位，数据接收完成标志位
-uint32_t rx1_len=0;					//接收数据长度
-char  	 rx1_buf[USART1_BUF_SIZE] = {0};	//接收缓冲区
+uint8_t	 usart1_recv_end_flag=0;			//Reception flag, data reception completion flag
+uint32_t rx1_len=0;					//Received data length
+char  	 rx1_buf[USART1_BUF_SIZE] = {0};		//Receive buffer
 
-//周期  分频  开关	32 000 000
+//Periodic crossover switch 32 000 000
 void TIM6_Init(void)
 {
 	TIM_TimeBaseInitType htim6;
@@ -72,14 +72,17 @@ void TIM6_Init(void)
     NVIC_Init(&NVIC_InitStructure);
 		
 	uint16_t PrescalerValue = 0;
-	uint16_t timFreq		= 50000;
+	uint16_t timFreq = 50000;
 	
 	RCC_ClocksType RCC_ClockFreq;
 	RCC_GetClocksFreqValue(&RCC_ClockFreq);
-	//需要判断HclkFreq的大小，如果超过27M则需要分频，同时定时器的倍频要求分频系数不为1的时候x2
+	
+	//You need to judge the size of HclkFreq. If it exceeds 27M, you need to divide the frequency. At the same time, the frequency doubling of the timer 
+	//requires x2 when the frequency division coefficient is not 1.
+	
 	//SystemCoreClock
 	PrescalerValue = (uint16_t)( (RCC_ClockFreq.HclkFreq>27000000?RCC_ClockFreq.Pclk1Freq*2:RCC_ClockFreq.Pclk1Freq) / timFreq) - 1;
-	//10 000Hz 		 0.1ms/Hz
+	//10 000Hz 		 0.1 ms/Hz
 	htim6.Prescaler	= PrescalerValue;			
 	//printf("PrescalerValue:%d\n", PrescalerValue);
 	htim6.Period	= timFreq/1000*5;			
@@ -90,13 +93,13 @@ void TIM6_Init(void)
 	//TIM_ConfigPrescaler(TIM6, PrescalerValue, TIM_PSC_RELOAD_MODE_IMMEDIATE);
 	
 	TIM_ClrIntPendingBit(TIM6, TIM_INT_UPDATE);
-//	TIM_ClearFlag(TIM6, TIM_FLAG_UPDATE);
-//	printf("TIM_INT:%0#x, %d, %d\n", TIM6->STS, usart1_recv_end_flag, __LINE__);
+	//TIM_ClearFlag(TIM6, TIM_FLAG_UPDATE);
+	//printf("TIM_INT:%0#x, %d, %d\n", TIM6->STS, usart1_recv_end_flag, __LINE__);
 	TIM6->CNT=1;
 	TIM_Enable(TIM6, DISABLE);
-    TIM_ConfigInt(TIM6, TIM_INT_UPDATE, ENABLE);/* TIM6 enable update irq */
+    TIM_ConfigInt(TIM6, TIM_INT_UPDATE, ENABLE);  /* TIM6 enable update irq */
 	
-//  TIM_Enable(TIM6, ENABLE);/* TIM6 enable counter */
+	//TIM_Enable(TIM6, ENABLE);  /* TIM6 enable counter */
 
 }
 void log_init(void)
@@ -228,16 +231,16 @@ __WEAK void assert_failed(const uint8_t* expr, const uint8_t* file, uint32_t lin
 }
 #endif // USE_FULL_ASSERT
 
-/****************************中断响应*********************************/	
+/****************************Interrupt response*********************************/	
 void USART1_IRQHandler()
 {
 //	printf("USART_INT:%0#x, %d\n", LOG_USARTx->STS, __LINE__);
 	if(USART_GetIntStatus(LOG_USARTx, USART_INT_RXDNE) != RESET)
 	{
-		//USART_ClrIntPendingBit(LOG_USARTx, USART_INT_RXDNE);		//清除标志位
-		rx1_buf[rx1_len]=USART_ReceiveData(LOG_USARTx);		//获取数据
-		rx1_len++;											//更新接收个数
-		//定时器清零&使能
+		//USART_ClrIntPendingBit(LOG_USARTx, USART_INT_RXDNE);		//Clear flag
+		rx1_buf[rx1_len]=USART_ReceiveData(LOG_USARTx);			//Get data
+		rx1_len++;							//Update the number of received
+		//Timer cleared & enabled
 		TIM6->CNT=0;												
 		TIM6->CTRL1 |= TIM_CTRL1_CNTEN;
 	}
@@ -247,11 +250,11 @@ void TIM6_IRQHandler()
 	//printf("TIM_INT:%0#x, %d, %d\n", TIM6->STS, usart1_recv_end_flag, __LINE__);
 	if(TIM_GetIntStatus(TIM6, TIM_INT_UPDATE))
 	{
-		TIM_ClrIntPendingBit(TIM6, TIM_INT_UPDATE);					//清除标志位
-		TIM_Enable(TIM6, DISABLE);									//定时器关闭
-		//关闭串口接收，等待处理数据
+		TIM_ClrIntPendingBit(TIM6, TIM_INT_UPDATE);					//Clear flag
+		TIM_Enable(TIM6, DISABLE);							//Timer off
+		//Turn off the serial port to receive and wait for the data to be processed
 		USART_ConfigInt(LOG_USARTx, USART_INT_RXDNE, DISABLE);			
-		usart1_recv_end_flag=1;														//置位处理数据	
+		usart1_recv_end_flag=1;								//Set processing data	
 	}
 }
 
