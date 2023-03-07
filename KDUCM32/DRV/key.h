@@ -1,11 +1,13 @@
 #ifndef  __KEY_H__
 #define  __KEY_H__
 #include "FCS152_KDU.h"
-//按键灯
+
+//Button light
 #define LEDK_GPIO  				GPIOB 			
 #define LEDK_PIN   				GPIO_PIN_9
 #define LEDK_CLK_EN 			
-//按键
+
+//Button
 #define K_GPIO_2				GPIOA
 #define K8_PIN					GPIO_PIN_7
 #define K9_PIN					GPIO_PIN_6
@@ -37,7 +39,7 @@
 #define PRE_ADD_PIN 			GPIO_PIN_0
 #define K_GPIO_0_CLK_EN 		RCC_EnableAPB2PeriphClk(RCC_APB2_PERIPH_GPIOC, ENABLE);	
 		
-//键态获取
+//Key state acquisition
 #define K0_READ					(K_GPIO_1->PID &= K0_PIN)
 #define K1_READ					(K_GPIO_1->PID &= K1_PIN)
 #define K2_READ         		(K_GPIO_1->PID &= K2_PIN)
@@ -78,11 +80,11 @@
 #define key_pre_sub     14
 #define key_clr		    15
 #define key_ent         16
-#define key_a		    17	//上
-#define key_b		    18	//左
-#define key_c		    19	//右
-#define key_d		    20	//下
-#define key_n		    21	//中键确认
+#define key_a		    17		//Up
+#define key_b		    18		//Left
+#define key_c		    19		//Right
+#define key_d		    20		//Down
+#define key_n		    21		//Middle key confirmation
 #define key_no        22
 */
 
