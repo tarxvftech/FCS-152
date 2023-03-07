@@ -2,10 +2,10 @@
 
 u8 MACHINE_OPTION = 152;
 
-volatile char FLAG_LINE = OFF;//OFF:无数据 ON:已连接
+volatile char FLAG_LINE = OFF;		//OFF: NO data, ON: connected
 char flagLineTemp = OFF;
 
-CHAN_ARV chan_arv[ARV_MEM_COUNT]={1, 0, 0, 1, 0, 0, 435.025, 435.025, "nihao"};
+CHAN_ARV chan_arv[ARV_MEM_COUNT]={1, 0, 0, 1, 0, 0, 435.025, 435.025, "nihao"};   //"nihao" - variable translated by KDU in a text string as a name
 
 
 volatile int FM_FREQ = 1036;
@@ -24,12 +24,12 @@ volatile u8
 			ENTER_FM = 0;
 
 int LAMP_TIME = 10000;
-extern u8  LCD_INVERTED;						//液晶颠倒显示
+extern u8  LCD_INVERTED;		//LCD upside down display
 
 char 
-	Home_Mode = 0,			//主页显示模式	//0:常规, 1:大字 2:双守
-	Flag_Main_Page = 1, 	//主页显示模式
-	SQL_MODE = 0;			//长静噪模式
+	Home_Mode = 0,			//Homepage display mode	   //0: Regular, 1: Large characters 2: Double guard 
+	Flag_Main_Page = 1, 		//Homepage display mode
+	SQL_MODE = 0;			//Long squelch mode
 
 double STEP[3] = {0.005, 0.0100, 0.0125};
 char send_buf[128]={0};
@@ -40,16 +40,16 @@ extern void LightBacklight(void);
 
 void loadData(void)
 {
-	sendTo152(_ASKALL);			////获取所有参数
+	sendTo152(_ASKALL);			//Get all parameters
 	chan_arv[TMP] = chan_arv[NOW];
 }
 //
-void MY_GLOBAL_FUN(unsigned char volume_change_en)			//全局功能函数
+void MY_GLOBAL_FUN(unsigned char volume_change_en)		//Global function function
 {
-	FeedDog(); //喂狗
+	FeedDog(); 						//Feed the dog - watchdog timer initialization
 	receiveProcess();
 	
-	if(LAMP_TIME>0 && bsp_CheckTimer(TMR_FLOW))//背光设置为10S自动模式时才到时间关灯
+	if(LAMP_TIME>0 && bsp_CheckTimer(TMR_FLOW))		//It's time to turn off the lights when the backlight is set to 10S automatic mode
 		BackLight_SetVal(0);
 
 	if(volume_change_en)
@@ -57,8 +57,8 @@ void MY_GLOBAL_FUN(unsigned char volume_change_en)			//全局功能函数
 	
 	if(bsp_CheckTimer(TMR_ASK))
     {
-        sendCommand(_ASKALL);                              //获取所有参数
-        bsp_StartTimer(TMR_REPLY, TMR_PERIOD_500MS);        //启动限时
+        sendCommand(_ASKALL);                              	//Get all parameters
+        bsp_StartTimer(TMR_REPLY, TMR_PERIOD_500MS);        	//Start time limit
         waitToReceive(2000);
     }
 
@@ -113,7 +113,7 @@ void VOL_Reflash(void)
 //
 
 
-//主界面格式化
+//Main interface format
 void KDU_Clear(void)
 {
 	LCD_Clear(GLOBAL64);
@@ -125,8 +125,8 @@ void KDU_Clear(void)
 	if(!FLAG_LINE)
 		LCD_ShowString0608(0, 0, "LINK FAILED ", 1, 128);
 	
-	// DualMode_Clear
-	//DUAL模式清屏
+	//DualMode_Clear
+	//DUAL mode clear screen
 	if(Home_Mode == DUAL_MODE)
 	{
 		LCD_ShowString0608(0, 3,  "A:                    ", 1, 128);
@@ -137,24 +137,24 @@ void KDU_Clear(void)
 
 }
 //
-//主页界面刷新
+//Homepage interface refresh
 char BIG_MODE_buf[12]={0};
 char 
-	 sele_pos=0, 			//双守双待模式下,选择的信道
-	 rcv_chan=0;			//当前设置的信道
+	 sele_pos=0, 			//In dual-guard and dual-standby mode, the selected channel
+	 rcv_chan=0;			//Currently set channel
 void KDU_Reflash()
 {
 	switch(Home_Mode)
 	{
 		case MAIN_MODE:
-			if (CF) //频率
+			if (CF) 	//Frequency
 				LCD_ShowString0608(66, 3,  VU?"UHF ":"VHF ", 1, 128);
-			else //信道
+			else 		//Channel
 				LCD_ShowString0608(66, 3, "CHAN", 1, 128);
 			
 			LCD_ShowChan(83, 4, CHAN, 1);
 			
-			if(PTT_READ)//显示频率
+			if(PTT_READ)	//Display frequency
 			{
 				LCD_ShowFreq(0, 3, chan_arv[NOW].RX_FREQ, 1);
 				LCD_ShowString0608(56, 4,  WFM?"WFM":"FM ", 1, 128);
@@ -162,7 +162,7 @@ void KDU_Reflash()
 			else
 				LCD_ShowFreq(0, 3, chan_arv[NOW].TX_FREQ, 1);
 
-			//收发不同频标志
+			//Send and receive different frequency signs
 			if (chan_arv[NOW].RX_FREQ != chan_arv[NOW].TX_FREQ)
 				LCD_ShowPIC0808(92, 3, 0);
 			else
@@ -194,14 +194,14 @@ void KDU_Reflash()
 			sprintf(BIG_MODE_buf, "%02d-%s", chan_arv[CHANB].CHAN, chan_arv[CHANB].NN);
 			LCD_ShowString0608(13, 4, BIG_MODE_buf, 1, 82);
 		
-			LCD_ShowString0608	(82, 2-sele_pos+2,  "  ", 1, 128);		//勾
+			LCD_ShowString0608	(82, 2-sele_pos+2,  "  ", 1, 128);		//Hook
 			LCD_ShowPIC0808	(82, sele_pos+1+2, 1);
 		
 			if(A002_SQ_READ)
 			{
 				LCD_ShowString0608	(74, 2-rcv_chan+2,  " ", 1, 95);
-				LCD_ShowPIC0608	(74, rcv_chan+1+2, 0, 1);			//箭头表接收
-				//获取信号
+				LCD_ShowPIC0608	(74, rcv_chan+1+2, 0, 1);			//Arrow table reception
+				//Get signal
 			}
 			break;
 		
@@ -212,7 +212,7 @@ void KDU_Reflash()
 	if (PTT_READ)
 	{
 		LCD_ShowAscii0408(0, 2, 'R');
-		LCD_ShowSignal(RSSI);//信号检测
+		LCD_ShowSignal(RSSI);		//Signal detection
 	}
 	else
 	{
@@ -223,8 +223,8 @@ void KDU_Reflash()
 }
 //
 
-//按键事件处理	
-//当FLAG_LINE==0时,禁止部分按键功能
+//Key event handling	
+//When FLAG_LINE==0, some key functions are disabled
 int Main_Event_KEY(u8 key)
 {
 	if(!PTT_READ)
@@ -237,7 +237,7 @@ int Main_Event_KEY(u8 key)
 		case key_0:
 			if(CF || !FLAG_LINE)
 				return NO_OPERATE;
-			//暂不跳转, 等待回复才跳转
+			//Do not jump for the time being, wait for a reply before jumping (?) - What?
 			sendCommand(_SETHOMEMODE);
 			LCD_Clear(EDITZONE64);
 			LCD_ShowString1016(14, 3, "WAITING...", 1, 128);
@@ -251,17 +251,18 @@ int Main_Event_KEY(u8 key)
 				return NO_OPERATE;
 			
 			D_printf("NOW : V_SETTING\n");
-			pre_mode=VU;  		//当前VU频段,用作保留当前的频段
-//不用作"进入不同频段设置"的理由:
-//减少确认后的判断(既然进入和不确认并退出都需要判断了, 那就直接在判断里操作吧),保证只有在FREQ模式下才修改VU的记忆		
-			//FREQ模式下改变显示
-			//若当前为U段则改变显示为"VHF"
-			//CHANNEL模式则显示箭头
+			pre_mode=VU;  		//The current VU frequency band is used to retain the current frequency band
+						//Not used as a reason to "enter different frequency band settings":
+						//Reduce the judgment after confirmation (since you need to judge whether to enter or not to confirm and exit, 
+						//then operate directly in the judgment), and ensure that the memory of VU is only modified in FREQ mode.	
+						//Change the display in FREQ mode.
+						//If it is currently a U segment, change the display to "VHF" 
+						//Arrows are displayed in CHANNEL mode
 			if(CF)	      		
 			{
 				if (pre_mode)	
 				{
-					VU = 0;		//修改VU
+					VU = 0;		//Modify VU
 					LCD_ShowString0608(66, 3,  "VHF ", 1, 128);
 					CHAN = 0;
 				}
@@ -269,7 +270,7 @@ int Main_Event_KEY(u8 key)
 			else				
 				LCD_ShowPIC0608(60, 3, 1, 1);
 			
-			switch(RT_FREQ_Set(0, 3, (double *)&chan_arv[NOW].RX_FREQ, 0))//无论如何都是进行V段设置
+			switch(RT_FREQ_Set(0, 3, (double *)&chan_arv[NOW].RX_FREQ, 0))		//In any case, the V segment is set
 			{
 				case ENT2LAST:
 					chan_arv[NOW].TX_FREQ = chan_arv[NOW].RX_FREQ;
@@ -282,7 +283,7 @@ int Main_Event_KEY(u8 key)
 						if(CF)
 						{
 							VU=1;
-							LCD_ShowString0608(66, 3,  "VHF ", 1, 128);	//可以不要,KDU_Reflash()会更新
+							LCD_ShowString0608(66, 3,  "VHF ", 1, 128);	//No, "KDU_Reflash()" will be updated
 							CHAN = 100;
 						}
 						
@@ -332,7 +333,7 @@ int Main_Event_KEY(u8 key)
 						{
 							VU=0;
 							CHAN = 0;
-							LCD_ShowString0608(66, 3,  "VHF ", 1, 128);	//可以不要,KDU_Reflash()会更新
+							LCD_ShowString0608(66, 3,  "VHF ", 1, 128);	//No, "KDU_Reflash()" will be updated
 						}
 					}
 					return BACK2MAIN;
@@ -380,7 +381,7 @@ int Main_Event_KEY(u8 key)
 				}
 				return NO_OPERATE;
 			}
-			if (CF)//频率模式
+			if (CF)		//Frequency mode
 			{
 				if ((chan_arv[NOW].RX_FREQ >= 136.0 && chan_arv[NOW].RX_FREQ + STEP[STEP_LEVEL] <= 174.0) || 
 					(chan_arv[NOW].RX_FREQ >= 400.0 && chan_arv[NOW].RX_FREQ + STEP[STEP_LEVEL] <= 480.0)) //U
@@ -389,7 +390,7 @@ int Main_Event_KEY(u8 key)
 				sendTo152(_SETCHAN);
 				return 0;
 			}
-			else   //信道模式
+			else   		//Channel mode
 			{
 				if(Home_Mode==0)
 					LCD_ShowPIC0608(60, 3, 1, 1);
@@ -429,7 +430,7 @@ int Main_Event_KEY(u8 key)
 				}
 				return NO_OPERATE;
 			}
-			if (CF) //频率模式
+			if (CF) 		//Frequency mode
 			{
 				if ((chan_arv[NOW].RX_FREQ - STEP[STEP_LEVEL] >= 400.0 && chan_arv[NOW].RX_FREQ <= 480.0) || 
 					(chan_arv[NOW].RX_FREQ - STEP[STEP_LEVEL] >= 136.0 && chan_arv[NOW].RX_FREQ <= 174.0))
@@ -438,7 +439,7 @@ int Main_Event_KEY(u8 key)
 				sendTo152(_SETCHAN);
 				return NO_OPERATE;
 			}
-			else 	//信道模式
+			else 			//Channel mode
 			{
 				if(Home_Mode==0)
 					LCD_ShowPIC0608(60, 3, 1, 1);
@@ -473,7 +474,7 @@ int Main_Event_KEY(u8 key)
 			CHAN = CF?0:1;
 			LCD_ShowPIC0608(60, 3, CF?5:1, 1);
 			sendTo152(_RELOAD);
-			return NO_OPERATE; //BACK2MAIN;//可以是0,毕竟这里KDU_Reflash()会更新 
+			return NO_OPERATE; 	//BACK2MAIN;	//It can be 0, after all, "KDU_Reflash()" will be updated here
 
 		case key_c:
 			if(Home_Mode==BIG_MODE || !FLAG_LINE)
@@ -491,10 +492,10 @@ int Main_Event_KEY(u8 key)
 			
 			if(CF)
 			{			
-				VU = !VU;		//VU用作获取信道号, 0为V, 1为U
+				VU = !VU;		//VU is used to obtain the channel number, 0 is V, 1 is U
 				CHAN = VU*100;
 				sendTo152(_RELOAD);
-				return NO_OPERATE; //BACK2MAIN;//可以是0,毕竟这里KDU_Reflash()会更新
+				return NO_OPERATE; 	//BACK2MAIN;	//It can be 0, after all, "KDU_Reflash()" will be updated here
 			}
 			else
 				LCD_ShowAscii0608(60, 3, ' ', 1);
@@ -513,7 +514,7 @@ int Main_Event_KEY(u8 key)
 			if(Home_Mode || !FLAG_LINE)
 				return NO_OPERATE;
 			LCD_ShowAscii0608(60, 3, ' ', 1);
-			return ShortCut_Menu();	//锁屏返回NO_OPERATE,其余返回BACK2MAIN
+			return ShortCut_Menu();			//The lock screen returns "NO_OPERATE", and the rest returns "BACK2MAIN"
 		
 		case key_tools:
 			TOOLS_Menu();			
@@ -522,8 +523,8 @@ int Main_Event_KEY(u8 key)
 	return NO_OPERATE;
 }
 //
-//进入主界面菜单	
-//发送确认选项后无应答时 BACK2MAIN主菜单
+//Enter the main interface menu	
+//BACK2MAIN main menu when there is no response after sending the confirmation option
 int  ShortCut_Menu()
 {
 	u8 option_num = 0, cursor_change = 1, ENTER = 0;
@@ -536,7 +537,7 @@ int  ShortCut_Menu()
 		MY_GLOBAL_FUN(1);
 		switch (KEY_SCAN(0))
 		{
-			case key_clr: //退出
+			case key_clr: 		//Exit
 				LCD_ShowString0408(0, 5, "TYPE   TRF    MOD    CHAN  KEY  ", 1);
 				return CLR2LAST;
 
@@ -559,7 +560,7 @@ int  ShortCut_Menu()
 				break;
 		}
 
-		if (cursor_change) //显示箭头，避免重复刷新
+		if (cursor_change) 		//Display arrows to avoid repeated refreshes
 		{
 			cursor_change = 0;
 			LCD_ShowString0408(0, 5, "TYPE   TRF    MOD    CHAN  KEY  ", 1);
@@ -587,27 +588,27 @@ int  ShortCut_Menu()
 			ENTER = 0;
 			switch (option_num)
 			{
-			case 0: //图形菜单
+			case 0: 		//Graphic menu
 				RT_Menu();
 				return BACK2MAIN;
 			
-			case 1: //咪模式
+			case 1: 		//Microphone mode
 				if(AUD==0)
 					break;
 				ShortCut_MICGAIN_Select();
 				return BACK2MAIN;
 
 			
-			case 2: //收音机
+			case 2: 		//FM broadcast radio
 				D_printf("ENTER FM\n");
 				ShortCut_FM_Select();
 				return BACK2MAIN;
 
-			case 3: //channel模式下的通道号选择
+			case 3: 		//Channel number selection in channel mode
 				ShortCut_CHAN_Select();
 				return BACK2MAIN;
 
-			case 4: //锁屏
+			case 4: 		//Lock screen
 				printf("KEY\n");
 				LCD_ShowString0408(0, 5, "TYPE   TRF    MOD    CHAN  KEY  ", 1);
 				Lock_Screen_KeyBoard();
@@ -619,11 +620,11 @@ int  ShortCut_Menu()
 	}
 }
 //
-int ShortCut_MICGAIN_Select(void)	//返回值无意义
+int ShortCut_MICGAIN_Select(void)		//The return value is meaningless
 {
 	char trf = MIC, trf_old = MIC;
 	
-	LCD_ShowString0608(26, 4, TRF_Show[trf], 0, 128); //显示选中的等级
+	LCD_ShowString0608(26, 4, TRF_Show[trf], 0, 128); 	//Display the selected level
 
 	while (1)
 	{
@@ -662,8 +663,8 @@ int ShortCut_MICGAIN_Select(void)	//返回值无意义
 	}
 	//
 }
-//要修改
-int  ShortCut_FM_Select(void)		//返回值无意义
+//To modify (?)
+int  ShortCut_FM_Select(void)		//The return value is meaningless
 {
     char  FM_now = WFM, FM_old = WFM;
 	LCD_ShowString0608(56, 4, FM_Show[FM_now], 0, 128);
@@ -689,9 +690,10 @@ int  ShortCut_FM_Select(void)		//返回值无意义
 					return ENT2LAST;
 
 				WFM = FM_now;
-				sendTo152(_SETFM);	//等待回复后再进一步处理
+				sendTo152(_SETFM);	//Wait for a reply before further processing
 				if(WFM)
-				 Enter_Radio();		//没进FM模式时, 打开FM发送请求并收到回复后, 进入FM模式(同152处理) 
+				 Enter_Radio();		//When not in FM mode, turn on FM to send a request and after receiving a reply, 
+							//enter FM mode (same as 152 processing)
 				return ENT2LAST;
 
 			case key_clr:
@@ -701,18 +703,18 @@ int  ShortCut_FM_Select(void)		//返回值无意义
 	}
 	//
 }
-//主页面信道选中信息显示
+//Channel selection information display on the main page
 void Channel_Info_Show(u8 channel)	
 {
 	sendTo152(_ASKCHAN);
 	LCD_ShowFreq(0, 3, chan_arv[NOW].RX_FREQ, 1);
-	LCD_ShowChan(83, 4, CHAN, 0);//显示channel号
+	LCD_ShowChan(83, 4, CHAN, 0);		//Display channel number
 }
 
-int  ShortCut_CHAN_Select(void)		//返回值无意义
+int  ShortCut_CHAN_Select(void)			//The return value is meaningless
 {
 	int channel = 1;
-	channel = CHAN; //保留当前信道号,若退出时显示其他通道,则重新载入
+	channel = CHAN; 			//Keep the current channel number, if other channels are displayed when exiting, reload
 	LCD_ShowChan(83, 4, channel, 0);
 	
 	chan_arv[TMP]=chan_arv[NOW];
@@ -763,17 +765,16 @@ int  ShortCut_CHAN_Select(void)		//返回值无意义
 //
 
 
-//收发设置
-//返回值无意义BACK2MAIN
+//Send and receive settings
+//The return value is meaningless BACK2MAIN
 int  RT_Menu()
 {
 	unsigned char 			
-		now_mode = 0,							//当前设置的频段
-		pre_mode = 0,							//进入之前的频段		
-		change = 0,								//标志位:	数据修改保存
-		FLAG_Modify = 0,						//标志位:	确认选项，进入修改
-		pos = 0;								//光标所在选项, MATRIX_MENU1_TOTALN1为最大项数
-
+		now_mode = 0,						//Currently set frequency band
+		pre_mode = 0,						//Enter the previous frequency band		
+		change = 0,						//Flag: Save data modification
+		FLAG_Modify = 0,					//Flag: Confirm the option and enter the modification
+		pos = 0;						//The option where the cursor is located, MATRIX_MENU1_TOTALN1 is the maximum number of items
 	pre_mode = (chan_arv[NOW].RX_FREQ>174);
 	now_mode = pre_mode;
 	
@@ -789,15 +790,16 @@ int  RT_Menu()
 			case key_1:
 				if(pos==0)
 				{
-					pre_mode = (chan_arv[NOW].RX_FREQ>174);				//获取进入前的频段
-					now_mode = 0;										//按下[1], 进入V段设置
+					pre_mode = (chan_arv[NOW].RX_FREQ>174);		//Get the frequency band before entering
+					now_mode = 0;					//Press [1] to enter the V-segment settings
 					FLAG_Modify = 1;	
 				}
 				else if(pos==2)
 				{
-					if(chan_arv[NOW].RX_FREQ>174)//接收频率为U段则忽略   	//根据 接收频段 决定 发射频段 设置
+					if(chan_arv[NOW].RX_FREQ>174)			//If the receiving frequency is U segment, it is ignored
+											//Determine the transmission band setting according to the receiving band
 						break;
-					now_mode = 0;										//按下[1], 进入V段设置
+					now_mode = 0;					//Press [1] to enter the V-segment settings
 					FLAG_Modify = 1;	
 				}
 				break;
@@ -805,15 +807,15 @@ int  RT_Menu()
 			case key_4:
 				if(pos==0)
 				{
-					pre_mode = (chan_arv[NOW].RX_FREQ>174);				//获取进入前的频段
-					now_mode = 1;										//按下[4], 进入U段设置
+					pre_mode = (chan_arv[NOW].RX_FREQ>174);		//Get the frequency band before entering
+					now_mode = 1;					//Press [4] to enter the U-segment settings
 					FLAG_Modify = 1;
 				}
 				else if(pos==2)
 				{
-					if(chan_arv[NOW].RX_FREQ<400)//接收频率为V段则忽略
+					if(chan_arv[NOW].RX_FREQ<400)			//If the receiving frequency is in the V segment, it is ignored
 						break;
-					now_mode = 1;										//按下[4], 进入U段设置
+					now_mode = 1;					//Press [4] to enter the U-segment settings
 					FLAG_Modify = 1;
 				}
 				
@@ -826,7 +828,7 @@ int  RT_Menu()
 				
 				if(pos == 0 || pos == 2)
 				{
-					pre_mode =  (chan_arv[NOW].RX_FREQ>174);			//获取进入之前的频段
+					pre_mode =  (chan_arv[NOW].RX_FREQ>174);	//Get the frequency band before entering
 					now_mode = pre_mode;
 				}
 				FLAG_Modify = 1;
@@ -866,7 +868,7 @@ int  RT_Menu()
 		if (FLAG_Modify)
 		{
 			switch (pos)
-			//根据按下的当前位置进入菜单
+			//Enter the menu according to the current position pressed
 			{
 			case 0:
 				D_printf("\t\t\t\tRx FREQ SETTING\n");
@@ -908,7 +910,8 @@ int  RT_Menu()
 
 			case 3:
 				D_printf("\t\t\t\tTS CTCSS SETTING\n");
-				chan_arv[NOW].TS = RT_SubVoice_Set(4, chan_arv[NOW].TS);	//返回值不会遭受影响,只有发送数据后才会清楚是否已经断开连接
+				chan_arv[NOW].TS = RT_SubVoice_Set(4, chan_arv[NOW].TS);	//The return value will not be affected, and it will only be clear 
+												//whether the connection has been disconnected after the data is sent.
 
 				change = 1;
 				break;
@@ -935,7 +938,7 @@ int  RT_Menu()
 				break;
 
 			case 7:
-				D_printf("\t\t\t\tChannel Select\n");//不需要进setchan
+				D_printf("\t\t\t\tChannel Select\n");		//No need to enter "setchan"
 
 				RT_CHAN_Switch();
 				RT_Menu_Clear();
@@ -943,7 +946,7 @@ int  RT_Menu()
 				break;
 			};
 
-			if (change)//参数发生改变,进入设置
+			if (change)						//The parameters have changed, enter the settings
 			{
 				change = 0;
 				sendTo152(_SETCHAN);
@@ -954,7 +957,7 @@ int  RT_Menu()
 		}
 	}
 }
-void RT_Menu_Clear()//界面显示
+void RT_Menu_Clear()				//Interface display
 {
 	sprintf(matrix_menu1[0][0], "R:%3.4f", chan_arv[NOW].RX_FREQ);
 	sprintf(matrix_menu1[0][1], "%s", menu_subvoice[chan_arv[NOW].RS]);
@@ -966,12 +969,12 @@ void RT_Menu_Clear()//界面显示
 	matrix_menu1[3][0][2] = ':';
 	
 	memset(matrix_menu1[3][0]+3, 32, 7);
-	if (CF) //FREQ
+	if (CF) 				//FREQ
 	{
 		sprintf((char *)matrix_menu1[3][1], "FREQ    ");
 		sprintf(matrix_menu1[3][0]+3, "%s", VU ? "UHF  " : "VHF  ");
 	}
-	else //CHAN
+	else 					//CHAN
 	{
 		sprintf((char *)matrix_menu1[3][1], "CH-%02d   ", CHAN);
 		memcpy(matrix_menu1[3][0]+3, (char *)chan_arv[NOW].NN, 7);
@@ -980,9 +983,9 @@ void RT_Menu_Clear()//界面显示
 	sprintf((char *)matrix_menu1[2][1], chan_arv[NOW].GBW   ? "BW:WIDE "    : "BW:NARR ");
 }
 //
-//频率校验
-//0:频率无需校正
-//其他:校正的频率
+//Frequency verification
+//    0: Frequency does not need to be corrected
+//Other: Corrected frequency
 int checkFreq(int freq_tmp)
 {
 	int step_temp[3]={50, 100, 125};
@@ -1001,20 +1004,20 @@ int checkFreq(int freq_tmp)
 				return 0;
 		}
 	}
-	//默认以设置的步进校正频率
+	//The default is to set the step correction frequency
 	mul = freq_tmp/step_temp[STEP_LEVEL]+0.5;
 	D_printf("mul:%d, return: %d\n", mul, mul*step_temp[STEP_LEVEL]);
 	return (mul*step_temp[STEP_LEVEL]);
 }
 //
 
-//返回值:ENT2LAST/CLR2LAST
+//Return value: ENT2LAST/CLR2LAST
 int RT_FREQ_Set(int x, int y, double *result, int vu_mode)
 {
 	unsigned char 
 		locate = x + 6, 
 		bit = 1, 
-		flag_finish = 0,		  /*flag_finish 停止输入标志（完成)*/
+		flag_finish = 0,		  /* "flag_finish" Stop entering the flag (complete) */
 		key_result = 23, 
 		num_input = 0, 
 		freq_buf[8] = {0};
@@ -1029,21 +1032,21 @@ int RT_FREQ_Set(int x, int y, double *result, int vu_mode)
 	else
 		freq_buf[0] = 1;
 	
-	LCD_ShowAscii0608(x, y, freq_buf[0]+'0', 1); //进入后首位设为4
+	LCD_ShowAscii0608(x, y, freq_buf[0]+'0', 1); 		//After entering, the first place is set to "4"
 	//
 	
 	while (1)
 	{
 		MY_GLOBAL_FUN(1);
-		if (locate == (18 + x)) //3个单位整数后面加个‘.’
+		if (locate == (18 + x)) 			//Add a '.' after the 3-unit integer
 		{
 			LCD_ShowAscii0608(locate, y, '.', 1);
 			locate += 6;
 			bit++;
 		}
-		if (locate > x && locate < 48 + x) //未设置位设为'_'
+		if (locate > x && locate < 48 + x) 		//The unset bit is set to '_'
 			LCD_ShowAscii0608(locate, y, '_', 1);
-		if (locate == 48 + x || bit == 8) //8个单位设置完了
+		if (locate == 48 + x || bit == 8) 		//8 units set up
 			flag_finish = 1;
 		
 		key_result = KEY_SCAN(0);
@@ -1052,12 +1055,12 @@ int RT_FREQ_Set(int x, int y, double *result, int vu_mode)
 			case key_0:
 				D_printf("Press{0}");
 				if (
-					(vu_mode && freq_buf[1] <= 8 && bit >= 1) || 		//400-480
+					(vu_mode && freq_buf[1] <= 8 && bit >= 1) || 				//  400-480
 					(vu_mode ==0 && 
 						(bit > 1 && 
-							((freq_buf[1] >= 4 && freq_buf[1] < 8) || 	//140-170
-							(freq_buf[1] == 3 && freq_buf[2] >= 6) || 	//136.0
-							(freq_buf[1] == 7 && freq_buf[2] <= 4))))	//174.0
+							((freq_buf[1] >= 4 && freq_buf[1] < 8) || 		//  140-170
+							(freq_buf[1] == 3 && freq_buf[2] >= 6) || 		//  136.0
+							(freq_buf[1] == 7 && freq_buf[2] <= 4))))		//  174.0
 					)
 					num_input = 1;
 				break;
@@ -1067,12 +1070,12 @@ int RT_FREQ_Set(int x, int y, double *result, int vu_mode)
 			case key_2:
 				D_printf("Press{%d}", key_result);
 				if (
-					(vu_mode && (bit == 1 || freq_buf[1] <= 7))	||					//41x - 47x
+					(vu_mode && (bit == 1 || freq_buf[1] <= 7))	||				//  41x - 47x
 					(vu_mode ==0 &&
-						((bit==2 && freq_buf[1] > 3 && freq_buf[1] < 8)  || 		//141 142 	171	 172	
+						((bit==2 && freq_buf[1] > 3 && freq_buf[1] < 8)  || 			//  141 142 	171	 172	
 						 (bit>2 && ((freq_buf[1] > 3  && freq_buf[1] < 7) ||
-									(freq_buf[1] == 3 && freq_buf[2] > 5) || 		//136.1 136.2	
-									(freq_buf[1] == 7 && freq_buf[2] < 4)))))		//173.1 173.2
+									(freq_buf[1] == 3 && freq_buf[2] > 5) || 	//  136.1 136.2	
+									(freq_buf[1] == 7 && freq_buf[2] < 4)))))	//  173.1 173.2
 					)
 					num_input = 1;
 				
@@ -1082,12 +1085,12 @@ int RT_FREQ_Set(int x, int y, double *result, int vu_mode)
 			case key_3:
 				D_printf("Press{3}");
 				if (
-					(vu_mode && (bit == 1 || freq_buf[1] <= 7))	||					// 43x/45x  473、475
+					(vu_mode && (bit == 1 || freq_buf[1] <= 7))	||				//  43x/45x  473、475
 					(vu_mode==0 && 
-						(bit == 1 || 												//	13x 15x
+						(bit == 1 || 								//  13x 15x
 						(bit == 2 && (freq_buf[1] > 3 && freq_buf[1] < 8)) 		|| 	//  143 173
-						(bit > 2  && ((freq_buf[1] == 3 && freq_buf[2] >= 6) 	|| 	//	136.x
-									  (freq_buf[1] == 7 && freq_buf[2] < 4)))))		//	173.X
+						(bit > 2  && ((freq_buf[1] == 3 && freq_buf[2] >= 6) 	|| 		//  136.x
+									  (freq_buf[1] == 7 && freq_buf[2] < 4)))))	//  173.X
 					)
 					num_input = 1;
 				break;
@@ -1095,15 +1098,15 @@ int RT_FREQ_Set(int x, int y, double *result, int vu_mode)
 			case key_5:
 				D_printf("Press{5}");
 				if (
-					(vu_mode && (bit == 1 || freq_buf[1] <= 7))	||		// 43x/45x  473、475
-					(vu_mode==0 && 
-					(	 bit == 1 || 									//	13x 15x
+					(vu_mode && (bit == 1 || freq_buf[1] <= 7))	||		//  43x/45x  473、475
+					(vu_mode==0 && 							
+					(	 bit == 1 || 						//  13x 15x
 						(freq_buf[1] > 3 && freq_buf[1] < 7) 	|| 		//  145 165
 						(bit > 2  &&
-						 ((freq_buf[1] == 3 && freq_buf[2] >= 6)|| 		//	136.x
+						 ((freq_buf[1] == 3 && freq_buf[2] >= 6)|| 		//  136.x
 						  (freq_buf[1] == 7 && freq_buf[2] <  4)))	
 					)
-					)				//	173.X
+					)								//  173.X
 				   )		
 					num_input = 1;
 				break;
@@ -1128,11 +1131,11 @@ int RT_FREQ_Set(int x, int y, double *result, int vu_mode)
 			case key_7:
 				D_printf("Press{%d}", key_result);
 				if (
-					(vu_mode && (bit == 1 || freq_buf[1] <= 7)) ||	//47X
+					(vu_mode && (bit == 1 || freq_buf[1] <= 7)) ||			//  47X
 					(vu_mode == 0 && 
-						(bit == 1 || 								//16X  17X
-						(freq_buf[1] > 2 && freq_buf[1] < 7) 	|| 	//136
-						(bit > 2 && freq_buf[1] == 7 && freq_buf[2] < 4)))		//173.X
+						(bit == 1 || 						//  16X  17X
+						(freq_buf[1] > 2 && freq_buf[1] < 7) 	|| 		//  136
+						(bit > 2 && freq_buf[1] == 7 && freq_buf[2] < 4)))	//  173.X
 					)
 					num_input = 1;
 				break;
@@ -1163,15 +1166,15 @@ int RT_FREQ_Set(int x, int y, double *result, int vu_mode)
 
 				
 			case key_clr:
-				if (locate == x + 6) //exit
+				if (locate == x + 6) 					//exit
 				{
 					D_printf("Press{CLR} : Exit\n");
 					LCD_ShowFreq(x, y, *result, 1);
 					return CLR2LAST;
 				}
-				else //clear
+				else 							//clear
 				{
-					D_printf("Press{CLR} : %d\n", locate); //A
+					D_printf("Press{CLR} : %d\n", locate); 		//A channel
 					LCD_ShowString0608(x, y,  "        ", 1, 120);
 
 					while (bit--)
@@ -1193,12 +1196,12 @@ int RT_FREQ_Set(int x, int y, double *result, int vu_mode)
 
 			case key_n:
 			case key_ent:
-				D_printf("Press{ENT}\n"); //B
+				D_printf("Press{ENT}\n"); 				//B channel
 				flag_finish = 1;
 				break;
 			
 		}
-		if (num_input) //数字存入
+		if (num_input) 								//Digital deposit (?)
 		{
 			num_input = 0;
 			D_printf("_[%d]_: %d\n", bit, key_result);
@@ -1209,10 +1212,10 @@ int RT_FREQ_Set(int x, int y, double *result, int vu_mode)
 		}
 
 		//
-		if (flag_finish) //输入完成
+		if (flag_finish) 							//Input is complete
 		{
 			LCD_ShowString0608(x + 48, y,  " ", 1, x+54);
-			if (locate < 48 + x || bit < 7) //按下确定键，未写入完毕补零
+			if (locate < 48 + x || bit < 7) 				//Press the 'OK' button, the zero is not written and the zero is filled
 			{
 				for (; bit < 8; bit++)
 					freq_buf[bit] = 0;
@@ -1233,15 +1236,15 @@ int RT_FREQ_Set(int x, int y, double *result, int vu_mode)
 					freq = (double)res/10000;
 			}
 			*result = freq;
-			LCD_ShowFreq(x, y, freq, 0); //频率显示
+			LCD_ShowFreq(x, y, freq, 0); 			//Frequency display
 			return ENT2LAST;
 		}
 	}
 }
 //
-//亚音设置  
-//返回值为设置的亚音
-int  RT_SubVoice_Set(int row, int subvoice) 			//第row行显示第subvoice个亚音
+//Subsonic setting  
+//The return value is the set sub-tone
+int  RT_SubVoice_Set(int row, int subvoice) 				//The first row shows the first subvoice subvoice
 {
 	int subvoice_temp = subvoice;
 	
@@ -1261,11 +1264,11 @@ int  RT_SubVoice_Set(int row, int subvoice) 			//第row行显示第subvoice个�
 			LCD_ShowString0608(68, row, menu_subvoice[0], 0, 128);
 			break;
 
-		case key_clr://取消设置,返回
+		case key_clr:						//Cancel the setting and return
 			LCD_ShowAscii0608(116, row, ' ', 1);
 			return subvoice_temp;
 		
-		case key_ent://确认
+		case key_ent:						//Confirm
 			LCD_ShowAscii0608(116, row, ' ', 1);
 			if (subvoice < 0 || subvoice > 121)
 				return 0;
@@ -1275,7 +1278,7 @@ int  RT_SubVoice_Set(int row, int subvoice) 			//第row行显示第subvoice个�
 		case key_b:
 		case key_d:
 		case key_pre_sub:	
-			//选择前一项亚音
+			//Select the previous sub-tone
 			if (subvoice > 0)
 				subvoice--;
 			LCD_ShowString0608(68, row, "        ", 1, 128);
@@ -1285,7 +1288,7 @@ int  RT_SubVoice_Set(int row, int subvoice) 			//第row行显示第subvoice个�
 		case key_a:		
 		case key_c:
 		case key_pre_add:
-			//选择后一项亚音
+			//Select the latter sub-tone
 			if (subvoice < 121)
 				subvoice++;
 			LCD_ShowString0608(68, row, "        ", 1, 128);
@@ -1300,7 +1303,7 @@ int  RT_SubVoice_Set(int row, int subvoice) 			//第row行显示第subvoice个�
 }
 
 
-int  RT_SubVoice_Matrix_Menu_Select(int subvoice)		//亚音设置：矩阵亚音选择
+int  RT_SubVoice_Matrix_Menu_Select(int subvoice)		//Sub-tone setting: matrix sub-tone selection
 {
 	int subvoice_temp = subvoice;
 
@@ -1384,8 +1387,8 @@ int  RT_SubVoice_Matrix_Menu_Select(int subvoice)		//亚音设置：矩阵亚音
 		}
 	}
 }
-//发射功率设置
-//返回值无意义
+//Transmit power setting
+//The return value is meaningless
 int  RT_TX_POWER_Set(int power)	
 {
 	unsigned char power_temp = chan_arv[NOW].POWER;
@@ -1414,8 +1417,8 @@ int  RT_TX_POWER_Set(int power)
 		}
 	}
 }
-//带宽设置
-//返回值无意义
+//Bandwidth setting
+//The return value is meaningless
 int  RT_GBW_Set(int gbw)		
 {
 	char gbw_temp = chan_arv[NOW].GBW;
@@ -1445,18 +1448,18 @@ int  RT_GBW_Set(int gbw)
 	}
 }
 
-//信道别名
-//返回值无意义
+//Channel alias
+//The return value is meaningless
 int  RT_NICKNAME_Set()
 {
 	char nn[7] = "";
-	u8 result_matrix,									//当前触发按键
-		key_old = key_no, 								//上一次键值
-		nn_locate = 0,									//当前光标位置
-		nn_locate_change = 0,							//光标位置改变,用作刷新press_times
-		locate_change = 1,								//刷新选中的位置
-		press_times = 0,								//当前按键按压次数
-		clear = 0;										//编辑栏清空标志，0未清空，1为清空
+	u8 result_matrix,				//Current trigger button
+		key_old = key_no, 			//Last key value
+		nn_locate = 0,				//Current cursor position
+		nn_locate_change = 0,			//The cursor position changes, used to refresh 'press_times'
+		locate_change = 1,			//Refresh the selected location
+		press_times = 0,			//Current number of button presses
+		clear = 0;				//The edit bar is cleared, 0 is not cleared, 1 is cleared
 
 	if (CF)
 		return NO_OPERATE;
@@ -1474,9 +1477,9 @@ int  RT_NICKNAME_Set()
 		switch (result_matrix)
 		{
 		case key_clr:
-			if (clear) //已清空，返回初值
+			if (clear) 			//Cleared, returns the initial value
 				return CLR2LAST;
-			else //未清空，清空编辑栏
+			else 				//Not cleared, clear the edit bar
 			{
 				memset(nn, ' ', 7);
 				locate_change = 1;
@@ -1545,20 +1548,20 @@ int  RT_NICKNAME_Set()
 		};
 		//
 		
-		if (locate_change) //光标位置修改
+		if (locate_change) 			//Cursor position modification
 		{
 			locate_change = 0;
 			nn_locate_change = 1;
 			LCD_ShowString0608(18, 4, "       ", 1, 128);
 			LCD_ShowString0608(18, 4, (char *)nn, 1, 128);
 			if(nn[nn_locate])
-				LCD_ShowAscii0608(18 + nn_locate * 6, 4, nn[nn_locate], 0); //显示当前选中
+				LCD_ShowAscii0608(18 + nn_locate * 6, 4, nn[nn_locate], 0); 		//Show currently selected
 			else
 				LCD_ShowAscii0608(18 + nn_locate * 6, 4, ' ', 0);
 		}
 	}
 }
-//信道切换
+//Channel switching
 int  RT_CHAN_Switch()
 {
 	u8 change = 0,
@@ -1591,7 +1594,7 @@ int  RT_CHAN_Switch()
 				break;
 
 			case key_clr:
-				//取消设置,请求原来信道参数
+				//Cancel the setting and request the original channel parameters
 				if(CHAN != chan_temp)
 				{
 					CHAN = chan_temp;
@@ -1624,7 +1627,7 @@ int  RT_CHAN_Switch()
 			
 		case key_n:
 		case key_ent:
-			//确认当前信道,重载参数
+			//Confirm the current channel and overload the parameters
 			CF = now_cf;
 			VU = now_vu;
 			sendTo152(_RELOAD);
@@ -1653,7 +1656,7 @@ int  RT_CHAN_Switch()
 		{
 			change = 0;
 			
-			//请求修改的当前通道号参数
+			//Request to modify the current channel number parameter
 			sendTo152(_ASKCHAN);
 			
 
@@ -1674,10 +1677,10 @@ int  RT_CHAN_Switch()
 }
 //
 
-//按键2进入背光及亮度设置
-//CLR2LAST: 返回前一级
-//ENT2LAST: 设置成功退出
-//BACK2MAIN:按键2/kdu控制退出
+//Button '2' to enter the backlight and brightness settings
+//CLR2LAST: Return to the previous level
+//ENT2LAST: Set to exit successfully
+//BACK2MAIN: Button '2(LT)' radio/KDU control exit
 u8 Screen_Contrast_Set(void)
 {
 	LCD_ShowString0608(19, 3, "SCREEN CONTRAST", 1, 128);
@@ -1724,8 +1727,8 @@ u8 Screen_Contrast_Set(void)
 
 
 
-//CLR2LAST:返回前一级
-//BACK2MAIN:按键2/kdu控制退出/进入对比度设置后设置完成
+//CLR2LAST: Return to the previous level
+//BACK2MAIN: Button '2(LT)' radio/KDU control exit/enter the contrast setting after the setting is complete
 u8 Light_Intensity_set(void)
 {
 	u8 ENTER = 0;
@@ -1809,7 +1812,7 @@ void Light_Mode_Set(void)
 			
 			case key_n:
 			case key_ent:
-				if(pos)//OFF
+				if(pos)		//OFF
 				{
 					if(Screen_Contrast_Set())
 						return;
@@ -1840,7 +1843,7 @@ void Light_Mode_Set(void)
 // 
 
 
-//按键5 初始化
+//Button '5(Zero)' radio's memory zeroize initialization
 void Zero_Menu(void)
 {
 	u8 pos = 0;
@@ -1894,7 +1897,7 @@ void Zero_Menu(void)
 		}
 	}
 }
-//返回值无特殊意义
+//The return value has no special meaning
 int Zeroize_All(void)
 {
 	u8 pos = 0;
@@ -1942,7 +1945,7 @@ int Zeroize_All(void)
 }
 //
 
-//按键7 OPTION菜单
+//Button '7(OPT)' option menu
 void OPTION_Menu(void)
 {
 	Flag_Main_Page = 0;
@@ -1980,7 +1983,7 @@ void OPTION_Menu(void)
 				LCD_ShowMenu31(MENU_OPT, MENU_OPT_NUM, num);
 				break;
 		}
-///////////////////////		
+////////////////////////////////////////////		
 		if(ENSURE)
 		{
 			ENSURE=0;
@@ -1991,7 +1994,8 @@ void OPTION_Menu(void)
 					Flag_Main_Page = 0;
 					ENSURE = Lock_Screen_KeyBoard();
 					LightBacklight();
-					while (VOL_ADD_READ == 0 || VOL_SUB_READ == 0)FeedDog();//喂狗;//防止长按退出时执行一次音量的加减
+					while (VOL_ADD_READ == 0 || VOL_SUB_READ == 0)FeedDog();	//Feed the dog - watch dog timer initialization;
+													//Prevent a volume increase or decrease from being performed when long-pressing to exit
 					if(ENSURE == 2)
 					{
 						Flag_Main_Page = 1;
@@ -2006,7 +2010,8 @@ void OPTION_Menu(void)
 			}
 			ENSURE = 0;
 			LCD_ShowMenu31(MENU_OPT, MENU_OPT_NUM, num);
-			while (VOL_ADD_READ == 0 || VOL_SUB_READ == 0)FeedDog();//喂狗;//防止长按退出时执行一次音量的加减
+			while (VOL_ADD_READ == 0 || VOL_SUB_READ == 0)FeedDog();			//Feed the dog - watch dog timer initialization;
+													//Prevent a volume increase or decrease from being performed when you press and hold to exit
 		}
 		//
 	}
@@ -2015,7 +2020,7 @@ void OPTION_Menu(void)
 
 }
 //
-//测试按键
+//Button '7(OPT)' testing option menu
 void Key_Test()
 {
 	int delay_f1_f2 = 0, result = 0;
@@ -2024,7 +2029,7 @@ void Key_Test()
 	LCD_ShowString0608(0, 5, "VALUE:                ", 1, 128);
 	while (1)
 	{
-		FeedDog(); //喂狗
+		FeedDog(); 					//Feed the dog - watch dog timer initialization
 		result = KEY_SCAN(0);
 		if (result != key_no)
 			printf("%d\n", result);
@@ -2101,7 +2106,7 @@ void Key_Test()
 		if (VOL_ADD_READ == 0 || VOL_SUB_READ == 0)
 		{
 			delay_f1_f2++;
-			if (delay_f1_f2 == 120)//870000
+			if (delay_f1_f2 == 120)			//870000
 			{
 				D_printf("delay_f1_f2:%d\n", delay_f1_f2);
 				delay_f1_f2 = 0;
@@ -2122,8 +2127,8 @@ void Key_Test()
 			LCD_ShowString0608(36, 5, " SQUELCH_READ ", 1, 128);
 	}
 }
-//		功能0：锁屏锁盘
-int  Lock_Screen_KeyBoard()			//返回值无意义
+//Function 0: Lock screen, lock disk
+int  Lock_Screen_KeyBoard()			//The return value is meaningless
 {
 	int f1 = 0, f2 = 0;
 	int change = 0;
@@ -2136,7 +2141,7 @@ int  Lock_Screen_KeyBoard()			//返回值无意义
 	LCD_ShowString0408(108, 5, "KEY", 0);
 	while (1)
 	{
-		if(LAMP_TIME>0 && bsp_CheckTimer(TMR_FLOW))//背光设置为10S自动模式时才到时间关灯
+		if(LAMP_TIME>0 && bsp_CheckTimer(TMR_FLOW))		//It's time to turn off the lights when the backlight is set to 10 sec automatic mode
 			BackLight_SetVal(0);
 		receiveProcess();
 		KDU_Reflash();
@@ -2189,7 +2194,7 @@ int  Lock_Screen_KeyBoard()			//返回值无意义
 //
 
 
-//图形4:参数设置
+//Button '8(PGM)' parameter settings menu
 void PGM_Menu()
 {
 	u8 num = 0, ENSURE=0;
@@ -2236,37 +2241,37 @@ void PGM_Menu()
 			switch(num)
 			{
 				case normal_set_mic_gain:
-					D_printf("AUDIO SELECT & MIC GAIN\n");
+					D_printf("AUDIO SELECT & MIC GAIN\n");		//Select audio source (IN, TOP, SIDE) and mic gain menu
 					ENSURE = PGM_AUDIO_Select(num%3+3);
 					break;
 
 				case normal_set_sql:
-					D_printf("Squelch Level\n");
+					D_printf("Squelch Level\n");			//Squelch level menu
 					ENSURE = PGM_SQL_Set(num%3+3);
 					break;
 
 				case normal_set_step:
-					D_printf("STEP SET\n");
+					D_printf("STEP SET\n");				//Set step menu
 					ENSURE = PGM_STEP_Set(num%3+3);
 					break;
 
 				case normal_set_tot:
-					D_printf("TOT SET\n");
+					D_printf("TOT SET\n");				//Timeout interval menu
 					ENSURE = PGM_TOT_Set(num%3+3);
 					break;
 				
 				case normal_set_lamptime:
-					D_printf("LampTime SET\n");
+					D_printf("LampTime SET\n");			//Backlite mode menu
 					ENSURE = PGM_LAMP_TIME_Set(num%3+3);
 					break;
 				
 				case normal_set_powerout:
-					D_printf("POWER OUT\n");
+					D_printf("POWER OUT\n");			//Dynamic (Boom) microphone amplifier ON/OFF menu
 					ENSURE = PGM_POWEROUT_Set(num%3+3);
 					break;
 
 				case normal_set_ptttone:
-					D_printf("PTT TONE\n");
+					D_printf("PTT TONE\n");				//PTT pre-/end- tone menu
 					ENSURE = PGM_TONE_Select(num%3+3);
 					break;
 				default:
@@ -2276,16 +2281,18 @@ void PGM_Menu()
 				return;
 			ENSURE = 0;
 			LCD_ShowMenu31(MENU_PGM, MENU_PGM_NUM, num);
-			while (VOL_ADD_READ == 0 || VOL_SUB_READ == 0)FeedDog(); //喂狗;//防止长按退出时执行一次音量的加减
+			while (VOL_ADD_READ == 0 || VOL_SUB_READ == 0)FeedDog(); 	//Feed the dog - watch dog timer initialization;
+											//Prevent a volume increase or decrease from being performed when you press and hold to exit
 //
 		}
 	}
 }
 
-//	CLR2LAST:不修改,重新选择需要选通的音频通道	  
-//	ENT2LAST:确认修改并退出音频设置返回PDM菜单	  
-//	BACK2MAIN:按键8/KDU控制直接退出
-//	选择输出通道,并设置灵敏度
+//Button '8(PGM)' parameter settings menu
+//CLR2LAST: Do not modify, re-select the audio channel that needs to be strobe	  
+//ENT2LAST: Confirm the modification and exit the audio settings to return to the PDM menu	  
+//BACK2MAIN: Button '8'/KDU control to exit directly
+//Select the output channel and set the sensitivity
 int  AUDIO_SET(u8 _audio)
 {
 	u8 temp = MIC;
@@ -2333,9 +2340,10 @@ int  AUDIO_SET(u8 _audio)
 	}
 }
 
-//	CLR2LAST:不修改返回PGM菜单	  
-//	ENT2LAST:确认修改然后返回PGM菜单  
-//	BACK2MAIN:按键8/KDU控制直接退出
+//Button '8(PGM)' parameter settings menu
+//CLR2LAST: Return to PGM menu without modification  
+//ENT2LAST: Confirm the modification and return to the PGM menu
+//BACK2MAIN: Button '8'/KDU control to exit directly
 int  PGM_AUDIO_Select(u8 row)
 {
 	u8 index = AUD, ENTER = 0;
@@ -2391,7 +2399,8 @@ int  PGM_AUDIO_Select(u8 row)
 	}
 }
 //
-//									相关设置2：静噪等级
+//Button '8(PGM)' parameter settings menu
+//Related setting 2: squelch level
 int  PGM_SQL_Set(u8 row)
 {
 	u8 sql_temp = SQL;
@@ -2443,7 +2452,8 @@ int  PGM_SQL_Set(u8 row)
 }
 
 //
-//									相关设置3：步进
+//Button '8(PGM)' parameter settings menu
+//Related settings 3: Step
 int  PGM_STEP_Set(u8 row)
 {
 	u8 step_temp = STEP_LEVEL;
@@ -2497,7 +2507,8 @@ int  PGM_STEP_Set(u8 row)
 	}
 }
 //
-//									相关设置4：加密
+//Button '8(PGM)' parameter settings menu - in firmware ver. 2.0.0000 / 2.1.1226 this function doesn't realised!
+//Related settings 4: Encryption
 int  PGM_ENCRPY_Set(u8 row)
 {
 	unsigned char SCRAM_LEVEL_temp = ENC;
@@ -2548,7 +2559,8 @@ int  PGM_ENCRPY_Set(u8 row)
 	}
 }
 //
-//									相关设置5：发射限时
+//Button '8(PGM)' parameter settings menu
+//Related setting 5: Launch time limit
 int  PGM_TOT_Set(u8 row)
 {
 	u8 tot_temp = TOT;
@@ -2607,13 +2619,14 @@ int  PGM_TOT_Set(u8 row)
 	}
 }
 
-//
+//Button '8(PGM)' parameter settings menu
+//Related setting 6: Lamptime
 int  PGM_LAMP_TIME_Set(u8 row)
 {
 	u8 LT = LAMP_TIME/10000;		
 	
-	LCD_ShowAscii0608(60,  row, ':', 0);					//
-    LCD_ShowString0608(72, row, LAMP_SHOW[LT], 0, 128);		//
+	LCD_ShowAscii0608(60,  row, ':', 0);				//
+    	LCD_ShowString0608(72, row, LAMP_SHOW[LT], 0, 128);		//
 	LCD_ShowPIC0608(116,   row, 0, 0);
 	
 	while (1)
@@ -2653,8 +2666,9 @@ int  PGM_LAMP_TIME_Set(u8 row)
 }
 
 
-
-//									相关设置7：六针头电源输出
+//
+//Button '8(PGM)' parameter settings menu
+//Related setting 7: Six-pin power output
 int  PGM_POWEROUT_Set(u8 row)
 {
 	char power = OP;
@@ -2692,14 +2706,15 @@ int  PGM_POWEROUT_Set(u8 row)
 }
 
 //
-//									相关设置8:PTT按键提示音设置
-int  TONE_SET(u8 _tone) //_tone:要进行设置的Tone;
+//Button '8(PGM)' parameter settings menu
+//Related settings 8: PTT button tone setting
+int  TONE_SET(u8 _tone) //_tone: The tone to be set;
 {
-	char t_sta[2] = {PRE_TONE, END_TONE}; //前置信令和后置信令的状态
+	char t_sta[2] = {PRE_TONE, END_TONE}; 			//The status of the pre-confidence signal and the post-confidence signal
 		
 
 	LCD_ShowAscii0608(84, _tone + 3, ':', 0);
-	LCD_ShowString0608(90, _tone + 3, opt_state[t_sta[_tone]], 0, 128); //显示开关状态
+	LCD_ShowString0608(90, _tone + 3, opt_state[t_sta[_tone]], 0, 128); 		//Display switch status
 	while (1)
 	{
 		MY_GLOBAL_FUN(0);
@@ -2770,16 +2785,16 @@ int  PGM_TONE_Select(u8 row)
 //	
 
 //
-//////////////////////收音机////////////////////////////////
-int fm_locate=0, 	    //光标位置
-	fm_bit=0, 			//输入频率位数
-	fm_freq_static;	 	//输入后计算的频率
+//////////////////////radio////////////////////////////////
+int fm_locate=0, 	    	//Cursor position
+	fm_bit=0, 		//Number of input frequency bits
+	fm_freq_static;	 	//Frequency calculated after input
 
-char ff_buf[5]={0}; 	//装载频率的个十百千位上的数字
-u8	flag_clear=0, 		//clr按下后是清%除还是退出
-	fm_finish=0, 		//按压数字输入频率是否完成
-	val_in=0, 			//按压数字处理	如果开头输入1则等1, 如果开头直接输入8,则等2
-	key_press=17, 		//键值返回
+char ff_buf[5]={0}; 		//The number on the 100,000 digits of the loading frequency
+u8	flag_clear=0, 		//After clr is pressed, is it cleared or exited?
+	fm_finish=0, 		//Is it complete to press the digital input frequency?
+	val_in=0, 		//Press the number to process, if you enter '1' at the beginning, wait for 1, if you enter '8' directly at the beginning, wait for 2
+	key_press=17, 		//Key value return
 	first_press=1;		
 
 int RDA5807_Switch(void)
@@ -2832,7 +2847,7 @@ int RDA5807_Switch(void)
 }
 
 
-void Radio_Freq_Show(int fm_freq, int mode)//显示频率
+void Radio_Freq_Show(int fm_freq, int mode)		//Display frequency
 {
 //	char buf[6]={0};
 //	double fm = fm_freq/10;
@@ -2849,7 +2864,7 @@ void Radio_Freq_Show(int fm_freq, int mode)//显示频率
 }
 
 
-//显示和输入频率等操作,不包括设置
+//Operations such as display and input frequency, excluding settings
 int FM_Freq_Set_Show(int x,int y,int* result)
 {
 	if(fm_locate==30+x)
@@ -2878,7 +2893,7 @@ int FM_Freq_Set_Show(int x,int y,int* result)
 			D_printf("Press{1}");
 			if(fm_bit==0
 				|| (ff_buf[0]==0 && ((ff_buf[1]==8&&ff_buf[2]>=7) || ff_buf[1]==9))
-				|| (ff_buf[0]==1 && ff_buf[1]==0 && ff_buf[2]<8 && fm_bit>1))//ff_buf已清空为零
+				|| (ff_buf[0]==1 && ff_buf[1]==0 && ff_buf[2]<8 && fm_bit>1))		//ff_buf has been cleared to zero
 			val_in=1;
 			break;
 			
@@ -2937,12 +2952,12 @@ int FM_Freq_Set_Show(int x,int y,int* result)
 			LCD_ShowAscii1016(x+20, y, ' ',  1);
 			LCD_ShowAscii1016(x+30, y, ' ',  1);
 			LCD_ShowAscii1016(x+40, y, ' ',  1);
-			LCD_ShowAscii1016(x+50, y, '}'+1,1);//箭头
+			LCD_ShowAscii1016(x+50, y, '}'+1,1);		//Arrow
 			ff_buf[0]=0,ff_buf[1]=0,ff_buf[2]=0,ff_buf[3]=0;
 			fm_locate=x;
 			fm_bit=0;
-			flag_clear=1;	//EXIT需要
-			first_press=1;//清空需要
+			flag_clear=1;		//EXIT required
+			first_press=1;		//Empty the need
 		  break;
 			
 		case key_ent:
@@ -2951,7 +2966,7 @@ int FM_Freq_Set_Show(int x,int y,int* result)
 			if(fm_bit>0||(fm_bit==0&&flag_clear==1))
 			{
 				if(fm_bit<3 || fm_locate<50+x)
-					for(;fm_bit<4;fm_bit++)//补零
+					for(;fm_bit<4;fm_bit++)		//Make up zero
 						ff_buf[fm_bit]=0;
 				fm_finish=1;
 				flag_clear=0;
@@ -3028,7 +3043,7 @@ int FM_Freq_Set_Show(int x,int y,int* result)
 			LCD_ShowAscii1016(x+20, y,  ' ',  1);
 			LCD_ShowAscii1016(x+30, y,  ' ',  1);
 			LCD_ShowAscii1016(x+40, y,  ' ',  1);
-			LCD_ShowAscii1016(x+50, y, '}'+1, 1);//箭头
+			LCD_ShowAscii1016(x+50, y, '}'+1, 1);		//Arrow
 		}
 		D_printf("FM_Freq[%d]:%d\n", fm_bit, key_press);
 		ff_buf[fm_bit]=key_press;
@@ -3047,7 +3062,7 @@ int FM_Freq_Set_Show(int x,int y,int* result)
 			LCD_ShowAscii1016(x+20, y,   ' ', 1);
 			LCD_ShowAscii1016(x+30, y,   ' ', 1);
 			LCD_ShowAscii1016(x+40, y,   ' ', 1);
-			LCD_ShowAscii1016(x+50, y, '}'+1, 1);//箭头
+			LCD_ShowAscii1016(x+50, y, '}'+1, 1);		//Arrow
 		}
 		D_printf("FM_Freq[2]:%d", key_press);
 		ff_buf[0]=0,ff_buf[1]=key_press;
@@ -3117,12 +3132,12 @@ void Enter_Radio()
 		//
 		
 		result=FM_Freq_Set_Show(0, 4, (int*)&FM_FREQ);
-		if(result==1)		//写完
+		if(result==1)				//Finished
 		{
 			fm_change=1;
 			sendTo152(_SETFM);
 		}
-		else if(result==2)//上加  p键
+		else if(result==2)			//Up plus P key
 		{
 			fm_change=1;
 			if(FM_FREQ<1080)
@@ -3131,7 +3146,7 @@ void Enter_Radio()
 			sendTo152(_SETFM);
 			Radio_Freq_Show(FM_FREQ, 1);
 		}
-		else if(result==3)//下减  N键
+		else if(result==3)			//Down minus N key
 		{
 			fm_change=1;
 			if(FM_FREQ>870)
@@ -3140,7 +3155,7 @@ void Enter_Radio()
 			sendTo152(_SETFM);
 			Radio_Freq_Show(FM_FREQ, 1);
 		}
-		else if(result==4)//下扫 左键
+		else if(result==4)			//Swipe down the left button
 		{
 			if(WFM==0)
 				continue;
@@ -3167,7 +3182,7 @@ void Enter_Radio()
 			//
 			LCD_ShowPIC1616(60,4,11,1);
 		}
-		else if(result==5)//上扫 右键#
+		else if(result==5)			//Swipe up right button
 		{
 			if(WFM==0)
 				continue;
@@ -3194,10 +3209,10 @@ void Enter_Radio()
 			}
 			LCD_ShowPIC1616(86,4,12,1);
 		}
-		else if(result==8)//退出 CLR键
+		else if(result==8)			//Exit CLR key
 			return;
 
-		//判断真台与否
+							//Judge whether the real station is or not
 		if(fm_change)
 		{
 			fm_change=0;
@@ -3216,7 +3231,7 @@ void Enter_Radio()
 
 ///////////////////////////////////////////////////////////
 
-void TOOLS_Menu(void)//选项功能按键
+void TOOLS_Menu(void)					//'Tool' function button
 {
 	LCD_Clear(GLOBAL64);
 	u8 num = 0;
@@ -3252,13 +3267,13 @@ void TOOLS_Menu(void)//选项功能按键
 				LCD_Write(0xE2,0); delay_ms(10);
 				if(LCD_INVERTED)
 				{
-					LCD_Write(0xC0,0); //com1 --> com64				     C8:普通顺序 c0:反向扫描
-					LCD_Write(0xA1,0); //ADC select S0->S131(从S1-S128)  a0:左->右 a1:反转，右到左
+					LCD_Write(0xC0,0); 	//com1 --> com64				//C8: Normal sequence; C0: Reverse scan
+					LCD_Write(0xA1,0); 	//ADC select S0->S131(from S1-S128)  	//A0: Left->right; A1: Reverse, right to left
 				}
 				else
 				{
-					LCD_Write(0xC8,0); //com1 --> com64				     C8:普通顺序 c0:反向扫描
-					LCD_Write(0xA0,0); //ADC select S0->S131(从S1-S128)  a0:左->右 a1:反转，右到左
+					LCD_Write(0xC8,0); 	//com1 --> com64				//C8: Normal sequence; C0: Reverse scan
+					LCD_Write(0xA0,0); 	//ADC select S0->S131(from S1-S128)  	//A0: Left->right; A1: Reverse, right to left
 				}
 				LCD_Write(0x20+(5&0x07), 0);
 				LCD_Write(0x81,0); 
@@ -3349,13 +3364,13 @@ int LCD_INVERTED_Set(u8 row)
 				LCD_Write(0xE2,0); delay_ms(10);
 				if(LCD_INVERTED)
 				{
-					LCD_Write(0xC0,0); //com1 --> com64				     C8:普通顺序 c0:反向扫描
-					LCD_Write(0xA1,0); //ADC select S0->S131(从S1-S128)  a0:左->右 a1:反转，右到左
+					LCD_Write(0xC0,0); 	//com1 --> com64		   	//C8: Normal sequence; C0: Reverse scan
+					LCD_Write(0xA1,0); 	//ADC select S0->S131(from S1-S128)     //A0: Left->right; A1: Reverse, right to left
 				}
 				else
 				{
-					LCD_Write(0xC8,0); //com1 --> com64				     C8:普通顺序 c0:反向扫描
-					LCD_Write(0xA0,0); //ADC select S0->S131(从S1-S128)  a0:左->右 a1:反转，右到左
+					LCD_Write(0xC8,0); 	//com1 --> com64			//C8: Normal sequence; C0: Reverse scan
+					LCD_Write(0xA0,0); 	//ADC select S0->S131(from S1-S128)     //A0: Left->right; A1: Reverse, right to left
 				}
 				LCD_Write(0x20+(5&0x07), 0);
 				LCD_Write(0x81,0); 
@@ -3381,7 +3396,7 @@ int LCD_INVERTED_Set(u8 row)
 		//
 	}
 }
-int  checkAbout(void)//设备信息查询
+int  checkAbout(void)		//Device Information Query
 {
     LCD_Clear(GLOBAL64);
     LCD_ShowString0608(31, 2, "INFORMATION",     1, 128);
@@ -3428,13 +3443,13 @@ void LoadCHAN2KDU(char *Lbuf, CHAN_ARV_P B)
 //	printf("*****cf:%d\r vu:%d\r chan:%d\r  rx:%.4lf\r tx:%.4lf\r rs:%d\r ts: %d\r power:%d\r gbw:%d\r nn:%s\n",
 //			   CF, VU, CHAN, chan_arv[NOW].RX_FREQ, chan_arv[NOW].TX_FREQ, chan_arv[NOW].RS, chan_arv[NOW].TS, chan_arv[NOW].POWER, chan_arv[NOW].GBW, chan_arv[NOW].NN);
 }
-void sendTo152(u8 cmd)		//发射和接收处理
+void sendTo152(u8 cmd)		//Transmit and receive processing
 {
 	sendCommand(cmd);
 	waitToReceive(2000);
 }
 
-void sendCommand(u8 cmd)	//发送命令处理函数
+void sendCommand(u8 cmd)	//Send command handler
 {
 	memset(send_buf, '0', 128);
  
@@ -3469,7 +3484,7 @@ void sendCommand(u8 cmd)	//发送命令处理函数
 			sprintf(send_buf+tx_rank,   "%.4f", chan_arv[NOW].TX_FREQ);
 			sprintf(send_buf+rs_rank,   "%03d", chan_arv[NOW].RS);
 			sprintf(send_buf+ts_rank,   "%03d", chan_arv[NOW].TS);
-			sprintf(send_buf+nn_rank, 	"%s",   chan_arv[NOW].NN);
+			sprintf(send_buf+nn_rank,     "%s", chan_arv[NOW].NN);
 
 			send_buf[pw_rank]	= kdu_send_data(chan_arv[NOW].POWER);
 			send_buf[bw_rank]	= kdu_send_data(chan_arv[NOW].GBW);
@@ -3516,7 +3531,7 @@ void sendCommand(u8 cmd)	//发送命令处理函数
 		
 		case _SETFM:
 			sprintf(send_buf+ffreq_rank,  "%04d", FM_FREQ);
-			send_buf[wfm_rank]	= kdu_send_data(WFM);//打开/关闭FM
+			send_buf[wfm_rank]	= kdu_send_data(WFM);		//Turn FM on/off
 		break;
         
         case _SETDUALPOS:
@@ -3528,7 +3543,7 @@ void sendCommand(u8 cmd)	//发送命令处理函数
 	}
 	UART1_Send_Message(send_buf, BUF_SIZE);
 }
-u8 waitToReceive(int i) 	//接收等待及处理		返回值无意义
+u8 waitToReceive(int i) 	//Receiving, waiting and processing the return value is meaningless
 {
 	if(FLAG_LINE == OFF)
         return NO_OPERATE;
@@ -3548,13 +3563,13 @@ u8 waitToReceive(int i) 	//接收等待及处理		返回值无意义
 }
 
 int exitCalVal = 0;
-int receiveProcess()		//接收数据分析处理
+int receiveProcess()		//Receiving data analysis and processing
 {
 	if (usart1_recv_end_flag)
 	{
 		bsp_StopTimer(TMR_REPLY);
         FLAG_LINE = ON;
-		//接收152所有参数
+		//Receive all parameters of 152
 		if (strstr((const char *)rx1_buf, prefix_buf[ASKALL]))
 		{
 			exitCalVal = 0;
@@ -3589,12 +3604,12 @@ int receiveProcess()		//接收数据分析处理
 			SQUELCH_STATE= kdu_recv_data(rx1_buf[squ_rank]);
 			PTT_READ     = kdu_recv_data(rx1_buf[ptt_rank]);
 			if(PTT_READ==0 || A002_SQ_READ==0)
-				LightBacklight();//TMR_PERIOD_500MS    TMR_PERIOD_1Sbsp_StartAutoTimer
+				LightBacklight();		//TMR_PERIOD_500MS    TMR_PERIOD_1Sbsp_StartAutoTimer
 			//
 			Home_Mode	 = kdu_recv_data(rx1_buf[homemode_rank]);
 			rcv_chan     = kdu_recv_data(rx1_buf[nowrcvchan_rank]);
 		}
-		//接收152信道参数
+		//Receive 152 channel parameters
 		else if(strstr((const char *)rx1_buf, prefix_buf[ASKCHAN]) || strstr((const char *)rx1_buf, prefix_buf[RELOAD]))
 		{
 			LoadCHAN2KDU(rx1_buf, &chan_arv[NOW]);
@@ -3602,7 +3617,7 @@ int receiveProcess()		//接收数据分析处理
 			CF 		= kdu_recv_data(rx1_buf[cf_rank]);
 			VU 		= kdu_recv_data(rx1_buf[vu_rank]);
 		}
-		//接收回复的确认数据, 将数据设置于kdu
+		//Receive the confirmation data of the reply and set the data in KDU
 		else if(strstr((const char *)rx1_buf, prefix_buf[SETCHAN]))
 		{
 			LoadCHAN2KDU(rx1_buf, &chan_arv[NOW]);
@@ -3610,19 +3625,19 @@ int receiveProcess()		//接收数据分析处理
 		}
 		////////////////////////////////////////////////////////////////
 		
-		//载入双守模式信道A的参数
+		//Load the parameters of channel A in dual-guard mode
 		else if(strstr((const char *)rx1_buf, prefix_buf[ASKA])    || strstr((const char *)rx1_buf, prefix_buf[RELA]))
 		{
 			exitCalVal = 0;
 			LoadCHAN2KDU(rx1_buf, &chan_arv[CHANA]);
 		}
-		//载入双守模式信道B的参数
+		//Load the parameters of channel B in dual-guard mode
 		else if(strstr((const char *)rx1_buf, prefix_buf[ASKB])    || strstr((const char *)rx1_buf, prefix_buf[RELB]))
 		{
 			exitCalVal = 0;
 			LoadCHAN2KDU(rx1_buf, &chan_arv[CHANB]);
 		}
-        //双守模式选中通道
+        //Select channel in dual watch mode
         else if(strstr((const char *)rx1_buf, prefix_buf[SETDUALPOS]))
 		{
 			sele_pos = kdu_recv_data(rx1_buf[nowselchan_rank]);	
@@ -3701,8 +3716,8 @@ void wait152StartUp(void)
 	int i = 10;
 	while(!receiveProcess() && i--)
 	{
-		sendCommand(_ASKALL);			//获取所有参数
-        delay_ms(1000);					//等待接收实时变化数据,从而确定152已经开机
+		sendCommand(_ASKALL);			//Get all parameters
+        delay_ms(1000);					//Wait to receive real-time change data to determine that 152 has been turned on
 	}
 	if(i<1)
 		FLAG_LINE = OFF;
