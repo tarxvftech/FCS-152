@@ -27,21 +27,23 @@ void LEDK_Init()
 	RCC_ClocksType RCC_ClockFreq;
 	RCC_GetClocksFreqValue(&RCC_ClockFreq);
 	
-	 /* Compute the prescaler value */
-	//需要判断HclkFreq的大小，如果超过27M则需要分频，同时定时器的倍频要求分频系数不为1的时候x2
+	/* Compute the prescaler value */
+	//You need to judge the size of "HclkFreq". If it exceeds 27M, you need to divide the frequency. At the same time, the frequency doubling 
+	//of the timer requires x2 when the frequency division coefficient is not 1.
+	
 	//SystemCoreClock
 	PrescalerValue = (uint16_t)( (RCC_ClockFreq.HclkFreq>27000000?RCC_ClockFreq.Pclk1Freq*2:RCC_ClockFreq.Pclk1Freq) / tim4Freq) - 1;
 	
 	
 	htim4.Prescaler = PrescalerValue;
-	htim4.Period 	= 100;						//AutoReload
+	htim4.Period 	= 100;				//AutoReload
 	htim4.ClkDiv    = 0;
 	htim4.CntMode   = TIM_CNT_MODE_UP;
 	TIM_InitTimeBase(TIM4, &htim4);
 	
 	sConfigOC.OcMode      = TIM_OCMODE_PWM1;
     sConfigOC.OutputState = TIM_OUTPUT_STATE_ENABLE;
-    sConfigOC.Pulse       = 50;				//CCDAT4,预装载
+    sConfigOC.Pulse       = 50;				//CCDAT4, Preload
     sConfigOC.OcPolarity  = TIM_OC_POLARITY_HIGH;
     TIM_InitOc4(TIM4, &sConfigOC);
 	TIM_ConfigOc4Preload(TIM4, TIM_OC_PRE_LOAD_ENABLE);
@@ -83,15 +85,15 @@ u8 KEY_SCAN(u8 MODE)
 	
 	if(MODE)key_up=1;
 	if(key_up && (K0_READ==0 		|| K1_READ==0 		|| K2_READ==0 		|| K3_READ==0 		|| K4_READ==0 		||
-				  K5_READ==0 		|| K6_READ==0 		|| K7_READ==0 		|| K8_READ==0 		|| K9_READ==0 		||
-				  PRE_ADD_READ==0 	|| PRE_SUB_READ==0 	|| K_TOOLS_READ==0 	|| K_ENT_READ==0 	|| K_CLR_READ==0 	||
-				  KA_READ==0 		|| KB_READ==0 		|| KC_READ==0 		|| KD_READ==0 		|| KN_READ==0 ))
+		      K5_READ==0 		|| K6_READ==0 		|| K7_READ==0 		|| K8_READ==0 		|| K9_READ==0 		||
+		      PRE_ADD_READ==0 		|| PRE_SUB_READ==0 	|| K_TOOLS_READ==0 	|| K_ENT_READ==0 	|| K_CLR_READ==0 	||
+		      KA_READ==0 		|| KB_READ==0 		|| KC_READ==0 		|| KD_READ==0 		|| KN_READ==0 ))
 	 {
 			LightBacklight();
 		 	delay_ms(5);
 			key_up=0;
-					 if(K0_READ	==0)    return LCD_INVERTED?key_9:key_0;
-			else if(K1_READ		==0)    return LCD_INVERTED?key_8:key_1;
+			     if(K0_READ	    ==0)    return LCD_INVERTED?key_9:key_0;
+			else if(K1_READ	    ==0)    return LCD_INVERTED?key_8:key_1;
 			else if(K2_READ     ==0)    return LCD_INVERTED?key_7:key_2;
 			else if(K3_READ     ==0)    return LCD_INVERTED?key_6:key_3;
 			else if(K4_READ     ==0)    return LCD_INVERTED?key_5:key_4;
@@ -107,15 +109,16 @@ u8 KEY_SCAN(u8 MODE)
 			else if(K_ENT_READ  ==0)    return key_ent;
 			else if(K_CLR_READ  ==0)    return key_clr;
 			else if(KA_READ     ==0)    return LCD_INVERTED?key_d:key_a;
-			else if(KB_READ		==0)	return LCD_INVERTED?key_c:key_b;
-			else if(KC_READ     ==0)	return LCD_INVERTED?key_b:key_c;
-			else if(KD_READ     ==0)	return LCD_INVERTED?key_a:key_d;
-			else if(KN_READ     ==0)	return key_ent ;	//key_ent
+			else if(KB_READ	    ==0)    return LCD_INVERTED?key_c:key_b;
+			else if(KC_READ     ==0)    return LCD_INVERTED?key_b:key_c;
+			else if(KD_READ     ==0)    return LCD_INVERTED?key_a:key_d;
+			else if(KN_READ     ==0)    return key_ent ;			//key_ent
 			
 	 }                         
-	 else if(	K0_READ && K1_READ && K2_READ && K3_READ && K4_READ && K5_READ && K6_READ && K7_READ && 
-				K8_READ && K9_READ && PRE_ADD_READ && PRE_SUB_READ && 
-				K_TOOLS_READ && K_ENT_READ && K_CLR_READ && KA_READ && KB_READ && KC_READ && KD_READ && KN_READ)
+	 else if(K0_READ && K1_READ && K2_READ && K3_READ && K4_READ && K5_READ && K6_READ && K7_READ && 
+		 K8_READ && K9_READ && PRE_ADD_READ && PRE_SUB_READ && 
+		 K_TOOLS_READ && K_ENT_READ && K_CLR_READ && KA_READ && KB_READ && KC_READ && KD_READ && KN_READ)
+		
 		key_up=1;
 	 
  	return key_no;
