@@ -1,12 +1,12 @@
 #include "lcd.h"
 #include "font.h"
-#include "bsp_lcd.h"  	//驱动引脚初始化
+#include "bsp_lcd.h"  			//Driver pin initialization
 #include "bsp_delay.h"
 
 
 #define INVERTED_OFFSET 4 
 
-u8 LCD_INVERTED = OFF;				//液晶颠倒显示
+u8 LCD_INVERTED = OFF;			//LCD upside down display
 
 void LCD_Init(void)
 {
@@ -14,78 +14,82 @@ void LCD_Init(void)
 #if _LCD == LCD12864
 	LCD_CS_SET;
 	LCD_RST_CLR;
-	delay_ms(10); //hard reset for 10ms
-	//物理重置
+	delay_ms(10); 				//Hard reset for 10 ms
+	
+	//Physical reset
 	LCD_RST_SET;
 	delay_ms(10);
-	//软件重置
-	LCD_Write(0xE2,0); delay_ms(10);//Soft Reset
 	
-	LCD_Write(0xA2,0); //Duty bias set  0xA2 is light 0xA3 is dark
-	//LCD_Write(0xA7,0); //0xA7 reverse 0xA6 normal default normal
+	//Software reset
+	LCD_Write(0xE2,0); delay_ms(10);	//Soft reset
 	
-	LCD_Write(0xA0,0); //ADC select S0->S131(从S1-S128)  a0:左->右 a1:反转，右到左
-	LCD_Write(0xC8,0); //com1 --> com64				     C8:普通顺序 c0:反向扫描
+	LCD_Write(0xA2,0); 			//Duty bias set  0xA2 is light 0xA3 is dark
+	//LCD_Write(0xA7,0); 			//0xA7 reverse 0xA6 normal default normal
 	
-	//粗调对比度    //0x20-0x27内部电阻比例
-	LCD_Write(0x20+(5&0x07), 0); //V0 Voltage Regulator Internal Resistor Ratio Set 0x20~0x27//1
+	LCD_Write(0xA0,0); 			//ADC select S0->S131 (from S1-S128) A0: Left->right, A1: Reverse, right to left
+	LCD_Write(0xC8,0); 			//com1 --> com64       		     C8: Normal sequence, C0: Reverse scan
+	
+	//Coarse contrast 
+	//0x20-0x27 internal resistance ratio
+	LCD_Write(0x20+(5&0x07), 0); 		//V0 Voltage Regulator Internal Resistor Ratio Set 0x20~0x27 //1
 	delay_ms(2);
 	
-	//微调对比度		//0-0x3f内部电阻微调
-	LCD_Write(0x81,0); //V0 voltage set first cmd
-	LCD_Write(36 & 0x3F, 0); //following V0 voltage set 0x00~0x3F
+	//Fine-tuning contrast
+	//0-0x3А internal resistance fine-tuning
+	LCD_Write(0x81,0); 			//V0 voltage set first cmd
+	LCD_Write(36 & 0x3F, 0); 		//following V0 voltage set 0x00~0x3F
 	delay_ms(2);
 	
-	//升压倍数 00:4   01:5   10:6
-	LCD_Write(0xF8,0); //Booster Ratio Select Mode Set first cmd
-	LCD_Write(0x00 & 0x03,0); //following Booset Ratio Register Set 0x00~0x03
+	//Boost multiple 00:4 01:5 10:6
+	LCD_Write(0xF8,0); 			//Booster Ratio Select Mode Set first cmd
+	LCD_Write(0x00 & 0x03,0); 		//Following Booster Ratio Register Set 0x00~0x03
 	delay_ms(2);
 	
-	//选择内部电压供应操作模式 0010 低四位：1 VB VR VF
-	//LCD_Write(0x2F,0); //power control all on
+	//Select the internal voltage supply operation mode 0010 low four digits：1 VB VR VF
+	//LCD_Write(0x2F,0); 			//Power control all on
 	LCD_Write(0x28+(0x07&7),0); 
 	delay_ms(2);
 	
-	//设置显示存储器的显示初始行, 可设置为 0x40~0x7F, 分别代表第 0~63 行
-	LCD_Write(0x40 + (0x3f&0), 0); //0x40 + Display Start Line(0)
+	//Set the display initial line of the display memory, which can be set to 0x40~0x7F, which represents lines 0~63 respectively.
+	LCD_Write(0x40 + (0x3f&0), 0); 		//0x40 + Display Start Line(0)
 	
-	//清屏
+	//Clear screen
 	LCD_Clear(GLOBAL64);
 	
-	//开启显示
-	LCD_Write(0xAF,0); //Display ON
+	//Turn on the display
+	LCD_Write(0xAF,0); 		//Display ON
 #else
 	LCD_RST_CLR;
 	delay_us(10);
 	LCD_RST_SET;
 	delay_us(10);
-	LCD_WriteCmd(0xe2);//软件复位
+	LCD_WriteCmd(0xe2);		//Software reset
 	delay_ms(10);
-	LCD_WriteCmd(0x2c);//升压步聚
+	LCD_WriteCmd(0x2c);		//Boost step gathering
 	delay_ms(5);
-	LCD_WriteCmd(0x2e);//升压步聚
+	LCD_WriteCmd(0x2e);		//Boost step gathering
 	delay_ms(5);
-	LCD_WriteCmd(0x2f);//升压步聚
+	LCD_WriteCmd(0x2f);		//Boost step gathering
 	delay_ms(5);
-	LCD_WriteCmd(0x23);//粗调对比度，可设置范围 20～27
-	LCD_WriteCmd(0x81);//微调对比度
-	LCD_WriteCmd(0x10);//微调对比度的值，可设置范围 0x00～0x3f
-	LCD_WriteCmd(0xa2);//1/9 偏压比（bias）
+	LCD_WriteCmd(0x23);		//Coarse contrast, the range can be set from 20 to 27
+	LCD_WriteCmd(0x81);		//Fine-tune contrast
+	LCD_WriteCmd(0x10);		//Fine-tune the contrast value, you can set the range 0x00～0x3F
+	LCD_WriteCmd(0xa2);		//1/9 bias ratio (bias)
 #if LCD_INVERTED==1
-	LCD_WriteCmd(0xc0);//行扫描顺序：从上到下
-	LCD_WriteCmd(0xa1);//列扫描顺序：反转, 从右到左
+	LCD_WriteCmd(0xc0);		//Row scan order: from top to bottom
+	LCD_WriteCmd(0xa1);		//Column scan order: reverse, from right to left
 #else 
-	LCD_WriteCmd(0xc8);//行扫描顺序：从上到下
-	LCD_WriteCmd(0xa0);//列扫描顺序：从左到右
+	LCD_WriteCmd(0xc8);		//Row scan order: from top to bottom
+	LCD_WriteCmd(0xa0);		//Column scan order: from left to right
 #endif
-	LCD_WriteCmd(0x40);//起始行：从第一行开始
-	LCD_WriteCmd(0xaF);//开显示
-	LCD_HeavyRatio(3);//3
+	LCD_WriteCmd(0x40);		//Starting line: start from the first line
+	LCD_WriteCmd(0xaF);		//Open display
+	LCD_HeavyRatio(3);		//3
 	LCD_Clear(GLOBAL32); 
 #endif
 }
 
-void LCD_Write(unsigned char dat,unsigned char rs) //rs == 1 data rs==0  cmd 
+void LCD_Write(unsigned char dat,unsigned char rs) 	//rs == 1 data rs==0  cmd 
 {
 	uint8_t i;
 	LCD_SCL_CLR;
@@ -93,7 +97,7 @@ void LCD_Write(unsigned char dat,unsigned char rs) //rs == 1 data rs==0  cmd
 	if(rs)
 		LCD_RS_SET;
 	else
-		LCD_RS_CLR; //Command
+		LCD_RS_CLR; 		//Command
 	
 	delay_us(10);
 	
@@ -124,32 +128,34 @@ void LCD_WriteData(unsigned char data)
 	LCD_Write(data,1);
 }
 
-//粗调对比度  //0x20-0x27内部电阻比例
+//Coarse contrast 
+//0x20-0x27 internal resistance ratio
 void LCD_HeavyRatio(unsigned char cmd)
 {
     LCD_CS_CLR;
     LCD_RS_CLR;
-    LCD_WriteCmd(0x20+(cmd&0x07));	//0x2x
+    LCD_WriteCmd(0x20+(cmd&0x07));		//0x2x
     LCD_CS_SET;
 }
-//微调对比度 	//0-0x3f内部电阻微调
+//Fine-tuning contrast
+//0-0x3F internal resistance fine-tuning
 void LCD_LightRatio(unsigned char cmd)
 {
     LCD_CS_CLR;
     LCD_RS_CLR;
 	LCD_WriteCmd(0x81);
-    LCD_WriteCmd(cmd & 0x3f);	//00-3f---》0~48+15=63
+    LCD_WriteCmd(cmd & 0x3f);			//00-3F---》0~48+15=63
     LCD_CS_SET;
 }
 void LCD_Setxy(unsigned char l, unsigned char p)
 {
-	LCD_WriteCmd(0xb0+p);				//Set Page Address															x
-	LCD_WriteCmd(((l>>4)&0x0f)+0x10);	//Set Column Address(MSByte) = 0			0001 l&f   （高四位）			y		
-	LCD_WriteCmd(l&0x0f);				//Colum(LSByte) from S1 -> S128 auto add 	0000 l&0x0f（低四位）
+	LCD_WriteCmd(0xb0+p);			//Set Page Address								    x
+	LCD_WriteCmd(((l>>4)&0x0f)+0x10);	//Set Column Address(MSByte) = 0		0001 l&f   （High four digits）      y		
+	LCD_WriteCmd(l&0x0f);			//Colum(LSByte) from S1 -> S128 auto add 	0000 l&0x0f（Lower four digits）
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-//以页为地址定位
-//4列8行 字符(16页)
+//Page-based address positioning
+//4 columns and 8 lines of characters (16 pages)
 void LCD_ShowAscii0408 (unsigned char l, unsigned char p, int ch)
 {
 	if(LCD_INVERTED)
@@ -177,7 +183,7 @@ void LCD_ShowString0408(unsigned char l, unsigned char p, const char *s, unsigne
 	}
 }
 //
-//6列8行 字符(16页)
+//6 columns and 8 lines of characters (16 pages)
 void LCD_ShowAscii0608 (unsigned char l, unsigned char p, int ch, unsigned char flag)
 {
 	if(LCD_INVERTED)
@@ -197,7 +203,7 @@ void LCD_ShowString0608(unsigned char l, unsigned char p, const char *s, unsigne
 	if(LCD_INVERTED)
 		l+=INVERTED_OFFSET;
 	LCD_Setxy(l, p);
-	for(u8 j=0;s[j]!='\0';j++)//j字，i列
+	for(u8 j=0;s[j]!='\0';j++)		//j word, column i
 	{
 		for(u8 i=0;i<6;i++)
 		{
@@ -212,7 +218,7 @@ void LCD_ShowString0608(unsigned char l, unsigned char p, const char *s, unsigne
 	}
 }
 //
-//10列16行 字符(16页)
+//10 columns and 16 lines of characters (16 pages)
 void LCD_ShowAscii1016 (unsigned char l, unsigned char p, int ch, unsigned char flag)
 {
 	if(LCD_INVERTED)
@@ -297,7 +303,7 @@ void LCD_ShowPICALL(const unsigned char *pic)
    //delay_ms(500);
 }
 
-//上下箭头，音量小黑块
+//Up and down arrows, small volume black block
 void LCD_ShowPIC0408(unsigned char l, unsigned char p, unsigned char ch)
 {
 	if(LCD_INVERTED)
@@ -347,7 +353,7 @@ void LCD_ShowPIC1616(unsigned char l, unsigned char p, int ch, unsigned char fla
 		if(flag)LCD_WriteData(pic_1616[i]);
 		else LCD_WriteData(~pic_1616[i]);
 }
-//按键0-9的显示
+//Display of buttons 0-9
 void LCD_ShowPIC2516(unsigned char l, unsigned char p, int ch)
 {
 	if(LCD_INVERTED)
@@ -416,7 +422,7 @@ void LCD_Clear(_ClearScope clean_area)
 }
 //
 
-//升级显示
+//Upgrade display
 void LCD_ShowProcessBar(unsigned char l, unsigned char p, unsigned char num)
 {
 	if(LCD_INVERTED)
@@ -431,7 +437,7 @@ void LCD_ShowProcessBar(unsigned char l, unsigned char p, unsigned char num)
 	LCD_ShowString0608(l+102, p, buf, 1, 128);
 	
 }
-//实心百分比显示(含上下边框)
+//Solid percentage display (including upper and lower borders)
 void LCD_ShowPercentBar(unsigned char l, unsigned char p, unsigned char all_level, unsigned char level, unsigned char length)
 {
 	if(level>all_level)
@@ -455,30 +461,30 @@ void LCD_ShowPercentBar(unsigned char l, unsigned char p, unsigned char all_leve
 	LCD_WriteData(0x3e);						//Border
 //////////////////////////////////////////////////
 }
-//电池显示
+//Battery display
 void LCD_ShowBattery(int energy)
 {
     energy = (energy + 10) / 20;
     LCD_ShowPercentBar(21, 0+_LCD, 5, energy, 24);
 }
-//信号显示
+//Signal display
 void LCD_ShowSignal(int signal)
 {
     LCD_ShowPercentBar(102, 1+_LCD, 5, signal / 20, 24);
 }
-//背光显示
+//Backlit display
 void LCD_ShowBackLight(int bl)
 {
     LCD_ShowPercentBar(34, 2+_LCD, 10, bl / 10, 60);
 }
-//对比度显示
+//Contrast display
 void LCD_ShowContrast(int contrast)
 {
     LCD_ShowPercentBar(34, 2+_LCD, 6, contrast, 60);
 }
 //
 
-//num:总行数, pos:选中项, per_page:每一页的行数
+//num: total number of lines, pos: selected items, per_page: number of lines per page
 void LCD_ShowPageBar(int num, int sel_pos, int per_page_num)
 {
 	u8 l=121;
@@ -486,11 +492,11 @@ void LCD_ShowPageBar(int num, int sel_pos, int per_page_num)
 		l+=INVERTED_OFFSET;
 	
 //	printf("num:%d, pos:%d, per_page_num:%d\n", num, pos, per_page_num);
-	int sum_page = (num+per_page_num-1)/per_page_num;			    	//总页数
-	int bar_row  = sum_page>8 ? 1: (int)(8+sum_page-1)/sum_page;		//将长度条按页数平分
+	int sum_page = (num+per_page_num-1)/per_page_num;			    	//Total pages
+	int bar_row  = sum_page>8 ? 1: (int)(8+sum_page-1)/sum_page;			//Divide the length bar equally by the number of pages
 	
 	u8 con_para = 0; 			
-	for(u8 i=0; i<bar_row; i++) //获取长度条移动方块
+	for(u8 i=0; i<bar_row; i++) 							//Get the length bar to move the square
 		con_para |= (0x01<<i);
 	
 	int sel_page = num>23 ? sel_pos*8/num : sel_pos/per_page_num*bar_row;
@@ -522,8 +528,8 @@ void LCD_ShowMenu31(const char *menu[], int item, int sel_pos)
 	p+=2;
 #endif
 	
-	u8 page = sel_pos/3;	//页
-	u8 pos = 3*page;		//页对应的起始菜单项
+	u8 page = sel_pos/3;		//Page (?)
+	u8 pos = 3*page;		//The start menu item corresponding to the page
 	
 	LCD_ShowString0608(0, p+0, "                      ", pos+0==sel_pos?0:1, 120);
 	LCD_ShowString0608(0, p+1, "                      ", pos+1==sel_pos?0:1, 120);
@@ -549,15 +555,15 @@ void LCD_ShowMenu31(const char *menu[], int item, int sel_pos)
 	//
 }
 //
-void LCD_ShowMenu41(const char *menu[],  int item, int sel_pos)//菜单, 行, 选中第n个
+void LCD_ShowMenu41(const char *menu[],  int item, int sel_pos)		//Menu, OK, select the n-th one (?)
 {
 	u8 p = 0;
 #if _LCD == LCD12864
 	p+=2;
 #endif	
 	
-	u8 page = sel_pos/4;	//页
-	u8 pos = 4*page;		//页对应的起始菜单项
+	u8 page = sel_pos/4;		//Page
+	u8 pos = 4*page;		//The start menu item corresponding to the page
 
 //	LCD_ShowString0608(0, p+0, "                      ", pos+0==sel_pos?0:1, 120);
 //	LCD_ShowString0608(0, p+1, "                      ", pos+1==sel_pos?0:1, 120);
@@ -592,8 +598,8 @@ void LCD_ShowMenu41(const char *menu[],  int item, int sel_pos)//菜单, 行, �
 	//
 }
 //
-//单行双项菜单显示
-//图形1：显示收发设置的各个选项
+//Single-line dual-item menu display
+//Figure 1: Display the various options of the sending and receiving settings
 void LCD_ShowMatrixMenu22(char menu[][2][12], int item, int sel_pos)
 {
 	u8 p = 1;
@@ -608,7 +614,7 @@ void LCD_ShowMatrixMenu22(char menu[][2][12], int item, int sel_pos)
 	LCD_ShowPIC0408(44,   p+2, 0);
 	LCD_ShowPIC0408(64,   p+2, 1);
 
-	int page = sel_pos/4;				//当前页
+	int page = sel_pos/4;			//Current page
 	u8 start_pos = page*4;
 	
 	LCD_ShowPageBar(item, sel_pos, 4);
@@ -619,8 +625,8 @@ void LCD_ShowMatrixMenu22(char menu[][2][12], int item, int sel_pos)
 	LCD_ShowString0608(0 , p+1, start_pos+2<item?menu[page*2+1][0] : "        ",  start_pos+2==sel_pos?0:1, 128);
 	LCD_ShowString0608(68, p+1, start_pos+3<item?menu[page*2+1][1] : "        ",  start_pos+3==sel_pos?0:1, 128);
 }
-//单行三项菜单显示
-//亚音显示
+//Single-line three-item menu display
+//Subtone display
 void LCD_ShowMatrixMenu33(const char *menu[][3], int item, int sel_pos)
 {
 	u8 l = 0;
@@ -631,7 +637,7 @@ void LCD_ShowMatrixMenu33(const char *menu[][3], int item, int sel_pos)
 	if(LCD_INVERTED)
 		l+=INVERTED_OFFSET;
 	
-	int page = sel_pos/9;			//当前页
+	int page = sel_pos/9;			//Current page
 	u8 start_pos = page*9;
 
 	LCD_ShowPageBar(item, sel_pos, 9);
@@ -650,7 +656,7 @@ void LCD_ShowMatrixMenu33(const char *menu[][3], int item, int sel_pos)
 }
 //
 
-//音量显示
+//Volume display
 void LCD_ShowVolume(unsigned char vol)
 {
 	u8 p = 0;
@@ -671,7 +677,7 @@ void LCD_ShowVolume(unsigned char vol)
 	}
 }
 
-//选项切换,居中显示"YES", "NO",等等
+//Option switch, centered display "YES", "NO", etc.
 void LCD_ShowOption(unsigned char l, unsigned char p, const char *buf[], unsigned char item, unsigned char sel_pos)
 {
 	u8 max_length=0;
@@ -682,14 +688,14 @@ void LCD_ShowOption(unsigned char l, unsigned char p, const char *buf[], unsigne
 	LCD_ShowString0608(l, p, "                      ", 1, l+max_length); 
 	LCD_ShowString0608(l+(max_length-length)*6/2, p, buf[sel_pos],  0, l+max_length);
 }
-//显示频率
+//Display frequency
 void LCD_ShowFreq(unsigned	char l,unsigned char p, double f, unsigned char flag)
 {
 	char buf[9]={0};
 	sprintf(buf, "%3.4f", f);
 	LCD_ShowString0608(l, p, buf, flag, l+48);
 }
-//主页面信道号显示
+//Main page channel number display
 void LCD_ShowChan(unsigned char l, unsigned char p, unsigned char chan, unsigned char flag)
 {
 	char buf[4]={0};
