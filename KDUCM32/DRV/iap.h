@@ -6,7 +6,7 @@ extern uint8_t	usart1_recv_end_flag;
 extern uint16_t rx1_len;
 extern char		rx1_buf[USART1_BUF_SIZE];
 
-typedef  void (*iapfun)(void);				//定义一个函数类型的参数.
+typedef  void (*iapfun)(void);				        //Define the parameters of a function type
 
 void Iap_load(uint32_t addr);
 void KDUCheckRunMaster(uint32_t addr);
