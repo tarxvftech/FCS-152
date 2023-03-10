@@ -6,10 +6,11 @@ volatile u8  BL = 100;
 void DumpClock(const char* msg);
 int main()
 {
-	//串口初始化		//115200
+	//Serial port initialization	//115200
 	log_init();
-	D_printf("\n<<<<<<BootLoader>>>>>>\n");	//1.打开串口,初始化打印信息
-	//配置使能HSI时钟，测试发现只有使用HSI时钟的情况下对Flash操作才不会卡死
+	D_printf("\n<<<<<<BootLoader>>>>>>\n");		//Open the serial port and initialize the printing information
+							//Configure to enable the HSI clock, and the test found that the Flash operation will not get stuck only 
+							//if the HSI clock is used.
 	if(FLASH_HSICLOCK_DISABLE == FLASH_ClockInit())
     {
         printf("HSI oscillator not yet ready\r\n");
@@ -24,37 +25,39 @@ int main()
 //    }
 
     
-	//检测新程序, 存在则复制并跳转; 不存在则检测APP是否正确:正确跳转，错误进入升级模式
+	//Detect the new program, copy and jump if it exists; detect whether the APP is correct if it does not exist: 
+	//jump correctly, enter the upgrade mode by mistake
 	bootToUpgrade();
 	
 
-/**************************如果没跳转则进入升级模式*****************************/
+/**************************If there is no jump, enter upgrade mode*****************************/
 	
-	//如果没有升级，重启后根据以下标志位依旧		首先检测 运行APP 内存是否存在程序
-	//如果升级，	   重启后根据接收完后写入的标志位	首先检测 接收APP 内存是否存在程序
+	//If there is no upgrade, after restarting, according to the following flags, first detect whether there is a program in the memory of the running APP.
+	//If you upgrade, after restarting, first detect whether there is A program in the memory of the RECEIVING APP according to the flag written after receiving IT.
 	uint32_t ReadDat = RUN_APP;
     if(*(vu32*)KDU_FLAG_ADDR != RUN_APP)
         FLASH_WriteUser(KDU_FLAG_ADDR, &ReadDat,  1);
 	
-	//延时、分频等参数配置 SysTick初始化			//不配置HSE，直接使用上面使能的HSI进行操作
+	//Configure SysTick initialization for parameters such as delay and frequency division			
+	//Do not configure HSE, directly use the HSI enabled above to operate
 	delay_init();
 	
-	//串口接收中断监控
+	//Serial port reception interrupt monitoring
 	TIM6_Init();	
 
-	//LCD12864初始化
+	//LCD12864 initialization
 	LCD_Init();		
-	//背光灯初始化
+	//Backlight initialization
 	LCDK_Init();	
-	//按键灯初始化
+	//Button light initialization
 	LEDK_Init();
 	BackLight_SetVal(BL);
-	//按键键盘初始化
+	//Key keyboard initialization
 	KEY_Init();
 	
 	Iap_Write();
 	
-	//不会到这！
+	//Not here! - What is it?
 	ResetSystem();
 
 	
@@ -79,12 +82,12 @@ int main()
 
 }
 
-void bootToUpgrade(void)//启动检测升级
+void bootToUpgrade(void)						//Start the detection upgrade
 {
 ///////////////////////////////////////////////////////////////////
-	uint32_t ReadDat    = 0x57;						//读数据间接变量
-	uint32_t UpdaCnt    = 0;						//The size of new app
-	uint32_t read2write[SECTOR_SIZE/FlashByte];		//复制缓冲区
+	uint32_t ReadDat    = 0x57;					//Read data indirect variables
+	uint32_t UpdaCnt    = 0;					//The size of new app
+	uint32_t read2write[SECTOR_SIZE/FlashByte];			//Copy buffer
 	__IO u32 addr1  	=  KDU_RUN_ADDR;			//The address where the app starts
 	__IO u32 addr2  	=  KDU_RCV_ADDR;			//The address of new app where receive 
 	__IO u32 useraddr 	=  KDU_FLAG_ADDR;			//The address of app flag
@@ -94,19 +97,19 @@ void bootToUpgrade(void)//启动检测升级
 	FLASH_ReadUser(KDU_FLAG_ADDR, &ReadDat, 1);
 	D_printf("%#x\n", ReadDat16);
 	
-	if(ReadDat == NEW_APP)//Exam the flag if there is a new app
+	if(ReadDat == NEW_APP)						//Exam the flag if there is a new app
 	{
-		FLASH_EraseUser(KDU_RUN_ADDR);							//擦除运行空间
-		FLASH_ReadUser(KDU_SIZE_ADDR, &UpdaCnt, 1);				//读取APP升级包大小
+		FLASH_EraseUser(KDU_RUN_ADDR);						//Erase running space
+		FLASH_ReadUser(KDU_SIZE_ADDR, &UpdaCnt, 1);				//Read the size of the APP upgrade package
 		D_printf("There is a new app, which data sizes=%d\r\n", UpdaCnt);
 		
 		addr1 = KDU_RUN_ADDR;
-	    addr2 = KDU_RCV_ADDR;
+	    	addr2 = KDU_RCV_ADDR;
 		
 		D_printf("Copying program in progress....\r\n");
 			
 		 
-		int runtime = round(UpdaCnt/SECTOR_SIZE+0.5);			//读取次数，向上取整
+		int runtime = round(UpdaCnt/SECTOR_SIZE+0.5);				//Number of readings, rounded up
 		for(int i=0; i<runtime; i++)
 		{
 			FLASH_ReadUser (addr2,  read2write,  SECTOR_SIZE/FlashByte);
@@ -124,7 +127,7 @@ void bootToUpgrade(void)//启动检测升级
 	}
 	//
 	
-	if(((*(vu32*)KDU_RUN_ADDR) & 0x2FFE0000) == 0x20000000)						//检查栈顶是否合法
+	if(((*(vu32*)KDU_RUN_ADDR) & 0x2FFE0000) == 0x20000000)				//Check whether the top of the stack is legal
 	{
 INTX_DISABLE();
 USART_Enable(USART1, DISABLE);
@@ -132,13 +135,13 @@ USART_DeInit(USART1);
 TIM_Enable(TIM6, DISABLE);
 TIM_DeInit(TIM6);
 		
-//		printf("The stack is legal! %x\n", *(vu32*)KDU_RUN_ADDR);				//用户代码区第二个字为程序开始地址(复位地址)
-		jump = (iapfun) *(vu32*)(KDU_RUN_ADDR + 4);								//强制转化为函数  
+//		printf("The stack is legal! %x\n", *(vu32*)KDU_RUN_ADDR);			//The second word in the user code area is the program start address (reset address)
+		jump = (iapfun) *(vu32*)(KDU_RUN_ADDR + 4);					//Force conversion to function
 //		printf("The RESET address is legal! %x\n", *(vu32*)(KDU_RUN_ADDR + 4));
-		MSR_MSP(*(vu32*)KDU_RUN_ADDR);											//初始化APP堆栈指针(用户代码区的第一个字用于存放栈顶地址)
+		MSR_MSP(*(vu32*)KDU_RUN_ADDR);							//Initialize the APP stack pointer (the first word in the user code area is used to store the top address of the stack)
 //		printf("Initialize the APP stack pointer!Jump to APP!\n");
 		ReadDat=RUN_APP;
-		FLASH_WriteUser(KDU_FLAG_ADDR, &ReadDat, 1);							//写入"运行app"命令
+		FLASH_WriteUser(KDU_FLAG_ADDR, &ReadDat, 1);					//Write the "Run app" command
 		jump();
 	}
 	else
@@ -146,7 +149,7 @@ TIM_DeInit(TIM6);
 		printf("Enter app error\n");
 		return;
 //		ReadDat16=WRO_APP;
-//		STMFLASH_Write(KDU_FLAG_ADDR, &ReadDat16, 1);							//写入"错误app"命令
+//		STMFLASH_Write(KDU_FLAG_ADDR, &ReadDat16, 1);					//Write the "Error app" command
 	}
 //
 }
@@ -155,7 +158,7 @@ TIM_DeInit(TIM6);
 void DumpClock(const char* msg)
 {
 	RCC_ClocksType RCC_ClockFreq;
-    log_init(); // should reinit after sysclk changed
+    log_init(); 							// should reinit after sysclk changed
     log_info("--------------------------------\n");
     log_info("%s:\n", msg);
     RCC_GetClocksFreqValue(&RCC_ClockFreq);
