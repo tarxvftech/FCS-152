@@ -45,7 +45,7 @@ void getChannel(){
         //fake data here for testing
         obj["idx"] = idx;
         obj["name"] = "ChannelName";
-        obj["txf"] = 451.8;
+        obj["txf"] = 451.8; //Should fetch from memory later but this is just a demo. And this comment is really to trigger a rebuild of the CI.
         obj["rxf"] = 451.8;
         serializeJson(jd, buf);
         http.send(200, "application/json", buf);
