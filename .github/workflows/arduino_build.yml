@@ -12,7 +12,8 @@ jobs:
         with:
           path: |
             ~/.arduino15/packages
-            ~/Arduino/packages
+            ~/Arduino/libraries
+            #these paths can be seen from the output of a successful build
           key: ${{ hashFiles('.github/workflows/arduino_build.yml') }}
             #since currently this very file you're viewing is what's specifying the build requirements, using the hash of this file is fine for now
             #if we move to installing dependencies somewhere else, this file will need to be updated and so will the key here
