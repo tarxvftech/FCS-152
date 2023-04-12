@@ -127,6 +127,7 @@ void disposeEncoderSpined(void) {
     //TODO:implement https://www.pinteric.com/rotary.html
     //to handle this well requires replacing all uses of TIMES. oh well.
     //delete the rest of this function after all input handling is fixed
+    //actually since the entire input handling is replaced already, this could be lifted first now.
 
     if (L_LAST != ENCODER_SPIN_L_READ && spin_cal - spin_old > 100) {
         ClearShut();
