@@ -32,13 +32,13 @@ typedef enum
 
 typedef enum 
 {
-	key_idle   = 0,	//
-	key_click,		//按下
+	key_idle   = 0,		//
+	key_click,		//Press
 	key_double,
 	key_long
 }KeyReturn;
 
-#define KDU_DATA_DEBUG 1 	//数据交互处理(使用字符串,数据传输稳当,不易被字符转义干扰)
+#define KDU_DATA_DEBUG 1 	//Data interaction processing (using strings, data transmission is stable, and it is not easy to be disturbed by character escape)
 #if KDU_DATA_DEBUG
 	#define kdu_recv_data(a) (a-'0')	
 	#define kdu_send_data(a) (a+'0')
@@ -74,7 +74,7 @@ typedef enum
 #define WORD_HI(XXX) ((byte) ((word)(xxx) >> 8))
 
 //returns the nearest multiple of n greater than x
-//返回一个值, 比x大的最接近的n的倍数
+//Returns a value, the nearest multiple of n larger than x
 #define RND8(x) ( ( ((x)+7) /8) *8)
 #define RNDN(x, n) ((((x)+(n-1)) /(n) ) *(n))
 
