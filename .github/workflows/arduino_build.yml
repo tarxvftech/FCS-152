@@ -4,7 +4,8 @@ jobs:
   compile:  
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: checkout
+        uses: actions/checkout@v3
       - name: Cache Arduino packages
         uses: actions/cache@v3
         id: cache
@@ -15,7 +16,8 @@ jobs:
           key: ${{ hashFiles('.github/workflows/arduino_build.yml') }}
             #since currently this very file you're viewing is what's specifying the build requirements, using the hash of this file is fine for now
             #if we move to installing dependencies somewhere else, this file will need to be updated and so will the key here
-      - uses: arduino/setup-arduino-cli@v1    
+      - name: arduino setup
+        uses: arduino/setup-arduino-cli@v1    
         #if: steps.cache.outputs.cache-hit != 'true'
           #can this be cached too?
       - name: install core for ESP32 and dependencies
@@ -25,7 +27,9 @@ jobs:
           arduino-cli core update-index --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
           arduino-cli core install esp32:esp32 --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
           arduino-cli lib install AutoConnect
-      - run: cd test152; arduino-cli compile --fqbn esp32:esp32:esp32s2 --output-dir build
+      - name: build FCS-152 firmware
+        run: cd test152; arduino-cli compile --fqbn esp32:esp32:esp32s2 --output-dir build
+          #still need to find a way to build the (non-arduino) KDU firmware.
       - name: Upload bin
         uses: actions/upload-artifact@v3
         with:
