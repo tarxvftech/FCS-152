@@ -7,12 +7,21 @@ jobs:
       - uses: actions/checkout@v3
       - name: Cache Arduino packages
         uses: actions/cache@v3
+        id: cache
         with:
           path: |
             ~/.arduino15/packages
             ~/Arduino/packages
+          key: ${{ hashFiles('.github/workflows/arduino_build.yml') }}
+            #since currently this very file you're viewing is what's specifying the build requirements, using the hash of this file is fine for now
+            #if we move to installing dependencies somewhere else, this file will need to be updated and so will the key here
       - uses: arduino/setup-arduino-cli@v1    
-      - run: |
+        #if: steps.cache.outputs.cache-hit != 'true'
+          #can this be cached too?
+      - name: install core for ESP32 and dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+          #note in the steps.cache bit, 'cache' selects the entry with the matching 'id' value 
+        run: |
           arduino-cli core update-index --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
           arduino-cli core install esp32:esp32 --additional-urls https://espressif.github.io/arduino-esp32/package_esp32_index.json
           arduino-cli lib install AutoConnect
