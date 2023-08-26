@@ -132,8 +132,8 @@ int Get_A20_RSSI(void) {
         } while (Serial1.available());
 
         len = strlen((char *)rx2_buf) - 1;
-// D_printf("接收A20length:%d, %s\n", len, rx2_buf);          //receive A20 length:
-// D_printf("接收RSSI:%s\n", rx2_buf+13);                     //receive RSSI:
+// D_printf("Receive A20length:%d, %s\n", len, rx2_buf);          //receive A20 length:
+// D_printf("Receive RSSI:%s\n", rx2_buf+13);                     //receive RSSI:
 
         if (len==15) {
             rssi = rx2_buf[13]-'0';
@@ -182,10 +182,10 @@ void A002_CALLBACK(void) {                                     //A20 Data recept
         if (strstr((const char *)rx2_buf, "+DMOSETVOX:0")) { //Voice control is set up successfully
             D_printf("Successfully Set VOX!\n");
         }
-        if (strstr((const char *)rx2_buf, "+DMOAUTOPOWCONTR:0")) { //Power saving mode is successful 
+        if (strstr((const char *)rx2_buf, "+DMOAUTOPOWCONTR:0")) { //Power saving mode is successful
             D_printf("Successfully Set AUTOPOWCONTR!\n");
         }
-        if (strstr((const char *)rx2_buf, "+ DMOSETVOLUME:0")) { //Volume settings is successful  
+        if (strstr((const char *)rx2_buf, "+ DMOSETVOLUME:0")) { //Volume settings is successful
             D_printf("Successfully Set VOLUME!\n");
         }
 
@@ -204,5 +204,3 @@ void disposeRx1(void) {
 void diseposeRx2(void) {
     usart2_recv_end_flag=1;
 }
-
-
