@@ -3,7 +3,7 @@
 
 #define PWM_CHAN        1
 #define ADC_SAMPLE_NUM  10
-volatile uint16_t MY_ADC_VAL[ADC_SAMPLE_NUM]; //adc的数值缓存
+volatile uint16_t MY_ADC_VAL[ADC_SAMPLE_NUM]; // ADC value buffer
 
 void bsp_PWM_Init(void) {
     ledcSetup(PWM_CHAN, 24000, 8);  //0~255
@@ -12,8 +12,8 @@ void bsp_PWM_Init(void) {
 }
 void bsp_ADC_Init(void) {
     pinMode(ADC_PIN,INPUT);
-    adcAttachPin(ADC_PIN);//将引脚连接到ADC
-    analogReadResolution(13);//设置aliogRead返回值的分辨率
+    adcAttachPin(ADC_PIN);//Connect pins to ADC
+    analogReadResolution(13);//Set the resolution of the value returned by analogRead
 }
 
 void BackLight_SetVal(u8 val) {
